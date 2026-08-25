@@ -155,6 +155,29 @@ expert-versus-novice tradeoffs, whether repetition is beneficial context,
 structural moves, and every high-severity low-confidence finding. Report persona
 conflicts; never average them away.
 
+## Running the scripts
+
+The scripts need `playwright` resolvable from the working directory
+(`npm i -D playwright` in the project being audited) and a Chromium binary.
+
+`extract.mjs` and `annotate.mjs` honour `CHROME_PATH`. Set it whenever the
+browser is not where Playwright expects it — in a sandbox with a pre-installed
+browser that is usually something like
+`/opt/pw-browsers/chromium-<build>/chrome-linux/chrome`. Check what exists
+rather than guessing the build number:
+
+```bash
+find /opt/pw-browsers -name chrome -o -name headless_shell
+
+CHROME_PATH=/opt/pw-browsers/chromium-<build>/chrome-linux/chrome \
+  node scripts/extract.mjs http://localhost:5173/ --out atoms.json
+```
+
+Without it, a mismatch between the installed `playwright` package and the
+available browser build fails with "Please run the following command to
+download new browsers". Do not run `npx playwright install` in a sandbox that
+already ships a browser — point `CHROME_PATH` at the binary that is there.
+
 ## Bundled files
 
 - `references/scoring.md` — prominence, demand, FIT, severity, and placement.
