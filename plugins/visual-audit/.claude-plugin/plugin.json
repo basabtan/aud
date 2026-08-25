@@ -1,0 +1,8 @@
+{
+  "name": "visual-audit",
+  "description": "Audit a running interface for visual quality against a default-tier rubric, then rank findings by visual impact and apply a chosen dose.",
+  "version": "1.0.0",
+  "author": {
+    "name": "basabtan"
+  }
+}

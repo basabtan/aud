@@ -1,0 +1,18 @@
+{
+  "name": "auditing-skills",
+  "owner": {
+    "name": "basabtan"
+  },
+  "plugins": [
+    {
+      "name": "visual-audit",
+      "source": "./plugins/visual-audit",
+      "description": "Audit a running interface for visual quality against a default-tier rubric, then rank findings by visual impact."
+    },
+    {
+      "name": "audit",
+      "source": "./plugins/audit",
+      "description": "Verify a feature works and is good to use by driving it in a real browser across fifteen instruments."
+    }
+  ]
+}

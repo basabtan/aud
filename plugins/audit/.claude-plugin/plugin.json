@@ -1,0 +1,8 @@
+{
+  "name": "audit",
+  "description": "Verify a feature works and is good to use by driving it in a real browser: error capture, route and control crawl, required states, accessibility, responsive, performance, data layer, deploy config, and a UX heuristic scorecard.",
+  "version": "1.0.0",
+  "author": {
+    "name": "basabtan"
+  }
+}
