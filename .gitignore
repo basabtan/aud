@@ -1,0 +1,7 @@
+node_modules/
+plugins/place-audit/fixtures/run/atoms.json
+plugins/place-audit/fixtures/run/canonical.json
+plugins/place-audit/fixtures/run/debugger.html
+plugins/place-audit/fixtures/run/fixture.png
+plugins/place-audit/fixtures/run/overlay-*.png
+plugins/place-audit/fixtures/run/prominence.json

@@ -1,0 +1,32 @@
+{
+  "schema_version": "place-audit-demand-v1",
+  "prompt_version": "place-demand-v1",
+  "model": "Codex session model (GPT-5 family; exact build identifier unavailable)",
+  "task_model_hash": "1851d26999f806dfe1357c5768236b62d6dcc8b4813672fa57f8259406039bab",
+  "task_weight": { "T1": 0.845 },
+  "batch_order": ["a12", "a4", "a16", "a7", "a1", "a14", "a9", "a11", "a3", "a6", "a15", "a2", "a5", "a10", "a13", "a8"],
+  "blind_fields": ["atom_id", "text", "semantic.entity", "semantic.metric", "semantic.value", "semantic.unit", "semantic.period", "semantic.scope", "semantic.qualifiers", "semantic.semanticRole"],
+  "excluded_fields": ["region", "dom", "geometry", "style", "access", "prominence", "FIT", "screenshots", "designer opinion"],
+  "calibration": {
+    "obvious_noise": { "atom_id": "a12", "expected": 0, "scores": [0, 0, 0], "result": "PASS" },
+    "obvious_must": { "atom_id": "a4", "expected": 4, "scores": [4, 4, 4], "result": "PASS" }
+  },
+  "scores": [
+    { "atom_id": "a1", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "T1 explicitly requires revenue to meet its comparison success criterion." },
+    { "atom_id": "a2", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "T1 explicitly requires orders for the declared comparison." },
+    { "atom_id": "a3", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "T1 explicitly requires returns for the declared comparison." },
+    { "atom_id": "a4", "score": 4, "runs": [4, 4, 4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.98, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "T1 cannot identify the line needing attention without downtime." },
+    { "atom_id": "a5", "score": 3, "runs": [3, 3, 3], "task_ids": ["T1"], "necessity": "Should", "confidence": 0.90, "dispersion": 0, "demand": 63.38, "rank": 40.0, "reason": "Regional status is declared required information and materially supports orientation." },
+    { "atom_id": "a6", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "Its revenue proposition is required by T1, independent of this repeated instance." },
+    { "atom_id": "a7", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "Line-level OEE is explicitly required to identify performance and exceptions." },
+    { "atom_id": "a8", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "Line-level downtime is required to locate the line needing attention." },
+    { "atom_id": "a9", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "Line-level OEE is explicitly required for comparison across lines." },
+    { "atom_id": "a10", "score": 4, "runs": [4], "task_ids": ["T1"], "necessity": "Must", "confidence": 0.95, "dispersion": 0, "demand": 84.5, "rank": 73.33, "reason": "Line-level downtime is explicitly required for comparison across lines." },
+    { "atom_id": "a11", "score": 1, "runs": [1, 1, 1], "task_ids": ["T1"], "necessity": "Nice", "confidence": 0.88, "dispersion": 0, "demand": 21.13, "rank": 16.67, "reason": "The aggregate reporting status helps orientation but is not needed for T1 progress." },
+    { "atom_id": "a12", "score": 0, "runs": [0, 0, 0], "task_ids": [], "necessity": "Noise", "confidence": 0.98, "dispersion": 0, "demand": 0, "rank": 0, "reason": "The question-mark control itself supplies none of T1's required information." },
+    { "atom_id": "a13", "score": 1, "runs": [1, 1, 1], "task_ids": ["T1"], "necessity": "Nice", "confidence": 0.88, "dispersion": 0, "demand": 21.13, "rank": 16.67, "reason": "The page title may orient T1 but is not needed for the comparison." },
+    { "atom_id": "a14", "score": 1, "runs": [1, 1, 1], "task_ids": ["T1"], "necessity": "Nice", "confidence": 0.88, "dispersion": 0, "demand": 21.13, "rank": 16.67, "reason": "The table heading provides context but does not itself enable the task." },
+    { "atom_id": "a15", "score": 1, "runs": [1, 1, 1], "task_ids": ["T1"], "necessity": "Nice", "confidence": 0.88, "dispersion": 0, "demand": 21.13, "rank": 16.67, "reason": "The summary heading is contextual and not required for T1." },
+    { "atom_id": "a16", "score": 2, "runs": [2, 2, 2], "task_ids": ["T1"], "necessity": "Nice", "confidence": 0.86, "dispersion": 0, "demand": 42.25, "rank": 33.33, "reason": "Freshness context directly helps interpret T1 data, but the task remains executable without it." }
+  ]
+}

@@ -13,6 +13,11 @@
       "name": "audit",
       "source": "./plugins/audit",
       "description": "Verify a feature works and is good to use by driving it in a real browser across fifteen instruments."
+    },
+    {
+      "name": "place-audit",
+      "source": "./plugins/place-audit",
+      "description": "Audit where information sits on a page versus where the user's declared tasks need it — per-atom demand vs prominence, redundancy detection, and ranked relocation flags."
     }
   ]
 }

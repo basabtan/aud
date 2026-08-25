@@ -1,0 +1,11 @@
+{
+  "name": "auditing-skills",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:place-audit": "node plugins/place-audit/tests/acceptance.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.55.0"
+  }
+}

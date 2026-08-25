@@ -8,12 +8,18 @@ designed to be complementary rather than redundant — run `visual-audit` first,
 apply changes, then run `audit`, since restyling routinely breaks click targets,
 focus order, overflow and pointer behaviour.
 
+Run `place-audit` after behavior and styling pass: it audits information
+architecture, not correctness or polish. For a new page, the recommended order
+is `visual-audit` → `audit` → `place-audit`. Run `place-audit` alone when the
+complaint is that information feels far away, redundant, or in the wrong place.
+
 ## Skills
 
 | Plugin | Command | What it asks |
 |---|---|---|
 | `visual-audit` | `/visual-audit:visual-audit` | Did anyone decide how this should look? |
 | `audit` | `/audit:audit` | Does this work, and is it good to use? |
+| `place-audit` | `/place-audit:place-audit` | Is the right information in the right place, at the right prominence — and should it exist at all? |
 
 ### `visual-audit`
 

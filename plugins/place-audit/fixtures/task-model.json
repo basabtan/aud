@@ -1,0 +1,20 @@
+{
+  "persona": { "id": "ops-lead", "role": "operations lead", "experience": "expert" },
+  "stages": [{ "id": "orient", "goal": "identify current operational position and exceptions" }],
+  "tasks": [
+    {
+      "id": "T1",
+      "stage": "orient",
+      "verb": "identify",
+      "object": "current operational performance and the line needing attention",
+      "successCriterion": "revenue, orders, returns, OEE, and downtime can be compared without navigation",
+      "frequency": 0.9,
+      "criticality": 0.8,
+      "timeSensitivity": 0.8,
+      "userCoverage": 0.9,
+      "requiredInformation": ["revenue", "orders", "returns", "OEE", "downtime", "regional status"],
+      "source": "acceptance fixture definition",
+      "evidenceStrength": 0.8
+    }
+  ]
+}

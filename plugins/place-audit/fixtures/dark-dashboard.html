@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operations dashboard fixture</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, Segoe UI, sans-serif; background: #071019; color: #edf5ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 980px; background: #071019; color: #edf5ff; }
+    header { position: sticky; top: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: 18px 38px; border-bottom: 1px solid #243648; background: #0b1722ee; }
+    h1 { margin: 0; font-size: 22px; }
+    .status { color: #67e8a5; font-size: 13px; font-weight: 700; }
+    main { width: min(1180px, calc(100% - 76px)); margin: 26px auto 80px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .kpi { min-height: 124px; padding: 20px; border: 1px solid #29435a; border-radius: 10px; background: #102233; box-shadow: 0 12px 30px #0004; }
+    .label { display: block; margin-bottom: 9px; color: #9cb0c3; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .value { display: block; font-size: 32px; font-weight: 760; line-height: 1; color: #ffffff; }
+    .qualifier { display: block; margin-top: 10px; color: #9cb0c3; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-top: 22px; }
+    .panel { position: relative; padding: 22px; border: 1px solid #223b50; border-radius: 10px; background: #0d1c29; }
+    h2 { margin: 0 0 16px; font-size: 17px; }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { padding: 13px 12px; border-bottom: 1px solid #203549; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { color: #9cb0c3; font-size: 12px; text-transform: uppercase; }
+    tbody th { color: #dcecff; font-weight: 650; }
+    .arabic { min-height: 148px; direction: rtl; text-align: right; font-family: Tahoma, Arial, sans-serif; }
+    .arabic .value { font-size: 24px; line-height: 1.5; }
+    .help { position: relative; margin-top: 16px; width: 34px; height: 34px; border: 1px solid #4d6e88; border-radius: 50%; background: #142c3e; color: #cae7ff; cursor: help; }
+    .tooltip { position: absolute; left: 22px; top: 74px; width: 240px; padding: 11px 13px; border: 1px solid #55718a; border-radius: 6px; background: #172b3b; color: #dbeafe; font-size: 13px; line-height: 1.4; opacity: 0; visibility: hidden; transform: translateY(4px); }
+    .help:hover + .tooltip, .help:focus + .tooltip { opacity: 1; visibility: visible; transform: translateY(0); }
+    .spacer { height: 970px; display: grid; place-items: center; color: #50677b; font-size: 12px; }
+    .below { padding: 24px; border: 1px solid #2b4358; border-radius: 10px; background: #0b1925; }
+    .below .value { font-size: 21px; }
+  </style>
+</head>
+<body>
+  <header data-region="page-header">
+    <h1>Line operations</h1>
+    <div class="status" role="status">All systems reporting</div>
+  </header>
+  <main>
+    <section id="kpi-anchor" class="kpis" data-region="primary-kpi-row" data-audit-anchor>
+      <article class="kpi" data-audit-atom data-testid="kpi-revenue" data-metric="revenue" data-period="current-month" data-scope="operations" data-unit="currency:USD" data-semantic-role="kpi">
+        <span class="label" data-label>Revenue</span><strong class="value" data-value>$4.2M</strong><span class="qualifier" data-qualifier>Current month</span>
+      </article>
+      <article class="kpi" data-audit-atom data-testid="kpi-orders" data-metric="orders" data-period="today" data-scope="operations" data-semantic-role="kpi">
+        <span class="label" data-label>Orders</span><strong class="value" data-value>12</strong><span class="qualifier" data-qualifier>Today</span>
+      </article>
+      <article class="kpi" data-audit-atom data-testid="kpi-returns" data-metric="returns" data-period="today" data-scope="operations" data-semantic-role="kpi">
+        <span class="label" data-label>Returns</span><strong class="value" data-value>12</strong><span class="qualifier" data-qualifier>Today</span>
+      </article>
+      <article class="kpi" data-audit-atom data-testid="kpi-downtime" data-metric="downtime" data-period="current-shift" data-scope="line-4" data-unit="hours" data-semantic-role="kpi">
+        <span class="label" data-label>Downtime</span><strong class="value" data-value>7.3 h</strong><span class="qualifier" data-qualifier>Current shift</span>
+      </article>
+    </section>
+
+    <div class="grid">
+      <section class="panel" data-region="line-table">
+        <h2>Production lines</h2>
+        <table id="production-table" data-scope="current-shift">
+          <thead><tr><th scope="col">Line</th><th scope="col">OEE</th><th scope="col">Downtime</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Line 4</th><td>84.3%</td><td>7.3 h</td></tr>
+            <tr><th scope="row">Line 7</th><td>91.1%</td><td>1.2 h</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="panel" data-region="regional-status">
+        <div class="arabic" data-audit-atom data-testid="arabic-block" data-metric="regional_status" data-entity="riyadh" data-period="current" data-scope="operations" data-semantic-role="status" dir="rtl">
+          <span class="label" data-label>حالة المنطقة</span><strong class="value" data-value>الرياض مستقرة</strong><span class="qualifier" data-qualifier>آخر تحديث ١٠:٣٠</span>
+        </div>
+        <button class="help" aria-label="Explain latency" aria-describedby="tooltip-latency" data-audit-hover-target="#tooltip-latency">?</button>
+        <div id="tooltip-latency" class="tooltip" role="tooltip" data-audit-atom data-audit-confidence="0.62" data-metric="latency_explanation" data-scope="operations" data-semantic-role="help">
+          <span data-label>Latency note</span><span data-value>Updates may arrive up to five minutes late.</span>
+        </div>
+      </section>
+    </div>
+
+    <div class="spacer" aria-hidden="true">Below-fold separation fixture</div>
+
+    <section class="below" data-region="below-fold">
+      <h2>Monthly summary</h2>
+      <div data-audit-atom data-testid="duplicate-revenue" data-metric="revenue" data-period="current-month" data-scope="operations" data-unit="currency:USD" data-semantic-role="summary">
+        <span class="label" data-label>Revenue</span><strong class="value" data-value>$4.2M</strong><span class="qualifier" data-qualifier>Current month</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
