@@ -90,7 +90,7 @@ Add to the repo's `.claude/settings.json`:
     "auditing-skills": {
       "source": {
         "source": "github",
-        "repo": "basabtan/Auditing-skills",
+        "repo": "basabtan/aud",
         "ref": "main"
       }
     }
@@ -106,7 +106,7 @@ Commit that file. The plugin installs when the workspace is trusted.
 ### In a local session
 
 ```
-/plugin marketplace add basabtan/Auditing-skills
+/plugin marketplace add basabtan/aud
 /plugin install visual-audit@auditing-skills
 ```
 

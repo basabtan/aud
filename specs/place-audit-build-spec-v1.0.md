@@ -15,7 +15,7 @@ Governing principle (verbatim, do not dilute):
 
 ## 0. Product form & repo integration
 
-Ships as the third plugin in `github.com/basabtan/Auditing-skills`:
+Ships as the third plugin in `github.com/basabtan/aud`:
 
 | Plugin | Command | What it asks |
 |---|---|---|
