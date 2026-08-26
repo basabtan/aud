@@ -1,0 +1,8 @@
+{
+  "name": "content-audit",
+  "description": "Audit information architecture before layout: decide what deserves to exist, detect semantic and cross-representation duplication, define each view's unique job, and sequence detail through progressive disclosure.",
+  "version": "1.0.0",
+  "author": {
+    "name": "basabtan"
+  }
+}

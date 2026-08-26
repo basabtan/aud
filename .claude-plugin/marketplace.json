@@ -18,6 +18,11 @@
       "name": "place-audit",
       "source": "./plugins/place-audit",
       "description": "Audit where information sits on a page versus where the user's declared tasks need it — per-atom demand vs prominence, redundancy detection, and ranked relocation flags."
+    },
+    {
+      "name": "content-audit",
+      "source": "./plugins/content-audit",
+      "description": "Audit what information deserves to exist and when: semantic duplication, view overlap, content priority, role separation, and progressive disclosure before placement/design."
     }
   ]
 }

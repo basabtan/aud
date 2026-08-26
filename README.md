@@ -20,6 +20,7 @@ complaint is that information feels far away, redundant, or in the wrong place.
 | `visual-audit` | `/visual-audit:visual-audit` | Did anyone decide how this should look? |
 | `audit` | `/audit:audit` | Does this work, and is it good to use? |
 | `place-audit` | `/place-audit:place-audit` | Is the right information in the right place, at the right prominence — and should it exist at all? |
+| `content-audit` | `/content-audit:content-audit` | What information deserves to exist, once, and at what stage? |
 
 ### `visual-audit`
 
@@ -61,6 +62,17 @@ quietly skipped screenshots is worse than no audit.
 > "make it drivable" section wholesale. Until that split is done, installing it in
 > a non-`zeal` project will produce guidance that references files which do not
 > exist.
+
+### `content-audit`
+
+Audits information architecture before layout. It inventories content blocks,
+traces their provenance, detects semantic and cross-representation duplication,
+defines a unique job for each view, and produces a minimum first-read plus a
+progressive-disclosure plan.
+
+Use it when a page feels overloaded or repetitive, or before redesigning an
+information-dense reader or analytical interface. It deliberately leaves final
+placement, visual polish, and functional correctness to the other audit skills.
 
 ## Installing
 
