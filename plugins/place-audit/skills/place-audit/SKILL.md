@@ -36,6 +36,20 @@ Parse `$ARGUMENTS` without inventing missing values:
 Record parsed arguments in the report. Ask only for values that materially
 change the audit and cannot be found in the repository.
 
+## Run artifact location
+
+Keep this reusable skill in the audit-tools repository, but write every
+application-specific run into the target application repository at
+`<application-root>/audits/YYYY-MM-DD-place/`. Put `REPORT.md`, task models,
+atoms, overlays, screenshots, and all evidence inside that run directory. Update
+`<application-root>/audits/latest.md` so its Place row links to the newest run,
+while preserving older runs. If the same type runs twice on one date, append
+`-02`, `-03`, and so on rather than overwriting evidence.
+
+In a monorepo, `application-root` is the nearest directory that owns the app's
+runtime/build configuration. Never store product-specific audit results in the
+repository that distributes this skill.
+
 ## The ten-step loop
 
 ### 1. Render and freeze
@@ -116,9 +130,9 @@ task-distance reason, and disruption/accessibility tradeoff. Use only
 
 ### 10. Annotate and report
 
-Run `scripts/annotate.mjs` for every audited state. Write `place-audit/REPORT.md`,
+Run `scripts/annotate.mjs` for every audited state. Write `REPORT.md`,
 `atoms.json`, canonical and prominence JSON, and `overlay-<state>.png` in the
-audited repository. Follow `references/report-template.md` exactly. Include the
+current timestamped Place run directory. Follow `references/report-template.md` exactly. Include the
 run manifest, task provenance, calibration results, full sortable table, and
 every blind-spot check marked checked or deferred. Every low-confidence finding
 must read `REVIEW`.
@@ -129,7 +143,7 @@ If no reusable task model exists, ask the user for one persona, three to five
 journey stages, and the tasks in the selected stage. For each task ask: verb,
 object, success criterion, required information, frequency, criticality,
 time-sensitivity, and user coverage (all weights `0..1`). Do not infer safety or
-legal necessity. Store the result at `place-audit/task-model.json` with
+legal necessity. Store the result as `task-model.json` in the current run directory with
 `source: "session elicitation"` and `evidenceStrength: 0.5` for every elicited
 task. Reuse it on later runs, but confirm stale assumptions.
 

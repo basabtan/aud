@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:artifact-location": "node tests/artifact-location.mjs",
     "test:place-audit": "node plugins/place-audit/tests/acceptance.mjs",
     "test:flow-audit": "node plugins/flow-audit/tests/acceptance.mjs"
   },

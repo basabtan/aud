@@ -333,7 +333,8 @@ function diff(currentPath, baselinePath, outPath) {
 }
 ```
 
-Baselines live in `zeal/audit/baselines/<route>-<width>.png`. A ratio > 0.005 that
+Baselines live in the current timestamped Functional run directory at
+`baselines/<route>-<width>.png`. A ratio > 0.005 that
 the change did not intend is a finding. Mask timestamps and the globe canvas
 (`mask: [page.locator('canvas')]` in `screenshot`) to avoid noise.
 

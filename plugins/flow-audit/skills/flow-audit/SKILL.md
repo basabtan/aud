@@ -50,6 +50,20 @@ Parse `$ARGUMENTS` without inventing missing values:
 
 Record the parsed arguments and all untested paths in the report.
 
+## Run artifact location
+
+Keep this reusable skill in the audit-tools repository, but write every
+application-specific run into the target application repository at
+`<application-root>/audits/YYYY-MM-DD-flow/`. Put `REPORT.md`, journey/task
+models, and evidence inside that run directory. Update
+`<application-root>/audits/latest.md` so its Flow row links to the newest run,
+while preserving older runs. If the same type runs twice on one date, append
+`-02`, `-03`, and so on rather than overwriting evidence.
+
+In a monorepo, `application-root` is the nearest directory that owns the app's
+runtime/build configuration. Never store product-specific audit results in the
+repository that distributes this skill.
+
 ## The ten-step loop
 
 ### 1. Freeze intent and upstream contracts
@@ -95,7 +109,7 @@ return path merely because a Back control exists—exercise it.
 
 ### 4. Build the flow graph
 
-Create `flow-audit/journey-model.json` following
+Create `journey-model.json` in the current timestamped Flow run directory following
 `references/flow-model.md`. Each node must contain:
 
 - stage
@@ -207,7 +221,8 @@ evidence and a logged conflict.
 
 ### 10. Write the logical flow contract
 
-Write `flow-audit/REPORT.md` using `references/report-template.md`. The final
+Write `REPORT.md` in the current timestamped Flow run directory using
+`references/report-template.md`. The final
 contract defines:
 
 - questions answerable immediately

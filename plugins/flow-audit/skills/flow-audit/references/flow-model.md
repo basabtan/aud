@@ -131,9 +131,12 @@ record that decision.
 Run:
 
 ```bash
-node scripts/validate-flow.mjs flow-audit/journey-model.json \
-  --out flow-audit/evidence/graph-analysis.json
+node scripts/validate-flow.mjs "$RUN_DIR/journey-model.json" \
+  --out "$RUN_DIR/evidence/graph-analysis.json"
 ```
+
+Here `RUN_DIR` is the current
+`<application-root>/audits/YYYY-MM-DD-flow/` directory.
 
 The validator checks required fields, references, reachability, terminal states,
 return paths, explicit context loss, scenario paths, and cycles. Its warnings are

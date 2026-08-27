@@ -46,7 +46,8 @@ When no model exists, ask in this order:
    coverage from 0 to 1.
 7. What evidence supports this task definition?
 
-Store elicited models at `place-audit/task-model.json`. Use
+Store elicited models as `task-model.json` in the current timestamped Place run
+directory under `<application-root>/audits/`. Use
 `source: "session elicitation"` and `evidenceStrength: 0.5`; do not upgrade the
 evidence because an answer sounds confident.
 

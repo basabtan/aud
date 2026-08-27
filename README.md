@@ -18,6 +18,28 @@ Run an individual skill alone when its question is already isolated—for
 example, `place-audit` when approved information feels buried, or `flow-audit`
 when a known journey loses context or forces unnecessary transitions.
 
+## Where audit runs belong
+
+This repository contains the reusable audit tools only. Product-specific
+reports, screenshots, task models, and evidence belong in the repository of the
+application being audited:
+
+```text
+<application-root>/audits/
+  YYYY-MM-DD-content/
+  YYYY-MM-DD-place/
+  YYYY-MM-DD-flow/
+  YYYY-MM-DD-visual/
+  YYYY-MM-DD-functional/
+  latest.md
+```
+
+Use the nearest application root that owns the runtime/build configuration. In
+a monorepo, do not put every app's audits at the repository root. Preserve prior
+runs; if the same audit type runs twice on one date, append `-02`, `-03`, and so
+on. Update `audits/latest.md` to link the newest run of every completed type.
+Do not commit application audit results to `basabtan/aud`.
+
 ## Skills
 
 | Plugin | Command | What it asks |

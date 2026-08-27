@@ -75,6 +75,20 @@ Parse `$ARGUMENTS` without inventing missing values:
 
 Record the arguments in the report.
 
+## Run artifact location
+
+Keep this reusable skill in the audit-tools repository, but write every
+application-specific run into the target application repository at
+`<application-root>/audits/YYYY-MM-DD-content/`. Put `REPORT.md`, task models,
+and evidence inside that run directory. Update
+`<application-root>/audits/latest.md` so its Content row links to the newest run,
+while preserving older runs. If the same type runs twice on one date, append
+`-02`, `-03`, and so on rather than overwriting evidence.
+
+In a monorepo, `application-root` is the nearest directory that owns the app's
+runtime/build configuration. Never store product-specific audit results in the
+repository that distributes this skill.
+
 ## The twelve-step loop
 
 ### 1. Freeze the audience and stage
@@ -289,7 +303,8 @@ pixel positions.
 
 ### 12. Produce the handoff contract
 
-Write `content-audit/REPORT.md` using `references/report-template.md`.
+Write `REPORT.md` in the current timestamped Content run directory using
+`references/report-template.md`.
 
 The final section must contain a **surviving content contract** for the next
 design pass:

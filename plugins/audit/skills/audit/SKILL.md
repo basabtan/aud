@@ -48,6 +48,21 @@ navigation change earns Full.
 Always say which instruments you used and which you skipped. An audit that quietly
 skipped screenshots is worse than no audit — it buys false confidence.
 
+## Run artifact location
+
+This skill is the functional audit. Keep the reusable skill in the audit-tools
+repository, but write every application-specific run into the target application
+repository at `<application-root>/audits/YYYY-MM-DD-functional/`. Put
+`REPORT.md`, test outputs, screenshots, baselines, and other evidence inside that
+run directory. Update `<application-root>/audits/latest.md` so its Functional
+row links to the newest run, while preserving older runs. If the same type runs
+twice on one date, append `-02`, `-03`, and so on rather than overwriting
+evidence.
+
+In a monorepo, `application-root` is the nearest directory that owns the app's
+runtime/build configuration. Never store product-specific audit results in the
+repository that distributes this skill.
+
 ## The loop
 
 ### 0. Gate
@@ -216,8 +231,9 @@ squinting.
 
 ### 12. Visual regression
 
-On Full audits, keep baseline screenshots per page per viewport in
-`zeal/audit/baselines/`. Diff with `pixelmatch`; any diff above 0.5% that the
+On Full audits, keep baseline screenshots per page per viewport in the current
+timestamped Functional run directory under `baselines/`. Diff with `pixelmatch`;
+any diff above 0.5% that the
 change did not intend is a finding. Update baselines only after the user accepts
 the new look.
 
@@ -261,8 +277,8 @@ Report with `references/report-template.md`:
 - Findings table: Issue · Page · Instrument · Severity 0–4 · Fixed / Deferred
 - What was tested and passing vs what merely looks right vs what could not be
   verified (and why — e.g. proxy blocked the deploy preview)
-- Append to `zeal/audit/audit-log.md` so regressions and repeat offenders are
-  visible across sessions
+- Update `<application-root>/audits/latest.md` with the newest Functional run
+  and carry forward unresolved regressions or repeat offenders.
 
 ## Repo-specific traps
 
@@ -275,6 +291,6 @@ bitten once.
   control matrix, axe, viewport matrix, touch targets, overflow, baselines.
 - `references/playwright.md` — launch path and harness gotchas.
 - `references/ux-heuristics.md` — scorecard, cognitive walkthrough, severity scale.
-- `references/report-template.md` — findings table and audit-log format.
+- `references/report-template.md` — findings table and latest-index format.
 - `references/repo-traps.md` — known traps in this repo.
 - `scripts/pg-scratch.sh` — throwaway Postgres with migrations applied.

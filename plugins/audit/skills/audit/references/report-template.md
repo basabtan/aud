@@ -42,17 +42,19 @@
 
 ---
 
-## audit-log.md format
+## `audits/latest.md` functional summary
 
-One block per audit, appended, newest at the bottom.
+Update the Functional row to link the newest timestamped run. Under the table,
+keep a compact carry-forward block so regressions and repeat offenders remain
+visible without replacing the immutable run report.
 
 ```
-## 2026-08-22 — Atlas contested markers — full
+## Functional carry-forward — 2026-08-22 — Atlas contested markers — full
 Found: 9 (4 fixed, 3 deferred, 2 out of scope)
 Repeat offenders: no-op rail buttons (3rd audit), overflow at 360 on /topics
 Deferred carried forward: #5 routing of /zeal/data/* in netlify.toml
 Baselines updated: atlas-360, atlas-1280
 ```
 
-Before each new audit, read the last two blocks: re-check every deferred item and
-every repeat offender first.
+Before each new audit, read the current Functional run and its carry-forward
+block: re-check every deferred item and every repeat offender first.

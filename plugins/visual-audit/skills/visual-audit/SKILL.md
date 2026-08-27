@@ -15,6 +15,20 @@ applying changes: restyling breaks click targets, focus order, overflow and
 pointer behaviour, and a beautiful page that broke during the facelift is not an
 improvement.
 
+## Run artifact location
+
+Keep this reusable skill in the audit-tools repository, but write every
+application-specific run into the target application repository at
+`<application-root>/audits/YYYY-MM-DD-visual/`. Put the report, screenshots,
+inventories, comparisons, and other evidence inside that run directory. Update
+`<application-root>/audits/latest.md` so its Visual row links to the newest run,
+while preserving older runs. If the same type runs twice on one date, append
+`-02`, `-03`, and so on rather than overwriting evidence.
+
+In a monorepo, `application-root` is the nearest directory that owns the app's
+runtime/build configuration. Never store product-specific audit results in the
+repository that distributes this skill.
+
 ## The governing idea
 
 **"Basic" is not a matter of taste — it is a decision nobody made.**
