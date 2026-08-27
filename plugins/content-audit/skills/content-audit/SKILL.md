@@ -28,6 +28,20 @@ next.
 A successful audit can conclude that an entire section, view, rail, metric row,
 or representation should disappear.
 
+## Freeze information responsibilities, not interaction architecture
+
+The content audit may freeze the surviving information model, content
+requirements, role boundaries, and view responsibilities. It must **not** freeze
+the final reader interaction architecture unless the evidence specifically
+proves that architecture is necessary.
+
+Names such as `Source`, `Compare`, `Evidence`, `Synthesis`, and `Related context`
+may survive as information responsibilities or exclusive user questions. Their
+eventual visual representation, ordering, default state, navigation, and whether
+they appear as views, tabs, lenses, inline interactions, or another structure
+remain open for first-principles design. Treat current-UI arrangements as
+temporary implementation evidence, never as permanent design constraints.
+
 ## Boundary with the other audits
 
 Keep the instruments separate:
@@ -288,7 +302,9 @@ design pass:
 - each surviving view's exclusive job
 - unresolved decisions
 
-Only after this is frozen should `place-audit` determine location/prominence.
+Only after the information responsibilities are frozen should `place-audit`
+determine location/prominence. The final reader flow and interaction architecture
+remain open unless the audit evidence establishes a necessary constraint.
 
 ## The key anti-patterns
 
