@@ -23,6 +23,11 @@
       "name": "content-audit",
       "source": "./plugins/content-audit",
       "description": "Audit what information deserves to exist and when: semantic duplication, view overlap, content priority, role separation, and progressive disclosure before placement/design."
+    },
+    {
+      "name": "flow-audit",
+      "source": "./plugins/flow-audit",
+      "description": "Audit intent-to-goal journeys for unnecessary steps, weak branches, context loss, reversibility, representation-switching cost, and completion confidence before first-principles design."
     }
   ]
 }

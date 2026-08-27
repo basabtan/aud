@@ -1,0 +1,40 @@
+{
+  "model": "C:\\Users\\bader\\Documents\\Codex\\2026-08-27\\z\\work\\aud\\plugins\\flow-audit\\fixtures\\journey-model.json",
+  "valid": true,
+  "summary": {
+    "nodes": 6,
+    "edges": 10,
+    "scenarios": 4,
+    "reachableNodes": 6,
+    "cycles": 2,
+    "errors": 0,
+    "warnings": 0
+  },
+  "cycles": [
+    [
+      "compare",
+      "source",
+      "evidence",
+      "compare"
+    ],
+    [
+      "browse",
+      "sparse",
+      "browse"
+    ]
+  ],
+  "issues": [
+    {
+      "level": "info",
+      "code": "CYCLE_TO_REVIEW",
+      "subject": "compare",
+      "message": "Cycle detected: compare -> source -> evidence -> compare"
+    },
+    {
+      "level": "info",
+      "code": "CYCLE_TO_REVIEW",
+      "subject": "browse",
+      "message": "Cycle detected: browse -> sparse -> browse"
+    }
+  ]
+}

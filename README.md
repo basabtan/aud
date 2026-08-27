@@ -4,14 +4,19 @@ Claude Code skills for auditing running interfaces, distributed as a plugin
 marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
-designed to be complementary rather than redundant — run `visual-audit` first,
-apply changes, then run `audit`, since restyling routinely breaks click targets,
-focus order, overflow and pointer behaviour.
+designed to be complementary rather than redundant.
 
-Run `place-audit` after behavior and styling pass: it audits information
-architecture, not correctness or polish. For a new page, the recommended order
-is `visual-audit` → `audit` → `place-audit`. Run `place-audit` alone when the
-complaint is that information feels far away, redundant, or in the wrong place.
+Before first-principles design, use:
+
+`content-audit → place-audit → flow-audit → first-principles redesign`
+
+After implementation, use:
+
+`visual-audit → audit`
+
+Run an individual skill alone when its question is already isolated—for
+example, `place-audit` when approved information feels buried, or `flow-audit`
+when a known journey loses context or forces unnecessary transitions.
 
 ## Skills
 
@@ -21,6 +26,7 @@ complaint is that information feels far away, redundant, or in the wrong place.
 | `audit` | `/audit:audit` | Does this work, and is it good to use? |
 | `place-audit` | `/place-audit:place-audit` | Is the right information in the right place, at the right prominence — and should it exist at all? |
 | `content-audit` | `/content-audit:content-audit` | What information deserves to exist, once, and at what stage? |
+| `flow-audit` | `/flow-audit:flow-audit` | Can users move from intent to understanding or completion without unnecessary steps or context loss? |
 
 ### `visual-audit`
 
@@ -73,6 +79,19 @@ progressive-disclosure plan.
 Use it when a page feels overloaded or repetitive, or before redesigning an
 information-dense reader or analytical interface. It deliberately leaves final
 placement, visual polish, and functional correctness to the other audit skills.
+
+### `flow-audit`
+
+Models real user journeys as intent-led graphs and audits progress efficiency,
+discoverability, context preservation, reversibility, branch clarity, cognitive
+continuity, representation switching, premature complexity, repeated traversal,
+and completion confidence.
+
+Use it after content and placement responsibilities are known but before
+first-principles redesign. It treats the current interface as evidence rather
+than as the required workflow, exercises return paths and browser Back, and
+separates novice/expert and sparse/mature behavior. Its output is a logical flow
+contract, never a screen, tab, component, or layout specification.
 
 ## Installing
 

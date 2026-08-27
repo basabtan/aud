@@ -371,7 +371,13 @@ Do not average conflicting personas. Report them separately.
 
 For an existing information-dense page:
 
-`content-audit → place-audit → redesign → visual-audit → audit`
+Before first-principles design:
+
+`content-audit → place-audit → flow-audit → first-principles redesign`
+
+After implementation:
+
+`visual-audit → audit`
 
 Do not run visual polish first when the problem is information overload. That
 risks making redundant content look better instead of removing it.

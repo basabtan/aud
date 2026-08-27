@@ -1,0 +1,8 @@
+{
+  "name": "flow-audit",
+  "description": "Audit how efficiently users move from intent to understanding or completion while preserving context, reversibility, and cognitive continuity.",
+  "version": "1.0.0",
+  "author": {
+    "name": "basabtan"
+  }
+}
