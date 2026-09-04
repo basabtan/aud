@@ -1,5 +1,9 @@
 # Auditing skills
 
+Current framework release: **0.2.0**. See [CHANGELOG.md](CHANGELOG.md), the
+[v0.2.0 release notes](docs/releases/v0.2.0.md), and the
+[compatibility guide](docs/compatibility.md).
+
 Claude Code skills for auditing running interfaces, distributed as a plugin
 marketplace.
 
@@ -90,6 +94,10 @@ The Phase 7 coverage decision is in
 [`docs/phase-7-coverage-review.md`](docs/phase-7-coverage-review.md), with the
 selected capability documented in
 [`docs/phase-7-architecture-maintainability.md`](docs/phase-7-architecture-maintainability.md).
+
+Upgrade guidance, including the temporary `audit` compatibility alias and the
+five-to-six specialist plan transition, is documented in
+[`docs/phase-2-migration.md`](docs/phase-2-migration.md).
 
 Run the normal calibration gate with `npm run calibrate:fast`; run the complete
 corpus with `npm run calibrate:full`. `npm run calibrate -- --out <directory>`

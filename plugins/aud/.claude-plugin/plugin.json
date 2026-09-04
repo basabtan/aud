@@ -1,7 +1,7 @@
 {
   "name": "aud",
   "description": "Primary AUD v2 entry point for coordinated audits, synthesis, verification, and calibration-gated reliability measurement.",
-  "version": "7.0.0",
+  "version": "0.2.0",
   "author": {
     "name": "basabtan"
   }

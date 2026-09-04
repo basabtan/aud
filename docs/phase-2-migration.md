@@ -1,5 +1,25 @@
 # Phase 2 specialist migration
 
+## Framework 0.2.0 compatibility notes
+
+Framework 0.2.0 is the first release baseline containing all Phase 0–7 work.
+The primary `aud` plugin now uses the public framework version `0.2.0`; earlier
+`6.0.0` and `7.0.0` values were internal phase markers, not published release
+lines. Specialist plugins retain their independent versions.
+
+Existing structured artifacts remain readable. Audit and verification plan
+schemas accept legacy five-specialist decisions and current six-specialist
+decisions. Consumers must identify decisions by specialist name rather than
+array position or an assumed length of five. The sixth specialist,
+`architecture-maintainability-audit`, is selected only for explicit matching
+scope, `all` scope, or qualifying declared risk; generic product/UX requests
+continue to select the five interface specialists.
+
+The canonical functional command remains `functional-audit`. The old `audit`
+command is still available as a temporary compatibility alias in 0.2.0, but new
+automation should migrate now. No application audit output paths or persistent
+ledger formats changed in this release.
+
 Phase 2 changes the machine-readable handoff while preserving each specialist's
 standalone question and Markdown report.
 
