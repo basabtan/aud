@@ -33,6 +33,20 @@ In a monorepo, `application-root` is the nearest directory that owns the app's
 runtime/build configuration. Never store product-specific audit results in the
 repository that distributes this skill.
 
+## Shared run and normalized findings
+
+Consume the supplied shared `run-manifest.json`. Shared project/task context is
+optional because visual quality remains usable as a standalone specialist; when
+absent, record that explicitly in `input-status.json` and do not infer task
+priority. Use the consequence scale from the shared protocol and a numeric
+`0..1` confidence with an evidence basis. Preserve visual tier, tier gap,
+prominence, design-token reach, and dose rank under `native_metrics`.
+
+Write `REPORT.md` from `references/report-template.md`, then run
+`scripts/emit-structured.mjs` to emit schema-valid `evidence.jsonl`,
+`findings.jsonl`, and `input-status.json`. Pipeline mode is always report-only:
+do not apply any dose before synthesis approval.
+
 ## The governing idea
 
 **"Basic" is not a matter of taste — it is a decision nobody made.**
@@ -316,3 +330,6 @@ always one of those — not a missing effect.
   spacing, cards, buttons, forms, navigation, tables, data, charts, icons,
   badges, states, motion, responsive). Read the zones relevant to the surface in
   front of you rather than all of them.
+- `references/report-template.md` — formal evidence, severity, confidence,
+  normalized findings, and handoff report.
+- `scripts/emit-structured.mjs` — normalized evidence/finding output.

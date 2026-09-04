@@ -64,3 +64,11 @@ This is the handoff to design/place-audit.
 ## 13. Handoff
 Run `place-audit` only on the surviving content set. Do not use layout to rescue
 content that this audit marked REMOVE/MERGE/HIDE_BY_ROLE.
+
+## 14. Structured artifacts
+
+- Shared run manifest and input status:
+- `content-contract.json`:
+- `evidence.jsonl`:
+- `findings.jsonl`:
+- Validation result:

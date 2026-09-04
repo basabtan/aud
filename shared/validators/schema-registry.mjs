@@ -14,6 +14,7 @@ export const schemaFiles = Object.freeze({
   evidence: 'evidence.schema.json',
   finding: 'finding.schema.json',
   'content-contract': 'content-contract.schema.json',
+  'flow-contract': 'flow-contract.schema.json',
   'remediation-plan': 'remediation-plan.schema.json',
   'verification-result': 'verification-result.schema.json',
 });
@@ -25,6 +26,7 @@ export const schemaVersions = Object.freeze({
   evidence: 'aud-evidence-v1',
   finding: 'aud-finding-v1',
   'content-contract': 'aud-content-contract-v1',
+  'flow-contract': 'aud-flow-contract-v1',
   'remediation-plan': 'aud-remediation-plan-v1',
   'verification-result': 'aud-verification-result-v1',
 });
@@ -100,6 +102,14 @@ function semanticIssues(name, record) {
     for (const [index, view] of record.view_contracts.entries()) {
       for (const field of ['content_refs', 'minimum_first_read', 'progressive_disclosure']) {
         issues.push(...missingReferenceIssues(view[field], contentIds, `/view_contracts/${index}/${field}`, 'content'));
+      }
+    }
+  }
+  if (name === 'flow-contract') {
+    issues.push(...duplicateIdIssues(record.recommendations, '/recommendations'));
+    for (const [index, recommendation] of record.recommendations.entries()) {
+      if (recommendation.status === 'accepted' && (!recommendation.acceptance_criteria.length || !recommendation.verification_methods.length)) {
+        issues.push(issue('UNVERIFIABLE_ACCEPTED_RECOMMENDATION', `/recommendations/${index}`, 'Accepted flow recommendations require acceptance criteria and verification methods'));
       }
     }
   }

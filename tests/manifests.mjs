@@ -15,9 +15,9 @@ for (const entry of marketplace.plugins) {
 }
 
 const allPortable = [
-  'plugins/audit/skills/audit/SKILL.md',
-  'plugins/audit/skills/audit/references/drivers.md',
-  'plugins/audit/skills/audit/references/playwright.md',
+  'plugins/functional-audit/skills/functional-audit/SKILL.md',
+  'plugins/functional-audit/skills/functional-audit/references/drivers.md',
+  'plugins/functional-audit/skills/functional-audit/references/playwright.md',
 ].map(path => readFileSync(path, 'utf8')).join('\n');
 assert.doesNotMatch(
   allPortable,

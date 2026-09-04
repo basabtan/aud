@@ -28,7 +28,7 @@ default state, or visual representation.
 | `place-audit` | Where should surviving information live and how prominent should it be? |
 | `flow-audit` | How should intent branch through those responsibilities while preserving context? |
 | `visual-audit` | Has the visual treatment been deliberately designed? |
-| `audit` | Does the implemented experience work correctly and remain usable? |
+| `functional-audit` | Does the implemented experience work correctly and remain usable? |
 
 Read existing content/place reports, task models, and evidence before observing
 the flow. Never silently override their information or prominence decisions. If
@@ -63,6 +63,22 @@ while preserving older runs. If the same type runs twice on one date, append
 In a monorepo, `application-root` is the nearest directory that owns the app's
 runtime/build configuration. Never store product-specific audit results in the
 repository that distributes this skill.
+
+## Shared inputs and structured output
+
+Consume and validate the shared `run-manifest.json`, `project-context.json`, and
+`task-model.json`, plus `content-contract.json` when available. Reference their
+task, persona, and stable content IDs directly. If an upstream artifact is
+missing, record the exact absence in `input-status.json`, mark required-input
+loss as degraded, and do not manufacture IDs or decisions.
+
+Run `scripts/emit-structured.mjs` to emit `flow-contract.json`,
+`evidence.jsonl`, schema-valid `findings.jsonl`, and `input-status.json`. Every
+accepted flow recommendation must contain explicit acceptance criteria and
+executable verification methods for `functional-audit`; an accepted item
+without both is invalid. Preserve scenario scores and other native measures
+under `native_metrics`, separate from consequence-only severity and numeric
+confidence.
 
 ## The ten-step loop
 
@@ -264,7 +280,7 @@ Before first-principles design:
 
 After implementation:
 
-`visual-audit → audit`
+`visual-audit → functional-audit`
 
 ## Bundled files
 
@@ -274,3 +290,5 @@ After implementation:
 - `references/report-template.md` — required report topology.
 - `scripts/validate-flow.mjs` — deterministic graph validation and structural
   warnings; it does not decide findings.
+- `scripts/emit-structured.mjs` — shared-ID, normalized finding, and executable
+  flow-contract output.

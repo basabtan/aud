@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-09-04T09:25:00Z",
+  "assumptions": [],
+  "findings": [
+    {
+      "content_refs": ["__REMOVED_CONTENT_ID__"],
+      "category": "placement.mismatch",
+      "title": "Removed summary appears prominent",
+      "statement": "This input must be skipped because content removed it upstream.",
+      "locations": [{ "route": "/compare", "surface": "comparison", "component": "repeated-summary", "state": "source-selected", "viewport": "1280x800" }],
+      "task_refs": ["TASK-03"],
+      "affected_personas": ["researcher"],
+      "affected_areas": ["comparison placement"],
+      "severity": { "level": 1, "rationale": "The item would consume attention if it survived." },
+      "confidence": { "score": 0.9, "basis": "Deterministic prominence measurement." },
+      "reach": "element", "frequency": "continuous", "urgency": "low",
+      "native_metrics": { "FIT": -35, "P_effective": 81, "demand": 20 },
+      "recommendation": { "action": "Review placement only if content restores this item.", "alternatives": [], "estimated_effort": "unknown", "change_risk": "unknown" },
+      "acceptance_criteria": [{ "id": "AC-PLACE-SKIP", "statement": "Upstream-removed content is not placement-scored." }],
+      "verification_method": [{ "instrument": "content-contract filter", "procedure": "Confirm no normalized placement finding is emitted for this content ID." }],
+      "evidence": [{ "type": "measurement", "artifact_ref": "prominence.json#a-removed", "exact_observation": "The removed block had measured prominence before upstream filtering.", "strength": "direct", "timestamp": "2026-09-04T09:20:00Z" }]
+    },
+    {
+      "content_refs": ["__SURVIVING_CONTENT_ID__"],
+      "category": "duplicate_candidate",
+      "title": "Surviving claim has a duplicate candidate",
+      "statement": "Two rendered atoms appear semantically equivalent and require content or synthesis review.",
+      "locations": [{ "route": "/compare", "surface": "comparison", "component": "claim-summary", "state": "source-selected", "viewport": "1280x800" }],
+      "task_refs": ["TASK-03"],
+      "affected_personas": ["researcher"],
+      "affected_areas": ["comparison placement"],
+      "severity": { "level": 1, "rationale": "The candidate may add scanning cost but no deletion decision has been made." },
+      "confidence": { "score": 0.78, "basis": "Canonical keys match; semantic ownership still needs review." },
+      "reach": "component", "frequency": "common", "urgency": "low",
+      "native_metrics": { "FIT": -18, "P_effective": 72, "demand": 54, "duplicate_class": "LIKELY_REDUNDANT", "content_refs": ["__SURVIVING_CONTENT_ID__"] },
+      "recommendation": { "action": "Escalate the duplicate candidate to content or synthesis and retain both atoms until a decision.", "alternatives": ["Differentiate the propositions."], "estimated_effort": "unknown", "change_risk": "unknown" },
+      "acceptance_criteria": [{ "id": "AC-PLACE-001", "statement": "Content or synthesis records the final duplicate decision." }],
+      "verification_method": [{ "instrument": "contract review", "procedure": "Trace the candidate content ID to an accepted content or synthesis decision." }],
+      "status": "open",
+      "evidence": [{ "type": "measurement", "artifact_ref": "canonical.json#duplicate-1", "exact_observation": "Two atoms share a canonical semantic key in the same state.", "strength": "derived", "timestamp": "2026-09-04T09:21:00Z" }]
+    }
+  ]
+}

@@ -86,4 +86,12 @@ Do not specify visual UI or final interaction architecture.
 - Executed and passing:
 - REVIEW/deferred:
 - Files:
+
+## 13. Structured contract handoff
+
+- Shared run manifest and input status:
+- `flow-contract.json`:
+- `evidence.jsonl`:
+- `findings.jsonl`:
+- Accepted recommendation acceptance criteria and executable verification methods:
 ```

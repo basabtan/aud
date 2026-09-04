@@ -12,7 +12,12 @@
     {
       "name": "audit",
       "source": "./plugins/audit",
-      "description": "Run an isolated functional QA audit in a real browser across fifteen instruments."
+      "description": "Temporary compatibility alias for functional-audit."
+    },
+    {
+      "name": "functional-audit",
+      "source": "./plugins/functional-audit",
+      "description": "Verify functional behavior and accepted flow/remediation contracts in a real browser without redesigning specialist decisions."
     },
     {
       "name": "place-audit",

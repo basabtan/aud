@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:flow-contract:v1",
+  "title": "AUD flow contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract_id", "run_id", "project_revision", "generated_at", "task_refs", "persona_refs", "content_refs", "recommendations", "assumptions", "status"],
+  "properties": {
+    "schema_version": { "const": "aud-flow-contract-v1" },
+    "contract_id": { "type": "string", "pattern": "^FC-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "task_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/taskId" }, "uniqueItems": true },
+    "persona_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "content_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/contentId" }, "uniqueItems": true },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "finding_ref", "task_refs", "persona_refs", "content_refs", "intent", "required_behavior", "preserved_context", "return_path", "acceptance_criteria", "verification_methods", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^FLOW-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+          "finding_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
+          "task_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/taskId" }, "uniqueItems": true },
+          "persona_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "content_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/contentId" }, "uniqueItems": true },
+          "intent": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "required_behavior": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "preserved_context": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "return_path": { "type": ["string", "null"] },
+          "acceptance_criteria": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/acceptanceCriterion" } },
+          "verification_methods": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationMethod" } },
+          "status": { "enum": ["proposed", "accepted", "rejected", "superseded"] }
+        }
+      }
+    },
+    "assumptions": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "uniqueItems": true },
+    "status": { "enum": ["draft", "accepted", "superseded"] }
+  }
+}

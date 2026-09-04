@@ -1,0 +1,8 @@
+{
+  "name": "functional-audit",
+  "description": "Run an isolated functional QA audit in a real browser across runtime errors, routes, controls, states, accessibility, responsiveness, performance, data behavior, and deployment paths.",
+  "version": "2.0.0",
+  "author": {
+    "name": "basabtan"
+  }
+}

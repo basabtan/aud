@@ -51,7 +51,7 @@ Keep the instruments separate:
 | `content-audit` | **What information deserves to exist, once, and at what stage?** |
 | `place-audit` | Where should the approved information live, and how prominent should it be? |
 | `visual-audit` | Has the visual treatment been deliberately designed? |
-| `audit` | Does the implementation work correctly and remain usable? |
+| `functional-audit` | Does the implementation work correctly and remain usable? |
 
 `place-audit` may detect duplicate atoms and low-demand information, but it is
 placement-centric. This skill owns higher-order content architecture:
@@ -88,6 +88,22 @@ while preserving older runs. If the same type runs twice on one date, append
 In a monorepo, `application-root` is the nearest directory that owns the app's
 runtime/build configuration. Never store product-specific audit results in the
 repository that distributes this skill.
+
+## Shared inputs and structured output
+
+Consume and validate the supplied shared `run-manifest.json`,
+`project-context.json`, and `task-model.json` before scoring. All three must use
+compatible schema versions and the same project revision. If project or task
+context is absent in a standalone run, record the missing input and degraded
+scope in `input-status.json`; do not invent personas, tasks, or evidence.
+
+Assign stable `CONTENT-*` IDs from the project revision plus each semantic block
+identity. After decisions are frozen, run `scripts/emit-structured.mjs` to emit
+`content-contract.json`, `evidence.jsonl`, schema-valid `findings.jsonl`, and
+`input-status.json`. Every finding carries exact evidence references, location,
+consequence-only severity, independent numeric confidence, specialist scores
+under `native_metrics`, a recommendation, and a verification method or a stated
+reason why one cannot yet exist. All artifacts reference the shared run ID.
 
 ## The twelve-step loop
 
@@ -392,7 +408,12 @@ Before first-principles design:
 
 After implementation:
 
-`visual-audit → audit`
+`visual-audit → functional-audit`
 
 Do not run visual polish first when the problem is information overload. That
 risks making redundant content look better instead of removing it.
+
+## Structured-output tool
+
+- `scripts/emit-structured.mjs` validates shared context, assigns stable content
+  IDs, and writes normalized contract, evidence, and finding artifacts.

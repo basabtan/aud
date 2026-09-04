@@ -14,6 +14,7 @@ for (const path of [
   join(skill, 'references', 'report-template.md'),
   join(skill, 'references', 'rubric.md'),
   join(skill, 'references', 'view-contracts.md'),
+  join(skill, 'scripts', 'emit-structured.mjs'),
 ]) assert.ok(existsSync(path), `missing ${path}`);
 
 assert.equal(JSON.parse(readFileSync(join(plugin, '.claude-plugin', 'plugin.json'), 'utf8')).name, 'content-audit');
@@ -34,5 +35,9 @@ for (const heading of [
   '## 6. View contracts',
   '## 12. Surviving content contract',
 ]) assert.ok(template.includes(heading), `missing report section: ${heading}`);
+
+for (const phrase of ['content-contract.json', 'findings.jsonl', 'project-context.json', 'task-model.json', 'CONTENT-*']) {
+  assert.ok(instructions.includes(phrase), `missing structured-output rule: ${phrase}`);
+}
 
 console.log('PASS — content-audit topology, boundaries, and report contract validated.');

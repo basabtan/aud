@@ -1,0 +1,26 @@
+{
+  "schema_version": "aud-flow-contract-v1",
+  "contract_id": "FC-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-001",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "generated_at": "2026-09-04T09:30:00Z",
+  "task_refs": ["TASK-03"],
+  "persona_refs": ["researcher"],
+  "content_refs": ["CONTENT-CLAIM-001"],
+  "recommendations": [{
+    "id": "FLOW-RETURN-001",
+    "finding_ref": "F-2026-09-04-flow-001",
+    "task_refs": ["TASK-03"],
+    "persona_refs": ["researcher"],
+    "content_refs": ["CONTENT-CLAIM-001"],
+    "intent": "Inspect evidence and return to comparison.",
+    "required_behavior": "Return restores selected facet and scroll position.",
+    "preserved_context": ["facet", "scroll anchor"],
+    "return_path": "Browser Back restores prior state.",
+    "acceptance_criteria": [{ "id": "AC-FLOW-001", "statement": "Facet and scroll anchor are restored." }],
+    "verification_methods": [{ "instrument": "browser test", "procedure": "Drill down, return, and assert route state and scroll position." }],
+    "status": "accepted"
+  }],
+  "assumptions": [],
+  "status": "accepted"
+}

@@ -25,7 +25,23 @@ A structured run contains `run-manifest.json`, `evidence.jsonl`,
 `findings.jsonl`, and the human report, plus the applicable project context, task
 model, specialist contracts, captures, and test output. Standalone specialists
 may omit inapplicable upstream artifacts but must record skipped inputs and
-degraded status in the run manifest.
+degraded status in `input-status.json` and the run manifest when it owns that
+manifest. A specialist must not silently mutate a shared manifest owned by the
+pipeline.
+
+Phase 2 specialist-specific artifacts are:
+
+- Content: `content-contract.json`, `evidence.jsonl`, `findings.jsonl`,
+  `input-status.json`.
+- Place: native atom/prominence/overlay artifacts plus `evidence.jsonl`,
+  `findings.jsonl`, `input-status.json`.
+- Flow: `journey-model.json`, `flow-contract.json`, `evidence.jsonl`,
+  `findings.jsonl`, `input-status.json`.
+- Visual and functional: `evidence.jsonl`, `findings.jsonl`,
+  `input-status.json` plus their native evidence.
+
+Every artifact and record identifies one compatible `run_id`. Evidence IDs in a
+finding must resolve to that specialist's evidence records for the same run.
 
 ## `latest.md`
 

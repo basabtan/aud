@@ -10,7 +10,7 @@
     "id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
     "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
     "source_audit": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
-    "category": { "type": "string", "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$" },
+    "category": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
     "type": { "enum": ["symptom", "risk", "cause_hypothesis", "constraint", "keep"] },
     "title": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
     "statement": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },

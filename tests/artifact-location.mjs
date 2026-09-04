@@ -7,6 +7,7 @@ const policies = [
   ['flow-audit', 'flow'],
   ['visual-audit', 'visual'],
   ['audit', 'functional'],
+  ['functional-audit', 'functional'],
 ];
 
 for (const [plugin, runType] of policies) {
@@ -26,8 +27,8 @@ for (const [plugin, runType] of policies) {
 }
 
 const allRelevantText = [
-  'plugins/audit/skills/audit/SKILL.md',
-  'plugins/audit/skills/audit/references/drivers.md',
+  'plugins/functional-audit/skills/functional-audit/SKILL.md',
+  'plugins/functional-audit/skills/functional-audit/references/drivers.md',
 ].map(path => readFileSync(path, 'utf8')).join('\n');
 
 assert.doesNotMatch(allRelevantText, /zeal\/audit\//, 'obsolete zeal/audit path remains');

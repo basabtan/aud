@@ -1,7 +1,7 @@
 {
   "name": "audit",
-  "description": "Run an isolated functional QA audit in a real browser across runtime errors, routes, controls, states, accessibility, responsiveness, performance, data behavior, and deployment paths.",
-  "version": "1.0.1",
+  "description": "Temporary compatibility alias for the renamed functional-audit command.",
+  "version": "1.1.0",
   "author": {
     "name": "basabtan"
   }

@@ -1,0 +1,6 @@
+{
+  "records": [
+    { "record_id": "ATOM-KEEP", "content_refs": ["__SURVIVING_CONTENT_ID__"], "semantic_key": "comparison-claim" },
+    { "record_id": "ATOM-REMOVE", "content_refs": ["__REMOVED_CONTENT_ID__"], "semantic_key": "repeated-summary" }
+  ]
+}

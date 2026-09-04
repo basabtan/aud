@@ -35,8 +35,16 @@ test(1, 'plugin topology and manifest are complete', () => {
     join(skill, 'references', 'scoring.md'),
     join(skill, 'references', 'report-template.md'),
     join(skill, 'scripts', 'validate-flow.mjs'),
+    join(skill, 'scripts', 'emit-structured.mjs'),
   ]) assert.ok(existsSync(path), `missing ${path}`);
   assert.equal(JSON.parse(readFileSync(join(plugin, '.claude-plugin', 'plugin.json'), 'utf8')).name, 'flow-audit');
+});
+
+test(7, 'shared IDs and executable flow contract are required', () => {
+  const text = readFileSync(join(skill, 'SKILL.md'), 'utf8');
+  for (const phrase of ['flow-contract.json', 'project-context.json', 'content-contract.json', 'acceptance criteria', 'verification methods']) {
+    assert.ok(text.includes(phrase), `missing Phase 2 flow rule: ${phrase}`);
+  }
 });
 
 test(2, 'skill preserves audit boundaries and design stop condition', () => {

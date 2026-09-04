@@ -1,7 +1,7 @@
 {
   "name": "visual-audit",
   "description": "Run an isolated visual-quality audit against the target design contract and rank findings by visual impact.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": {
     "name": "basabtan"
   }

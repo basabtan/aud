@@ -5,10 +5,10 @@ marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant. The repository is currently
-at the AUD v2 Phase 1 baseline: the five specialist skills work independently,
-and shared schemas, validators, IDs, and ledger rules are available. Orchestration,
-synthesis, and specialist structured-output integration remain planned work and
-are not yet advertised as implemented.
+at the AUD v2 Phase 2 baseline: the five specialist skills work independently,
+consume compatible shared context when supplied, and emit normalized evidence
+and findings. Orchestration and synthesis remain planned work and are not yet
+advertised as implemented.
 
 Until the v2 orchestrator exists, broad audits use this manual sequence:
 
@@ -16,7 +16,7 @@ Until the v2 orchestrator exists, broad audits use this manual sequence:
 
 After explicitly authorized implementation, use:
 
-`visual-audit → audit`
+`visual-audit → functional-audit`
 
 Run an individual skill alone when its question is already isolated—for
 example, `place-audit` when approved information feels buried, or `flow-audit`
@@ -54,12 +54,21 @@ for immutable runs and carry-forward behavior. Validate structured artifacts wit
 `npm run validate:schema -- <schema-name> <path>` and merge findings with
 `npm run merge:ledger -- <ledger> <incoming-findings>`.
 
+Each specialist emits `evidence.jsonl`, `findings.jsonl`, and an explicit
+`input-status.json`. Content additionally emits `content-contract.json`; flow
+emits `flow-contract.json`. See
+[`docs/phase-2-migration.md`](docs/phase-2-migration.md) for the adapter interface
+and the temporary `audit` compatibility alias. Native-to-shared verdict mapping
+is defined in
+[`shared/protocols/specialist-mappings.md`](shared/protocols/specialist-mappings.md).
+
 ## Skills
 
 | Plugin | Command | What it asks |
 |---|---|---|
 | `visual-audit` | `/visual-audit:visual-audit` | Did anyone decide how this should look? |
-| `audit` | `/audit:audit` | Does this work, and is it good to use? |
+| `functional-audit` | `/functional-audit:functional-audit` | Does the implementation satisfy functional and accepted contract behavior? |
+| `audit` | `/audit:audit` | Temporary compatibility alias for `functional-audit`. |
 | `place-audit` | `/place-audit:place-audit` | Is approved information in the right place and at the right prominence? |
 | `content-audit` | `/content-audit:content-audit` | What information deserves to exist, once, and at what stage? |
 | `flow-audit` | `/flow-audit:flow-audit` | Can users move from intent to understanding or completion without unnecessary steps or context loss? |
@@ -81,7 +90,7 @@ so it works in any repository unmodified.
 
 Needs `playwright` as a dev dependency in the project being audited.
 
-### `audit` (functional audit compatibility name)
+### `functional-audit` (`audit` remains a compatibility alias)
 
 Fifteen instruments across a sixteen-step loop: gate, error capture, browser
 drive, route crawl and control matrix, required states, accessibility (axe plus

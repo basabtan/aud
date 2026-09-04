@@ -9,6 +9,7 @@
     "test:artifact-location": "node tests/artifact-location.mjs",
     "test:manifests": "node tests/manifests.mjs",
     "test:audit": "node plugins/audit/tests/acceptance.mjs",
+    "test:functional-audit": "node plugins/functional-audit/tests/acceptance.mjs",
     "test:content-audit": "node plugins/content-audit/tests/acceptance.mjs",
     "test:place-audit": "node plugins/place-audit/tests/acceptance.mjs",
     "test:flow-audit": "node plugins/flow-audit/tests/acceptance.mjs",

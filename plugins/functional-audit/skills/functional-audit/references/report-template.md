@@ -36,6 +36,17 @@
 - Looks right to me (screenshot only, no assertion): …
 - Could not verify — and why: …
 
+**Accepted-contract coverage**
+
+| Flow/remediation ID | Acceptance criterion | Instrument | Result | Evidence ID |
+|---|---|---|---|---|
+
+**Structured artifacts**
+
+- Shared `run-manifest.json` and `input-status.json`
+- Schema-valid `evidence.jsonl` and `findings.jsonl`
+- Accepted flow/remediation IDs preserved in `native_metrics.contract_refs`
+
 **Deferred / needs decision**
 
 - Item, reason it's out of scope, suggested owner or next step.
