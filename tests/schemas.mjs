@@ -39,6 +39,8 @@ assert.equal(validateRecord(prematurePriority, 'finding').valid, false, 'special
 
 const legacyRemediation = JSON.parse(readFileSync(join(fixtureRoot, 'remediation-plan', 'legacy-v1.json'), 'utf8'));
 assert.equal(validateRecord(legacyRemediation, 'remediation-plan').valid, true, 'Phase 1 remediation-plan v1 compatibility was lost');
+const legacyVerification = JSON.parse(readFileSync(join(fixtureRoot, 'verification-result', 'legacy-v1.json'), 'utf8'));
+assert.equal(validateRecord(legacyVerification, 'verification-result').valid, true, 'Phase 1 verification-result v1 compatibility was lost');
 
 const duplicateTasks = JSON.parse(readFileSync(join(fixtureRoot, 'task-model', 'valid.json'), 'utf8'));
 duplicateTasks.tasks.push(structuredClone(duplicateTasks.tasks[0]));

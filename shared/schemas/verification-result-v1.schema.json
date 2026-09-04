@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:aud:schema:verification-result:v1", "title": "AUD verification result v1 (legacy input)",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "verification_id", "run_id", "finding_id", "implementation_revision", "verified_at", "acceptance_results", "specialist_rechecks", "adjacent_regressions", "result", "residual_risk", "evidence_refs", "status_update"],
+  "properties": {
+    "schema_version": { "const": "aud-verification-result-v1" }, "verification_id": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationId" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" }, "finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
+    "implementation_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }, "verified_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "acceptance_results": { "type": "array", "minItems": 1, "items": { "type": "object", "additionalProperties": false, "required": ["criterion_id", "status", "evidence_refs", "notes"], "properties": { "criterion_id": { "type": "string", "pattern": "^AC-" }, "status": { "enum": ["pass", "fail", "not_run"] }, "evidence_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true }, "notes": { "type": "string" } } } },
+    "specialist_rechecks": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }, "adjacent_regressions": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "result": { "enum": ["verified", "partial", "failed"] }, "residual_risk": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+    "evidence_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true }, "status_update": { "enum": ["verified", "partial", "reopened"] }
+  },
+  "allOf": [
+    {
+      "if": { "type": "object", "properties": { "result": { "const": "verified" } }, "required": ["result"] },
+      "then": { "type": "object", "properties": { "status_update": { "const": "verified" }, "acceptance_results": { "type": "array", "items": { "type": "object", "properties": { "status": { "const": "pass" } } } } } }
+    },
+    {
+      "if": { "type": "object", "properties": { "result": { "const": "failed" } }, "required": ["result"] },
+      "then": { "type": "object", "properties": { "status_update": { "const": "reopened" } } }
+    },
+    {
+      "if": { "type": "object", "properties": { "result": { "const": "partial" } }, "required": ["result"] },
+      "then": { "type": "object", "properties": { "status_update": { "const": "partial" } } }
+    }
+  ]
+}

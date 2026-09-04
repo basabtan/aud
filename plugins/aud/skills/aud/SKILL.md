@@ -1,14 +1,15 @@
 ---
 name: aud
-description: Primary entry point for broad or ambiguous product/interface audits and coordinated multi-specialist AUD work. Use when the user asks for an audit, product review, UX review, redesign assessment, verification plan, or multi-area evaluation without naming exactly one specialist. Build a deterministic report-only plan across content, place, flow, visual, and functional audits. Preserve direct specialist commands for explicit narrow requests.
+description: Primary entry point for broad or ambiguous product/interface audits and coordinated multi-specialist AUD work. Use when the user asks for an audit, product review, UX review, redesign assessment, remediation verification, regression audit, or multi-area evaluation without naming exactly one specialist. Build deterministic report-only plans and evidence-backed verification across content, place, flow, visual, and functional audits. Preserve direct specialist commands for explicit narrow requests.
 ---
 
 # AUD orchestrator
 
 Use this command for broad or ambiguous requests. Its job is intake, planning,
 dependency coordination, shared evidence, cross-audit synthesis, remediation
-planning, and persistent run bookkeeping. It does not execute remediation,
-apply application changes, or perform full Phase 5 verification.
+planning, evidence-backed remediation verification, targeted regression checks,
+and persistent run bookkeeping. It does not execute remediation or apply
+application changes.
 
 ## Modes
 
@@ -16,9 +17,9 @@ apply application changes, or perform full Phase 5 verification.
   diagnosis by default. Strictly report-only.
 - `redesign` — build the content-first specialist plan and design constraints.
   Phase 4 produces an ordered remediation plan but stops before implementation.
-- `verify` — load eligible ledger records and plan producing-specialist plus
-  functional rechecks. Full replay, status closure, and regression logic remain
-  Phase 5.
+- `verify` — consume accepted remediation and a distinct candidate revision,
+  build finding-specific cases, coordinate declared adapters, run targeted
+  rechecks, and apply only evidence-backed legal lifecycle transitions.
 - `specialist` — coordinate one explicitly named specialist without expanding
   into the full pipeline. The existing direct specialist commands remain valid.
 
@@ -41,6 +42,9 @@ adding `-02`, `-03`, and so on when needed. Write:
 - `execution.json`
 - `synthesis.json` and `synthesis-report.md` when synthesis inputs are sufficient
 - `remediation-plan.json` and `remediation-plan.md` when synthesis completes
+- `verification-plan.json`, `verification-results.json`,
+  `regression-results.json`, and `verification-summary.json` in verify mode
+- `verification-report.md` and `regression-report.md` derived from those JSON artifacts
 
 ## Deterministic selection and dependencies
 
@@ -92,7 +96,8 @@ atomically. Never rewrite prior completed run directories.
 
 Never store product-specific audit results in the repository that distributes this skill.
 
-AUD orchestration is report-only through Phase 4. All output writes must remain under
+AUD orchestration is report-only through Phase 5. It may inspect and exercise an
+isolated or non-destructive test target, but cannot edit application files. All output writes must remain under
 the audited application's `audits/` directory. Any requested application
 mutation in `diagnose` is an error; other modes also require separate future
 authorization and execution outside this orchestrator.
@@ -123,10 +128,18 @@ The request supplies `mode`, `current_revision`, scope, risk profile, capture
 packet, and optional specialist observation-packet paths. Use the emitted plan
 as the source of truth for execution order.
 
+Verify requests additionally supply `remediation_plan`,
+`selected_remediation_ids`, `implementation_status`,
+`baseline_capture_manifest`, `original_evidence`, and optional adapter results.
+Follow `references/verification.md`; missing acceptance criteria, methods,
+compatible evidence, fixtures, or adapters stay blocked, degraded, or not run.
+
 ## References
 
 - `references/selection.md` — deterministic selection and dependency rules.
 - `references/evidence.md` — baseline, capture, reuse, and degradation rules.
 - `references/synthesis.md` — deduplication, relationships, contradictions,
   priority, lifecycle, and Phase 5 handoff.
+- `references/verification.md` — readiness, adapters, comparisons, regressions,
+  manual review, mutation boundaries, and Phase 6 handoff.
 - `scripts/aud.mjs` — executable orchestrator.

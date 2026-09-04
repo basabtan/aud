@@ -22,7 +22,11 @@ export const schemaFiles = Object.freeze({
   'remediation-item': 'remediation-item.schema.json',
   'synthesis-result': 'synthesis-result.schema.json',
   'remediation-plan': 'remediation-plan.schema.json',
+  'verification-case': 'verification-case.schema.json',
+  'verification-plan': 'verification-plan.schema.json',
   'verification-result': 'verification-result.schema.json',
+  'regression-result': 'regression-result.schema.json',
+  'verification-summary': 'verification-summary.schema.json',
 });
 
 export const schemaVersions = Object.freeze({
@@ -40,7 +44,11 @@ export const schemaVersions = Object.freeze({
   'remediation-item': 'aud-remediation-item-v1',
   'synthesis-result': 'aud-synthesis-result-v1',
   'remediation-plan': 'aud-remediation-plan-v2',
-  'verification-result': 'aud-verification-result-v1',
+  'verification-case': 'aud-verification-case-v1',
+  'verification-plan': 'aud-verification-plan-v1',
+  'verification-result': 'aud-verification-result-v2',
+  'regression-result': 'aud-regression-result-v1',
+  'verification-summary': 'aud-verification-summary-v1',
 });
 
 const nameByVersion = new Map(Object.entries(schemaVersions).map(([name, version]) => [version, name]));
@@ -51,10 +59,12 @@ function readSchema(filename) {
 
 const common = readSchema('common.schema.json');
 const schemas = Object.fromEntries(Object.entries(schemaFiles).map(([name, filename]) => [name, readSchema(filename)]));
-const legacySchemas = [readSchema('remediation-plan-v1.schema.json')];
+const legacySchemas = [readSchema('remediation-plan-v1.schema.json'), readSchema('verification-result-v1.schema.json')];
 const schemaByVersion = new Map(Object.entries(schemaVersions).map(([name, version]) => [version, schemas[name]]));
 schemaByVersion.set('aud-remediation-plan-v1', legacySchemas[0]);
+schemaByVersion.set('aud-verification-result-v1', legacySchemas[1]);
 nameByVersion.set('aud-remediation-plan-v1', 'remediation-plan');
+nameByVersion.set('aud-verification-result-v1', 'verification-result');
 
 export function createRegistry() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
@@ -171,6 +181,25 @@ function semanticIssues(name, record) {
     issues.push(...duplicateIdIssues(record.relationships, '/relationships', 'relationship_id'));
     issues.push(...duplicateIdIssues(record.clusters, '/clusters', 'cluster_id'));
     issues.push(...duplicateIdIssues(record.contradictions, '/contradictions', 'contradiction_id'));
+  }
+  if (name === 'verification-plan') {
+    issues.push(...duplicateIdIssues(record.cases, '/cases', 'case_id'));
+    issues.push(...duplicateIdIssues(record.specialist_decisions, '/specialist_decisions', 'specialist'));
+    if (record.baseline_revision === record.candidate_revision) issues.push(issue('UNCHANGED_CANDIDATE_REVISION', '/candidate_revision', 'Candidate revision must differ from baseline revision'));
+  }
+  if (name === 'verification-result' && record.schema_version === 'aud-verification-result-v2') {
+    issues.push(...duplicateIdIssues(record.results, '/results', 'verification_id'));
+    for (const [index, result] of record.results.entries()) {
+      if (result.outcome === 'passed' && (!result.evidence_refs.length || !result.acceptance_results.length || result.acceptance_results.some(item => item.status !== 'pass'))) {
+        issues.push(issue('UNPROVEN_PASS', `/results/${index}`, 'Passed verification requires evidence and every acceptance criterion to pass'));
+      }
+      if (result.outcome === 'passed' && result.acceptance_results.some(item => !item.evidence_refs.length)) issues.push(issue('UNPROVEN_CRITERION', `/results/${index}/acceptance_results`, 'Each passed criterion requires candidate evidence'));
+      if (result.outcome === 'passed' && ['no_longer_reproducible', 'unable_to_compare'].includes(result.comparison)) issues.push(issue('UNSAFE_PASS', `/results/${index}/comparison`, 'No-longer-reproducible or unable-to-compare cannot be passed'));
+    }
+  }
+  if (name === 'regression-result') {
+    issues.push(...duplicateIdIssues(record.results, '/results', 'regression_id'));
+    for (const [index, result] of record.results.entries()) if (result.classification === 'newly_introduced_regression' && !result.new_finding_id) issues.push(issue('MISSING_REGRESSION_FINDING', `/results/${index}/new_finding_id`, 'New regressions require a normalized finding'));
   }
   return issues;
 }

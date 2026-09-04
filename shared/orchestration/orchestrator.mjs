@@ -6,6 +6,8 @@ import { canonicalJson, stableId } from '../validators/stable-ids.mjs';
 import { parseJsonLines } from '../ledger/merge.mjs';
 import { runSpecialist } from '../specialists/artifacts.mjs';
 import { writeSynthesisArtifacts } from '../synthesis/runner.mjs';
+import { buildVerificationPlan } from '../verification/engine.mjs';
+import { writeVerificationArtifacts } from '../verification/runner.mjs';
 import { buildCaptureManifest, captureEvidenceRecords } from './evidence.mjs';
 import { buildAuditPlan } from './planner.mjs';
 import { assertAuditArtifactPath, canonicalRunDirectory } from './paths.mjs';
@@ -136,6 +138,41 @@ function readFindings(path) {
   return existsSync(path) ? parseJsonLines(readFileSync(path, 'utf8'), path) : [];
 }
 
+function requestValue(value, requestBase, jsonl = false) {
+  if (!value) return jsonl ? [] : null;
+  if (typeof value !== 'string') return value;
+  const path = resolve(requestBase, value);
+  return jsonl ? readFindings(path) : readJson(path);
+}
+
+function alignVerifySpecialists(plan, verificationPlan) {
+  const decisions = new Map(verificationPlan.specialist_decisions.map(item => [item.specialist, item]));
+  for (const decision of plan.decisions) {
+    const target = decisions.get(decision.audit);
+    if (target.disposition === 'selected') {
+      if (decision.disposition === 'deferred') decision.reason = `${target.reason} Re-audit remains deferred by shared context readiness.`;
+      else { decision.disposition = 'selected'; decision.reason = target.reason; }
+    } else {
+      decision.disposition = 'skipped'; decision.reason = target.reason;
+    }
+  }
+  const selected = plan.decisions.filter(item => item.disposition === 'selected').map(item => item.audit);
+  const content = selected.filter(item => item === 'content-audit');
+  const dependent = selected.filter(item => ['place-audit', 'flow-audit'].includes(item));
+  const independent = selected.filter(item => !['content-audit', 'place-audit', 'flow-audit'].includes(item));
+  plan.execution_waves = [];
+  if (content.length || independent.length) plan.execution_waves.push({ wave: 1, audits: [...content, ...independent], readiness_condition: 'Shared candidate revision and evidence baseline are validated.' });
+  if (dependent.length) plan.execution_waves.push({ wave: plan.execution_waves.length ? 2 : 1, audits: dependent, readiness_condition: 'A compatible content contract is available, or explicit degraded constraints are recorded.' });
+  for (const target of verificationPlan.specialist_decisions) {
+    const auditDecision = plan.decisions.find(item => item.audit === target.specialist);
+    if (target.disposition === 'selected' && auditDecision.disposition === 'deferred') {
+      target.disposition = 'deferred'; target.reason = auditDecision.reason;
+    }
+  }
+  assertValidRecord(plan, 'audit-plan');
+  assertValidRecord(verificationPlan, 'verification-plan');
+}
+
 export function runAud({ request, projectContextPath, taskModelPath = null, contentContractPath = null, previousCapturePath = null, ledgerPath = null, requestBase = process.cwd() }) {
   const projectPath = resolve(projectContextPath);
   const projectContext = readJson(projectPath);
@@ -154,10 +191,8 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
   if (request.application_changes?.length ?? 0) throw new Error(`MUTATION_PROHIBITED: ${request.mode} orchestration is analysis/planning-only through Phase 4`);
   const applicationRoot = resolve(dirname(projectPath), projectContext.project.application_root);
   const auditRoot = resolve(applicationRoot, 'audits');
-  mkdirSync(auditRoot, { recursive: true });
   const date = request.generated_at.slice(0, 10);
   const runDirectory = assertAuditArtifactPath(applicationRoot, canonicalRunDirectory(applicationRoot, date, 'aud'));
-  mkdirSync(runDirectory, { recursive: false });
   const runId = stableId('RUN', request.current_revision, { generated_at: request.generated_at, mode: request.mode, scope: request.scope ?? {} });
   const resolvedLedger = ledgerPath ? resolve(ledgerPath) : join(auditRoot, 'findings-ledger.jsonl');
   assertAuditArtifactPath(applicationRoot, resolvedLedger);
@@ -195,16 +230,49 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
   });
   const manifest = makeRunManifest({ runId, request, projectContext, taskModel, plan, captureManifest, runDirectory, contentAssessment });
   const manifestPath = join(runDirectory, 'run-manifest.json');
-  writeJsonAtomic(join(runDirectory, 'audit-plan.json'), plan);
-  writeJsonAtomic(capturePath, captureManifest);
-  writeJsonlAtomic(join(runDirectory, 'evidence.jsonl'), captureEvidenceRecords(captureManifest));
-  writeJsonlAtomic(join(runDirectory, 'prior-open-findings.jsonl'), priorLedger.filter(item => !['verified', 'waived'].includes(item.status)));
-  writeJsonAtomic(manifestPath, manifest);
 
   const executionResults = [];
   let activeContentPath = contentAssessment.state === 'current' ? contentAssessment.artifact_ref : null;
   let activeFlowPath = request.flow_contract ? resolve(requestBase, request.flow_contract) : null;
   const remediationPath = request.remediation_plan ? resolve(requestBase, request.remediation_plan) : null;
+  let verificationPlan = null;
+  let verificationInputs = null;
+  if (request.mode === 'verify') {
+    if (!remediationPath) throw new Error('REMEDIATION_PLAN_REQUIRED: verify mode requires an accepted remediation plan');
+    const baselineCapturePath = request.baseline_capture_manifest ? resolve(requestBase, request.baseline_capture_manifest) : null;
+    const originalEvidencePath = request.original_evidence ? resolve(requestBase, request.original_evidence) : null;
+    const synthesisPath = request.synthesis_result ? resolve(requestBase, request.synthesis_result) : null;
+    verificationInputs = {
+      runId, generatedAt: request.generated_at, baselineRevision: request.baseline_revision ?? readJson(remediationPath).project_revision,
+      candidateRevision: request.current_revision, remediationPlan: readJson(remediationPath), findings: priorLedger,
+      originalEvidence: request.original_evidence_records ? requestValue(request.original_evidence_records, requestBase, true) : (originalEvidencePath ? readFindings(originalEvidencePath) : []),
+      synthesis: synthesisPath ? readJson(synthesisPath) : request.synthesis_record ?? null,
+      implementationStatus: request.implementation_status ?? {}, selectedRemediationIds: request.selected_remediation_ids,
+      baselineCapture: baselineCapturePath ? readJson(baselineCapturePath) : request.baseline_capture ?? null,
+      candidateEnvironment: request.verification_environment ?? captureManifest.environment,
+      availableFixtures: request.available_fixtures ?? captureManifest.fixtures,
+      requiredEnvironment: request.required_verification_environment ?? null,
+      fixtureRequirements: request.fixture_requirements ?? {}, degradedReasons: request.verification_degraded_reasons ?? [],
+      persistentDataMode: request.persistent_data_mode ?? 'isolated', fullRegression: request.full_regression === true,
+      inputRefs: { run_manifest: manifestPath, project_context: projectPath, remediation_plan: remediationPath, synthesis: synthesisPath, capture_manifest: baselineCapturePath ?? 'inline:baseline-capture', ledger: resolvedLedger },
+      adapterResults: requestValue(request.verification_adapter_results, requestBase) ?? {},
+      candidateEvidence: [...captureEvidenceRecords(captureManifest), ...requestValue(request.candidate_evidence, requestBase, true)],
+    };
+    verificationPlan = buildVerificationPlan(verificationInputs);
+    verificationInputs.plan = verificationPlan;
+    alignVerifySpecialists(plan, verificationPlan);
+    manifest.selected_audits = plan.decisions.filter(item => item.disposition === 'selected').map(item => item.audit);
+    if (!manifest.selected_audits.length) manifest.selected_audits = ['aud'];
+    const remediationRecord = verificationInputs.remediationPlan;
+    manifest.contracts.push(contractEntry('remediation-plan', remediationRecord, remediationPath));
+  }
+  mkdirSync(auditRoot, { recursive: true });
+  mkdirSync(runDirectory, { recursive: false });
+  writeJsonAtomic(join(runDirectory, 'audit-plan.json'), plan);
+  writeJsonAtomic(capturePath, captureManifest);
+  writeJsonlAtomic(join(runDirectory, 'evidence.jsonl'), captureEvidenceRecords(captureManifest));
+  writeJsonlAtomic(join(runDirectory, 'prior-open-findings.jsonl'), priorLedger.filter(item => !['verified', 'waived'].includes(item.status)));
+  writeJsonAtomic(manifestPath, manifest);
   const inputs = request.specialist_inputs ?? {};
   for (const wave of plan.execution_waves) {
     for (const audit of wave.audits) {
@@ -290,6 +358,17 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
       manifest.contracts.push(contractEntry('remediation-plan', synthesisResult.remediationPlan, synthesisExecution.remediation_plan_ref));
     }
   }
+  let verificationExecution = { disposition: plan.verification_stage.disposition, status: 'skipped', reason: plan.verification_stage.reason };
+  if (request.mode === 'verify') {
+    verificationInputs.findings = mergedLedger;
+    const verification = writeVerificationArtifacts({ applicationRoot, runDirectory, ledgerPath: resolvedLedger, inputs: verificationInputs });
+    mergedLedger = verification.ledger;
+    verificationExecution = { disposition: 'selected', status: 'complete', reason: 'Verification and targeted regression artifacts were generated without application mutation.', verification_plan_ref: join(runDirectory, 'verification-plan.json'), verification_results_ref: join(runDirectory, 'verification-results.json'), regression_results_ref: join(runDirectory, 'regression-results.json'), verification_summary_ref: join(runDirectory, 'verification-summary.json') };
+    manifest.contracts.push(contractEntry('verification-plan', verification.plan, verificationExecution.verification_plan_ref));
+    manifest.contracts.push(contractEntry('verification-result', verification.verificationResults, verificationExecution.verification_results_ref));
+    manifest.contracts.push(contractEntry('regression-result', verification.regressionResults, verificationExecution.regression_results_ref));
+    manifest.contracts.push(contractEntry('verification-summary', verification.summary, verificationExecution.verification_summary_ref));
+  }
   const latestPath = updateLatestAtomic({
     applicationRoot,
     latestPath: join(auditRoot, 'latest.md'),
@@ -314,9 +393,10 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
     application_mutations: [],
     results: executionResults,
     synthesis: synthesisExecution,
+    verification: verificationExecution,
     ledger_ref: resolvedLedger,
     latest_ref: latestPath,
-    phase_boundaries: { synthesis: 'phase-4-analysis-only', verification: 'planned-only-phase-5' },
+    phase_boundaries: { synthesis: 'phase-4-analysis-only', verification: 'phase-5-inspection-only', calibration: 'deferred-phase-6' },
   };
   writeJsonAtomic(join(runDirectory, 'execution.json'), execution);
   return { runDirectory, plan, captureManifest, manifest, execution, ledger: mergedLedger };

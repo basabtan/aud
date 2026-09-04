@@ -12,12 +12,13 @@ for (const path of [
   `${skill}/references/selection.md`,
   `${skill}/references/evidence.md`,
   `${skill}/references/synthesis.md`,
+  `${skill}/references/verification.md`,
   `${skill}/scripts/aud.mjs`,
 ]) assert.ok(existsSync(path), `missing ${path}`);
 
 assert.equal(JSON.parse(readFileSync(`${root}/.claude-plugin/plugin.json`, 'utf8')).name, 'aud');
 const instructions = readFileSync(`${skill}/SKILL.md`, 'utf8');
-for (const phrase of ['diagnose', 'redesign', 'verify', 'specialist', 'Place and flow', 'report-only', 'synthesis.json', 'remediation-plan.json', 'Contradictions', 'Phase 5']) {
+for (const phrase of ['diagnose', 'redesign', 'verify', 'specialist', 'Place and flow', 'report-only', 'synthesis.json', 'remediation-plan.json', 'verification-plan.json', 'regression-results.json', 'Phase 5']) {
   assert.ok(instructions.includes(phrase), `orchestrator rule missing ${phrase}`);
 }
 const syntax = spawnSync(process.execPath, ['--check', `${skill}/scripts/aud.mjs`], { encoding: 'utf8' });

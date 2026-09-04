@@ -81,6 +81,16 @@
         "dependencies": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
       }
     },
+    "verification_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition", "reason", "dependencies"],
+      "properties": {
+        "disposition": { "enum": ["selected", "skipped", "deferred"] },
+        "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "dependencies": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
     "evidence_baseline": {
       "type": "object",
       "additionalProperties": false,

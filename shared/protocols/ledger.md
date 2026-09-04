@@ -15,7 +15,11 @@ non-empty line is one `aud-finding-v1` record with a stable finding ID.
 6. Require explicit `reopened` status before a verified or waived finding can
    become active again.
 7. Keep status history and require its last entry to agree with current status.
-8. Sort the snapshot by stable ID and replace it atomically only after the full
+8. Union verification attempts by stable `verification_id`; an identical rerun
+   is idempotent and a later attempt never erases an earlier result.
+9. Preserve synthesis and regression provenance plus original severity,
+   confidence, and `native_metrics`.
+10. Sort the snapshot by stable ID and replace it atomically only after the full
    merged snapshot validates.
 
 Run the merge with:
@@ -25,4 +29,6 @@ npm run merge:ledger -- <application-root>/audits/findings-ledger.jsonl <run>/fi
 ```
 
 The merge tool does not synthesize duplicates, assign priority, or infer that two
-different IDs describe the same root cause. Those remain Phase 4 responsibilities.
+different IDs describe the same root cause. Synthesis remains a Phase 4
+responsibility; Phase 5 alone appends verification attempts and evidence-backed
+lifecycle changes.

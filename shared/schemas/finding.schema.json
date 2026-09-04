@@ -55,6 +55,37 @@
     },
     "status": { "$ref": "urn:aud:schema:common:v1#/$defs/status" },
     "status_history": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/statusHistoryEntry" } },
+    "verification_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["verification_id", "case_id", "run_id", "baseline_revision", "candidate_revision", "outcome", "comparison", "evidence_refs", "at"],
+        "properties": {
+          "verification_id": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationId" },
+          "case_id": { "type": "string", "pattern": "^VC-" },
+          "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+          "baseline_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+          "candidate_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+          "outcome": { "enum": ["passed", "partially_passed", "failed", "blocked", "inconclusive", "not_run"] },
+          "comparison": { "enum": ["fixed", "improved_but_incomplete", "unchanged", "worsened", "no_longer_reproducible", "unable_to_compare"] },
+          "evidence_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+          "at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }
+        }
+      }
+    },
+    "regression_origin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verification_id", "case_id", "remediation_id", "baseline_revision", "candidate_revision"],
+      "properties": {
+        "verification_id": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationId" },
+        "case_id": { "type": "string", "pattern": "^VC-" },
+        "remediation_id": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" },
+        "baseline_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+        "candidate_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }
+      }
+    },
     "synthesis": {
       "type": "object",
       "additionalProperties": false,

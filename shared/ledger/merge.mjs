@@ -41,6 +41,14 @@ function mergeSynthesis(left, right) {
   };
 }
 
+function mergeVerificationHistory(left = [], right = []) {
+  const history = [...left];
+  for (const attempt of right) {
+    if (!history.some(item => item.verification_id === attempt.verification_id)) history.push(attempt);
+  }
+  return history.sort((a, b) => a.at.localeCompare(b.at) || a.verification_id.localeCompare(b.verification_id));
+}
+
 function transitionHistory(existing, incoming, at) {
   const history = [...(existing.status_history ?? [])];
   const supplied = incoming.status_history ?? [];
@@ -73,9 +81,13 @@ export function mergeFinding(existing, incoming, options = {}) {
     affected_areas: union(existing.affected_areas, incoming.affected_areas),
     relationships: mergeRelationships(existing.relationships, incoming.relationships),
     synthesis: mergeSynthesis(existing.synthesis, incoming.synthesis),
+    verification_history: mergeVerificationHistory(existing.verification_history, incoming.verification_history),
+    regression_origin: existing.regression_origin ?? incoming.regression_origin,
     status_history: transitionHistory(existing, incoming, at),
   };
   if (!merged.synthesis) delete merged.synthesis;
+  if (!merged.regression_origin) delete merged.regression_origin;
+  if (merged.verification_history.length === 0) delete merged.verification_history;
   if (merged.status_history.length === 0) delete merged.status_history;
   assertValidRecord(merged, 'finding');
   return merged;

@@ -32,6 +32,12 @@ Markdown is rendered from the structured artifacts. Compatible regeneration
 writes a new `YYYY-MM-DD-synthesis/` directory with collision suffixes and never
 rewrites the source run.
 
+A Phase 5 verify run adds `verification-plan.json`,
+`verification-results.json`, `regression-results.json`,
+`verification-summary.json`, `verification-evidence.jsonl`, and Markdown
+verification/regression reports derived from those records. Baseline and
+candidate revisions remain explicit and prior completed runs stay immutable.
+
 A structured run contains `run-manifest.json`, `evidence.jsonl`,
 `findings.jsonl`, and the human report, plus the applicable project context, task
 model, specialist contracts, captures, and test output. Standalone specialists
@@ -72,10 +78,14 @@ one line per stable finding ID. A later run must merge rather than replace it:
 - Carry forward findings that were not rechecked; absence from a new report does
   not close them.
 - Close a finding only through an explicit `verified` or `waived` transition.
-- A failed verification records the result and changes the finding to `reopened`.
+- A failed verification uses the legal `failed` or `reopened` transition for
+  the finding's current state; blocked, inconclusive, and not-run checks do not
+  resolve it.
 - Write the merged ledger atomically so an interrupted run cannot truncate it.
 - Add synthesis cluster, relationship, and remediation references without
   replacing specialist facts, severity, confidence, or native metrics.
+- Append verification attempts by stable ID and promote newly introduced
+  regressions to independent findings.
 
 Use the merge behavior in `shared/protocols/ledger.md` and the Phase 1 ledger
 tool. Existing Markdown reports remain legacy evidence and are indexed from

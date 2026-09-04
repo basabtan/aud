@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:verification-plan:v1",
+  "title": "AUD verification plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "run_id", "generated_at", "baseline_revision", "candidate_revision", "source_refs", "selected_remediation_refs", "cases", "specialist_decisions", "evidence_baseline", "degraded", "degraded_reasons", "authority"],
+  "properties": {
+    "schema_version": { "const": "aud-verification-plan-v1" },
+    "plan_id": { "type": "string", "pattern": "^VP-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "baseline_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "candidate_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "source_refs": {
+      "type": "object", "additionalProperties": false, "required": ["run_manifest", "project_context", "remediation_plan", "synthesis", "capture_manifest", "ledger"],
+      "properties": { "run_manifest": { "type": "string" }, "project_context": { "type": "string" }, "remediation_plan": { "type": "string" }, "synthesis": { "type": ["string", "null"] }, "capture_manifest": { "type": "string" }, "ledger": { "type": "string" } }
+    },
+    "selected_remediation_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "uniqueItems": true },
+    "cases": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:verification-case:v1" } },
+    "specialist_decisions": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["specialist", "disposition", "reason", "affected_refs"],
+        "properties": { "specialist": { "enum": ["content-audit", "place-audit", "flow-audit", "visual-audit", "functional-audit"] }, "disposition": { "enum": ["selected", "skipped", "deferred"] }, "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "affected_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true } }
+      }
+    },
+    "evidence_baseline": { "type": "object", "additionalProperties": false, "required": ["capture_id", "baseline_signature", "project_revision"], "properties": { "capture_id": { "type": "string" }, "baseline_signature": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }, "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } },
+    "degraded": { "type": "boolean" },
+    "degraded_reasons": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "authority": { "type": "object", "additionalProperties": false, "required": ["inspection_only", "application_mutations", "persistent_data_mode"], "properties": { "inspection_only": { "const": true }, "application_mutations": { "type": "array", "maxItems": 0 }, "persistent_data_mode": { "enum": ["isolated", "disposable", "non_destructive"] } } }
+  }
+}

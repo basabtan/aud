@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:verification-summary:v1",
+  "title": "AUD verification summary v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "summary_id", "verification_plan_id", "verification_result_set_id", "regression_set_id", "run_id", "generated_at", "counts", "verified_finding_refs", "partial_finding_refs", "failed_finding_refs", "blocked_case_refs", "inconclusive_case_refs", "new_regression_finding_refs", "remaining_risk", "required_follow_up", "transitions", "degraded"],
+  "properties": {
+    "schema_version": { "const": "aud-verification-summary-v1" }, "summary_id": { "type": "string", "pattern": "^VSUM-" },
+    "verification_plan_id": { "type": "string", "pattern": "^VP-" }, "verification_result_set_id": { "type": "string", "pattern": "^VRSET-" }, "regression_set_id": { "type": "string", "pattern": "^REGSET-" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" }, "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "counts": { "type": "object", "additionalProperties": false, "required": ["passed", "partially_passed", "failed", "blocked", "inconclusive", "not_run"], "properties": { "passed": { "type": "integer", "minimum": 0 }, "partially_passed": { "type": "integer", "minimum": 0 }, "failed": { "type": "integer", "minimum": 0 }, "blocked": { "type": "integer", "minimum": 0 }, "inconclusive": { "type": "integer", "minimum": 0 }, "not_run": { "type": "integer", "minimum": 0 } } },
+    "verified_finding_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "partial_finding_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "failed_finding_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "blocked_case_refs": { "type": "array", "items": { "type": "string", "pattern": "^VC-" }, "uniqueItems": true },
+    "inconclusive_case_refs": { "type": "array", "items": { "type": "string", "pattern": "^VC-" }, "uniqueItems": true },
+    "new_regression_finding_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "remaining_risk": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }, "required_follow_up": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "transitions": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["finding_id", "from", "requested", "applied", "reason"], "properties": { "finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "from": { "$ref": "urn:aud:schema:common:v1#/$defs/status" }, "requested": { "oneOf": [{ "$ref": "urn:aud:schema:common:v1#/$defs/status" }, { "type": "null" }] }, "applied": { "type": "boolean" }, "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" } } } },
+    "degraded": { "type": "boolean" }
+  }
+}

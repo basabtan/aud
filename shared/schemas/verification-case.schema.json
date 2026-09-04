@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:verification-case:v1",
+  "title": "AUD verification case v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "case_id", "remediation_id", "finding_id", "cluster_refs", "original_evidence_refs", "acceptance_criteria", "verification_methods", "method_categories", "targets", "required_fixtures", "required_environment", "prerequisites", "expected_result", "regression_scope", "readiness", "execution_status"],
+  "properties": {
+    "schema_version": { "const": "aud-verification-case-v1" },
+    "case_id": { "type": "string", "pattern": "^VC-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "remediation_id": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" },
+    "finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
+    "cluster_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/clusterId" }, "uniqueItems": true },
+    "original_evidence_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+    "acceptance_criteria": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/acceptanceCriterion" } },
+    "verification_methods": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationMethod" } },
+    "method_categories": { "type": "array", "items": { "enum": ["automated_test", "browser_interaction", "visual_comparison", "content_inspection", "accessibility_check", "performance_measurement", "manual_expert_review", "evidence_only_investigation"] }, "uniqueItems": true },
+    "targets": {
+      "type": "object", "additionalProperties": false, "required": ["routes", "states", "tasks", "components", "content"],
+      "properties": {
+        "routes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "states": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "tasks": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/taskId" }, "uniqueItems": true },
+        "components": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "content": { "type": "array", "items": { "type": "string", "pattern": "^CONTENT-" }, "uniqueItems": true }
+      }
+    },
+    "required_fixtures": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "required_environment": { "type": "object", "additionalProperties": true, "minProperties": 1 },
+    "prerequisites": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "uniqueItems": true },
+    "expected_result": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+    "regression_scope": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true },
+    "readiness": {
+      "type": "object", "additionalProperties": false, "required": ["state", "reasons"],
+      "properties": { "state": { "enum": ["ready", "blocked", "deferred", "degraded"] }, "reasons": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } }
+    },
+    "execution_status": { "enum": ["ready", "blocked", "deferred", "pending_manual", "planned"] }
+  }
+}

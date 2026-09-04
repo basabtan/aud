@@ -144,11 +144,11 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
     }
     if (request.mode === 'redesign' && audit === 'functional-audit') {
       disposition = 'deferred';
-      reason = 'Functional verification is deferred until implementation exists; Phase 3 does not implement it.';
+      reason = 'Functional verification is deferred until an implementation candidate exists.';
     }
     if (request.mode === 'verify' && audit === 'functional-audit' && !priorOpen.some(finding => ['implemented', 'partial', 'failed', 'reopened'].includes(finding.status))) {
       disposition = 'deferred';
-      reason = 'No implemented or reopened ledger findings are eligible; full verification remains Phase 5.';
+      reason = 'No implemented, partial, failed, or reopened ledger findings are eligible for a functional recheck.';
     }
     if (disposition === 'selected' && taskDependent.has(audit) && contexts.taskState !== 'current') {
       if (allowDegraded) {
@@ -196,9 +196,11 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
   });
   const degradedConsequences = unique(decisions.flatMap(item => item.consequences));
   const selectedAuditNames = selectedDecisions.map(item => item.audit);
-  const synthesisRequested = request.synthesis !== false && request.mode !== 'specialist' && selectedAuditNames.length > 1;
+  const synthesisRequested = request.synthesis !== false && ['diagnose', 'redesign'].includes(request.mode) && selectedAuditNames.length > 1;
   const synthesisStage = request.mode === 'specialist'
     ? { disposition: 'skipped', reason: 'Specialist-only runs remain independent and do not invoke cross-audit synthesis.', dependencies: [] }
+    : request.mode === 'verify'
+      ? { disposition: 'skipped', reason: 'Verify mode consumes accepted Phase 4 synthesis; it does not resynthesize or reprioritize.', dependencies: [] }
     : synthesisRequested
       ? {
           disposition: 'selected',
@@ -229,6 +231,9 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
     decisions,
     execution_waves: executionWaves,
     synthesis_stage: synthesisStage,
+    verification_stage: request.mode === 'verify'
+      ? { disposition: 'selected', reason: 'Verify mode executes accepted remediation checks and targeted regression auditing.', dependencies: ['accepted-remediation-plan', 'baseline-evidence', 'candidate-revision', 'persistent-ledger'] }
+      : { disposition: 'skipped', reason: 'Verification is only selected in verify mode.', dependencies: [] },
     evidence_baseline: {
       capture_manifest_ref: captureManifestRef,
       project_revision: request.current_revision,
@@ -239,7 +244,7 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
     degraded_consequences: degradedConsequences,
     report_only: true,
     application_mutation_allowed: false,
-    deferred_capabilities: ['remediation execution', 'full verification execution'],
+    deferred_capabilities: request.mode === 'verify' ? ['remediation execution', 'cross-run calibration'] : ['remediation execution', 'verification execution'],
   };
   assertValidRecord(plan, 'audit-plan');
   return plan;

@@ -1,7 +1,7 @@
 {
   "name": "aud",
-  "description": "Primary AUD v2 entry point for broad, ambiguous, multi-specialist, redesign-planning, and verification-planning audit requests.",
-  "version": "4.0.0",
+  "description": "Primary AUD v2 entry point for coordinated audits, synthesis, remediation planning, and evidence-backed regression verification.",
+  "version": "5.0.0",
   "author": {
     "name": "basabtan"
   }

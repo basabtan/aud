@@ -23,9 +23,12 @@ High/critical information density adds content, place, and flow. High/critical
 visual/design risk adds visual.
 
 Redesign selects content, place, flow, and visual; functional is deferred until
-implementation. Verify selects functional plus producing specialists for ledger
-records in implemented, partial, failed, or reopened state, but only plans the
-Phase 5 work. Specialist mode selects exactly the named specialist.
+implementation. Verify derives targeted re-audits from each selected remediation
+and affected finding: content may select content/place/flow, flow selects flow/
+functional, visual selects visual plus accessibility coverage, and functional
+selects functional plus affected flows. It never reruns all specialists unless
+full regression was explicitly requested. Specialist mode selects exactly the
+named specialist.
 
 Content is wave 1 when selected. Place and flow are in the same following wave.
 Independent visual and functional work may share wave 1. A current accepted

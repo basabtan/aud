@@ -38,5 +38,6 @@ links.
 All four modes remain report/planning-only. Diagnose rejects requested
 application mutations. Phase 4 now consumes these outputs for synthesis,
 root-cause clustering, visible contradiction handling, and remediation
-priority. Verify mode still only builds the eligible verification plan; Phase 5
-owns full replay and status closure.
+priority. At the Phase 3 checkpoint, verify mode only built the eligible
+verification plan; Phase 5 now executes that plan through evidence-backed
+replay, regression checks, and legal status closure.

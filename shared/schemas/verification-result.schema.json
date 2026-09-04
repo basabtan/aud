@@ -1,57 +1,30 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:aud:schema:verification-result:v1",
-  "title": "AUD verification result v1",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["schema_version", "verification_id", "run_id", "finding_id", "implementation_revision", "verified_at", "acceptance_results", "specialist_rechecks", "adjacent_regressions", "result", "residual_risk", "evidence_refs", "status_update"],
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:aud:schema:verification-result:v2", "title": "AUD verification result set v2",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "result_set_id", "verification_plan_id", "run_id", "baseline_revision", "candidate_revision", "generated_at", "results"],
   "properties": {
-    "schema_version": { "const": "aud-verification-result-v1" },
-    "verification_id": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationId" },
-    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
-    "finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
-    "implementation_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
-    "verified_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
-    "acceptance_results": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["criterion_id", "status", "evidence_refs", "notes"],
-        "properties": {
-          "criterion_id": { "type": "string", "pattern": "^AC-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
-          "status": { "enum": ["pass", "fail", "not_run"] },
-          "evidence_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
-          "notes": { "type": "string" }
-        }
+    "schema_version": { "const": "aud-verification-result-v2" }, "result_set_id": { "type": "string", "pattern": "^VRSET-" },
+    "verification_plan_id": { "type": "string", "pattern": "^VP-" }, "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "baseline_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }, "candidate_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }, "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "results": { "type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["verification_id", "case_id", "remediation_id", "finding_id", "cluster_refs", "outcome", "comparison", "original_observation", "expected_condition", "current_observation", "original_evidence_refs", "evidence_refs", "acceptance_results", "rationale", "executor", "candidate_revision", "executed_at", "environment", "specialist_rechecks", "regression_refs", "lifecycle_transition"],
+      "properties": {
+        "verification_id": { "$ref": "urn:aud:schema:common:v1#/$defs/verificationId" }, "case_id": { "type": "string", "pattern": "^VC-" },
+        "remediation_id": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
+        "cluster_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/clusterId" }, "uniqueItems": true },
+        "outcome": { "enum": ["passed", "partially_passed", "failed", "blocked", "inconclusive", "not_run"] },
+        "comparison": { "enum": ["fixed", "improved_but_incomplete", "unchanged", "worsened", "no_longer_reproducible", "unable_to_compare"] },
+        "original_observation": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "expected_condition": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "current_observation": { "type": ["string", "null"] },
+        "original_evidence_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+        "evidence_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+        "acceptance_results": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["criterion_id", "status", "evidence_refs", "notes"], "properties": { "criterion_id": { "type": "string", "pattern": "^AC-" }, "status": { "enum": ["pass", "fail", "not_run"] }, "evidence_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true }, "notes": { "type": "string" } } } },
+        "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "executor": { "type": "object", "additionalProperties": false, "required": ["category", "adapter", "manual", "provenance"], "properties": { "category": { "enum": ["automated_test", "browser_interaction", "visual_comparison", "content_inspection", "accessibility_check", "performance_measurement", "manual_expert_review", "evidence_only_investigation", "readiness_gate"] }, "adapter": { "type": ["string", "null"] }, "manual": { "type": "boolean" }, "provenance": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" } } },
+        "candidate_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }, "executed_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }, "environment": { "type": "object", "additionalProperties": true, "minProperties": 1 },
+        "specialist_rechecks": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }, "regression_refs": { "type": "array", "items": { "type": "string", "pattern": "^REG-" }, "uniqueItems": true },
+        "lifecycle_transition": { "type": "object", "additionalProperties": false, "required": ["requested_status", "applied", "reason"], "properties": { "requested_status": { "oneOf": [{ "$ref": "urn:aud:schema:common:v1#/$defs/status" }, { "type": "null" }] }, "applied": { "type": "boolean" }, "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" } } }
       }
-    },
-    "specialist_rechecks": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
-    "adjacent_regressions": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
-    "result": { "enum": ["verified", "partial", "failed"] },
-    "residual_risk": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
-    "evidence_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
-    "status_update": { "enum": ["verified", "partial", "reopened"] }
-  },
-  "allOf": [
-    {
-      "if": { "type": "object", "properties": { "result": { "const": "verified" } }, "required": ["result"] },
-      "then": {
-        "type": "object",
-        "properties": {
-          "status_update": { "const": "verified" },
-          "acceptance_results": { "type": "array", "items": { "type": "object", "properties": { "status": { "const": "pass" } } } }
-        }
-      }
-    },
-    {
-      "if": { "type": "object", "properties": { "result": { "const": "failed" } }, "required": ["result"] },
-      "then": { "type": "object", "properties": { "status_update": { "const": "reopened" } } }
-    },
-    {
-      "if": { "type": "object", "properties": { "result": { "const": "partial" } }, "required": ["result"] },
-      "then": { "type": "object", "properties": { "status_update": { "const": "partial" } } }
-    }
-  ]
+    } }
+  }
 }

@@ -5,12 +5,15 @@ marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant. The repository is currently
-at the AUD v2 Phase 4 baseline: `aud` is the primary entry for broad requests,
+at the AUD v2 Phase 5 baseline: `aud` is the primary entry for broad requests,
 builds deterministic dependency-aware plans, coordinates a reusable evidence
 baseline, runs supplied specialist observation packets, and preserves the
 persistent ledger. Multi-specialist runs now synthesize duplicates,
 relationships, contradictions, root causes, priorities, and dependency-aware
-remediation waves without modifying the audited application.
+remediation waves without modifying the audited application. Verify mode now
+builds finding-specific cases, executes only supplied adapter results, compares
+baseline and candidate evidence, detects targeted regressions, and applies legal
+evidence-backed lifecycle transitions.
 
 Broad or ambiguous audits route through:
 
@@ -71,6 +74,8 @@ Phase 3 orchestration and evidence behavior is documented in
 [`docs/phase-3-orchestration.md`](docs/phase-3-orchestration.md). Phase 4
 synthesis and remediation policy is documented in
 [`docs/phase-4-synthesis.md`](docs/phase-4-synthesis.md).
+Phase 5 readiness, verification, regression, and lifecycle behavior is in
+[`docs/phase-5-verification.md`](docs/phase-5-verification.md).
 
 ## Skills
 
