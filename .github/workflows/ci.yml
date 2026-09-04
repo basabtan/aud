@@ -6,6 +6,7 @@ on:
 
 jobs:
   test:
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -17,6 +18,12 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      - run: npm ci --no-audit --no-fund
       - run: npx playwright install chromium
       - run: npm test
+      - run: npm run calibrate:full
+      - run: npm run test:manifests
+      - run: node tests/schemas.mjs
+      - run: git diff --check
+      - name: Confirm tests leave the checkout clean
+        run: node -e "const { execFileSync } = require('node:child_process'); const status = execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }); if (status) { console.error(status); process.exit(1); }"
