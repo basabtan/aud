@@ -26,4 +26,7 @@ jobs:
       - run: node tests/schemas.mjs
       - run: git diff --check
       - name: Confirm tests leave the checkout clean
-        run: node -e "const { execFileSync } = require('node:child_process'); const status = execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }); if (status) { console.error(status); process.exit(1); }"
+        run: >-
+          node -e "const { execFileSync } = require('node:child_process');
+          const status = execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' });
+          if (status) { console.error(status); process.exit(1); }"
