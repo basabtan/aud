@@ -1,0 +1,18 @@
+{
+  "schema_version": "aud-project-context-v1",
+  "project": { "name": "Example", "application_root": ".", "repository": "owner/example", "revision": "da063c38731f3f797bfd5000374daa5c14952782" },
+  "purpose": ["Help analysts compare evidence"],
+  "personas": [{ "id": "researcher", "label": "Researcher" }],
+  "roles": [{ "id": "member", "label": "Member" }],
+  "journey_stages": [{ "id": "compare", "label": "Compare", "order": 1 }],
+  "routes": [{ "id": "compare-route", "path": "/compare", "surface_refs": ["comparison"], "role_refs": ["member"] }],
+  "surfaces": [{ "id": "comparison", "label": "Comparison" }],
+  "supported_environments": ["chromium-desktop"],
+  "design_contract": { "spacing_scale": 4 },
+  "risk_profile": { "data_loss": "medium" },
+  "harness": { "command": "npm run dev", "health_url": "http://127.0.0.1:3000" },
+  "fixture_variants": [{ "id": "mature", "label": "Mature data" }],
+  "sources": [{ "id": "SRC-1", "type": "repository", "reference": "README.md" }],
+  "assumptions": [{ "id": "A-1", "statement": "Desktop is the primary surface", "status": "open" }],
+  "human_owned_decisions": [{ "id": "D-1", "statement": "Editorial retention policy", "status": "open" }]
+}

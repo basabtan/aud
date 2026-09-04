@@ -1,0 +1,26 @@
+{
+  "schema_version": "aud-remediation-plan-v1",
+  "plan_id": "RP-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-002",
+  "generated_at": "2026-09-04T10:00:00Z",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "items": [{
+    "remediation_id": "R-CONTEXT-001",
+    "finding_refs": ["F-2026-09-04-flow-001"],
+    "cause_cluster_refs": ["CAUSE-STATE-001"],
+    "intended_result": "Preserve comparison context through drill-down and return.",
+    "scope": ["comparison route state"],
+    "non_goals": ["visual redesign"],
+    "dependencies": [],
+    "implementation_approach": "Persist the comparison state in route-addressable state and restore the scroll anchor.",
+    "alternatives_considered": ["Session-only state"],
+    "risk": { "level": "medium", "rationale": "Route state changes can affect deep links." },
+    "estimated_effort": "M",
+    "acceptance_criteria": [{ "id": "AC-001", "statement": "Returning from detail restores selection and scroll anchor." }],
+    "verification": { "owner": "functional-audit", "instruments": ["browser", "route-state assertion"] },
+    "rollback_note": "Restore the previous route-state adapter.",
+    "priority": { "level": "P1", "rationale": "Severity 3 on a critical and common journey." }
+  }],
+  "waves": [{ "wave": 1, "remediation_refs": ["R-CONTEXT-001"] }],
+  "human_decisions": []
+}

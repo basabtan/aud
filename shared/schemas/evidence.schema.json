@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:evidence:v1",
+  "title": "AUD evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "run_id", "type", "artifact_ref", "exact_observation", "provenance", "strength", "timestamp"],
+  "properties": {
+    "schema_version": { "const": "aud-evidence-v1" },
+    "id": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "type": { "enum": ["observation", "screenshot", "trace", "test", "measurement", "repository", "user_research", "domain_source", "inference"] },
+    "artifact_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+    "exact_observation": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "captured_by"],
+      "properties": {
+        "source": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "captured_by": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "source_revision": { "oneOf": [{ "$ref": "urn:aud:schema:common:v1#/$defs/sha" }, { "type": "null" }] }
+      }
+    },
+    "strength": { "enum": ["direct", "derived", "inferred", "conflicting"] },
+    "environment": { "type": ["object", "null"], "additionalProperties": true },
+    "route": { "type": ["string", "null"] },
+    "state": { "type": ["string", "null"] },
+    "viewport": { "type": ["string", "null"], "pattern": "^[0-9]+x[0-9]+$" },
+    "data_fixture": { "type": ["string", "null"] },
+    "timestamp": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "hash": { "type": ["string", "null"], "pattern": "^[0-9a-fA-F]{64}$" }
+  }
+}

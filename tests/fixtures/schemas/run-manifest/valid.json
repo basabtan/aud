@@ -1,0 +1,17 @@
+{
+  "schema_version": "aud-run-manifest-v1",
+  "run_id": "RUN-2026-09-04-001",
+  "mode": "diagnose",
+  "selected_audits": ["content-audit", "flow-audit"],
+  "application": { "root": ".", "repository": "owner/example", "revision": "da063c38731f3f797bfd5000374daa5c14952782" },
+  "started_at": "2026-09-04T09:00:00Z",
+  "finished_at": "2026-09-04T09:30:00Z",
+  "depth": "standard",
+  "scope": { "routes": ["/compare"], "surfaces": ["comparison"], "states": ["source-selected"] },
+  "environment": { "os": "windows", "browser": "chromium" },
+  "contracts": [{ "kind": "project-context", "schema_version": "aud-project-context-v1", "artifact_ref": "project-context.json", "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "status": "current" }],
+  "evidence_manifest": "evidence.jsonl",
+  "skipped_inputs": [],
+  "degraded": false,
+  "status": "completed"
+}

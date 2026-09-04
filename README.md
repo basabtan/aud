@@ -5,9 +5,10 @@ marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant. The repository is currently
-at the AUD v2 Phase 0 baseline: the five specialist skills work independently;
-shared schemas, orchestration, synthesis, and verification-ledger automation are
-planned work and are not yet advertised as implemented.
+at the AUD v2 Phase 1 baseline: the five specialist skills work independently,
+and shared schemas, validators, IDs, and ledger rules are available. Orchestration,
+synthesis, and specialist structured-output integration remain planned work and
+are not yet advertised as implemented.
 
 Until the v2 orchestrator exists, broad audits use this manual sequence:
 
@@ -49,8 +50,9 @@ Do not commit application audit results to `basabtan/aud`.
 
 Use [`shared/templates/latest.md`](shared/templates/latest.md) as the canonical
 index and follow [`shared/protocols/run-artifacts.md`](shared/protocols/run-artifacts.md)
-for immutable runs and carry-forward behavior. The structured ledger is reserved
-until the Phase 1 schema is available; do not invent an incompatible format.
+for immutable runs and carry-forward behavior. Validate structured artifacts with
+`npm run validate:schema -- <schema-name> <path>` and merge findings with
+`npm run merge:ledger -- <ledger> <incoming-findings>`.
 
 ## Skills
 

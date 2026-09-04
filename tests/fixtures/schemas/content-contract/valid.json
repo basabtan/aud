@@ -1,0 +1,15 @@
+{
+  "schema_version": "aud-content-contract-v1",
+  "contract_id": "CC-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-001",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "generated_at": "2026-09-04T09:20:00Z",
+  "content_items": [
+    { "id": "CONTENT-CLAIM", "statement": "Primary claim", "responsibility": "State the decision-relevant claim", "provenance_refs": ["EV-014"], "role_refs": ["member"], "journey_stage_refs": ["compare"], "decision": "keep", "merged_into": null },
+    { "id": "CONTENT-DUPLICATE", "statement": "Repeated primary claim", "responsibility": "Legacy duplicate", "provenance_refs": ["EV-014"], "role_refs": ["member"], "journey_stage_refs": ["compare"], "decision": "merge", "merged_into": "CONTENT-CLAIM" }
+  ],
+  "view_contracts": [{ "id": "comparison", "purpose": "Compare decision-relevant claims", "content_refs": ["CONTENT-CLAIM"], "minimum_first_read": ["CONTENT-CLAIM"], "progressive_disclosure": [] }],
+  "human_owned_decisions": ["Final editorial wording"],
+  "assumptions": ["Source provenance is current"],
+  "status": "accepted"
+}

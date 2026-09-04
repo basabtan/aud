@@ -1,0 +1,33 @@
+# Shared schema protocol
+
+AUD structured artifacts use JSON Schema draft 2020-12. Each document carries a
+required `schema_version` discriminator. Version names are immutable; a breaking
+change creates a new major version and a new registry entry.
+
+Supported Phase 1 versions:
+
+| Artifact | Version |
+|---|---|
+| Project context | `aud-project-context-v1` |
+| Task model | `aud-task-model-v1` |
+| Run manifest | `aud-run-manifest-v1` |
+| Evidence | `aud-evidence-v1` |
+| Finding | `aud-finding-v1` |
+| Content contract | `aud-content-contract-v1` |
+| Remediation plan | `aud-remediation-plan-v1` |
+| Verification result | `aud-verification-result-v1` |
+
+Unknown versions fail with `INCOMPATIBLE_SCHEMA_VERSION`; the validator never
+guesses or coerces a major version. JSON Lines files validate one document per
+non-empty line and report the failing line.
+
+Run validation with:
+
+```text
+npm run validate:schema -- finding path/to/findings.jsonl
+npm run validate:schema -- project-context path/to/project-context.json
+```
+
+The registry also performs constraints JSON Schema cannot express compactly:
+duplicate stable IDs, local reference integrity, self-references, time ordering,
+and current-status/history agreement.

@@ -13,8 +13,8 @@ Application revision: `<commit SHA>`
 
 ## Open findings
 
-Source of truth: [`findings-ledger.jsonl`](findings-ledger.jsonl), once the Phase
-1 schema is available.
+Source of truth: [`findings-ledger.jsonl`](findings-ledger.jsonl), validated as
+`aud-finding-v1` records.
 
 | ID | Status | Title | Latest evidence | Next action |
 |---|---|---|---|---|

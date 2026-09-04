@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "node tests/run-all.mjs",
+    "validate:schema": "node shared/validators/validate.mjs",
+    "merge:ledger": "node shared/ledger/merge.mjs",
     "test:artifact-location": "node tests/artifact-location.mjs",
     "test:manifests": "node tests/manifests.mjs",
     "test:audit": "node plugins/audit/tests/acceptance.mjs",
@@ -13,6 +15,8 @@
     "test:visual-audit": "node plugins/visual-audit/tests/acceptance.mjs"
   },
   "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "playwright": "1.62.1"
   }
 }

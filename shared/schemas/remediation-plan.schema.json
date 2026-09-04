@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:remediation-plan:v1",
+  "title": "AUD remediation plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "run_id", "generated_at", "project_revision", "items", "waves", "human_decisions"],
+  "properties": {
+    "schema_version": { "const": "aud-remediation-plan-v1" },
+    "plan_id": { "type": "string", "pattern": "^RP-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["remediation_id", "finding_refs", "cause_cluster_refs", "intended_result", "scope", "non_goals", "dependencies", "implementation_approach", "alternatives_considered", "risk", "estimated_effort", "acceptance_criteria", "verification", "rollback_note", "priority"],
+        "properties": {
+          "remediation_id": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" },
+          "finding_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+          "cause_cluster_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/causeId" }, "uniqueItems": true },
+          "intended_result": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "scope": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true },
+          "non_goals": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "dependencies": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "uniqueItems": true },
+          "implementation_approach": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "alternatives_considered": { "type": "array", "items": { "type": "string" } },
+          "risk": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["level", "rationale"],
+            "properties": {
+              "level": { "enum": ["low", "medium", "high"] },
+              "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }
+            }
+          },
+          "estimated_effort": { "enum": ["XS", "S", "M", "L", "XL", "unknown"] },
+          "acceptance_criteria": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/acceptanceCriterion" } },
+          "verification": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["owner", "instruments"],
+            "properties": {
+              "owner": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+              "instruments": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true }
+            }
+          },
+          "rollback_note": { "type": ["string", "null"] },
+          "priority": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["level", "rationale"],
+            "properties": {
+              "level": { "enum": ["P0", "P1", "P2", "P3", "P4"] },
+              "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }
+            }
+          }
+        }
+      }
+    },
+    "waves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["wave", "remediation_refs"],
+        "properties": {
+          "wave": { "type": "integer", "minimum": 1 },
+          "remediation_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "uniqueItems": true }
+        }
+      }
+    },
+    "human_decisions": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" } }
+  }
+}
