@@ -7,7 +7,7 @@
     {
       "name": "aud",
       "source": "./plugins/aud",
-      "description": "Primary AUD v2 entry point for broad and coordinated audits across shared context, evidence, and specialist dependencies."
+      "description": "Primary AUD v2 entry point for coordinated audits, shared evidence, cross-audit synthesis, and remediation planning."
     },
     {
       "name": "visual-audit",

@@ -26,6 +26,21 @@ function mergeRelationships(left, right) {
   return Object.fromEntries(Object.keys(left).map(key => [key, union(left[key], right[key])]));
 }
 
+function mergeSynthesis(left, right) {
+  if (!left) return right;
+  if (!right) return left;
+  const history = [...left.history];
+  for (const event of right.history) {
+    if (!history.some(item => item.synthesis_id === event.synthesis_id && item.run_id === event.run_id)) history.push(event);
+  }
+  return {
+    cluster_refs: union(left.cluster_refs, right.cluster_refs),
+    relationship_refs: union(left.relationship_refs, right.relationship_refs),
+    remediation_refs: union(left.remediation_refs, right.remediation_refs),
+    history,
+  };
+}
+
 function transitionHistory(existing, incoming, at) {
   const history = [...(existing.status_history ?? [])];
   const supplied = incoming.status_history ?? [];
@@ -57,8 +72,10 @@ export function mergeFinding(existing, incoming, options = {}) {
     affected_personas: union(existing.affected_personas, incoming.affected_personas),
     affected_areas: union(existing.affected_areas, incoming.affected_areas),
     relationships: mergeRelationships(existing.relationships, incoming.relationships),
+    synthesis: mergeSynthesis(existing.synthesis, incoming.synthesis),
     status_history: transitionHistory(existing, incoming, at),
   };
+  if (!merged.synthesis) delete merged.synthesis;
   if (merged.status_history.length === 0) delete merged.status_history;
   assertValidRecord(merged, 'finding');
   return merged;

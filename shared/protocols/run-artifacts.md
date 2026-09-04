@@ -26,6 +26,12 @@ manifest, capture manifest, shared evidence index, prior-open snapshot, and
 execution summary. Specialist artifacts remain in their own type directories
 and reference that one run manifest.
 
+When Phase 4 synthesis completes, the AUD run also contains `synthesis.json`,
+`synthesis-report.md`, `remediation-plan.json`, and `remediation-plan.md`.
+Markdown is rendered from the structured artifacts. Compatible regeneration
+writes a new `YYYY-MM-DD-synthesis/` directory with collision suffixes and never
+rewrites the source run.
+
 A structured run contains `run-manifest.json`, `evidence.jsonl`,
 `findings.jsonl`, and the human report, plus the applicable project context, task
 model, specialist contracts, captures, and test output. Standalone specialists
@@ -68,6 +74,8 @@ one line per stable finding ID. A later run must merge rather than replace it:
 - Close a finding only through an explicit `verified` or `waived` transition.
 - A failed verification records the result and changes the finding to `reopened`.
 - Write the merged ledger atomically so an interrupted run cannot truncate it.
+- Add synthesis cluster, relationship, and remediation references without
+  replacing specialist facts, severity, confidence, or native metrics.
 
 Use the merge behavior in `shared/protocols/ledger.md` and the Phase 1 ledger
 tool. Existing Markdown reports remain legacy evidence and are indexed from

@@ -3,6 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { runAud } from '../../../../../shared/orchestration/orchestrator.mjs';
+import { regenerateSynthesis } from '../../../../../shared/synthesis/runner.mjs';
 
 function args(argv) {
   const values = {};
@@ -10,12 +11,22 @@ function args(argv) {
     if (!argv[index]?.startsWith('--') || argv[index + 1] === undefined) throw new Error(`Invalid argument ${argv[index] ?? ''}`);
     values[argv[index].slice(2)] = argv[index + 1];
   }
-  if (!values.request || !values['project-context']) throw new Error('Usage requires --request and --project-context');
+  if (!values['project-context'] || (!values.request && !values['regenerate-synthesis'])) throw new Error('Usage requires --project-context and either --request or --regenerate-synthesis');
   return values;
 }
 
 try {
   const options = args(process.argv.slice(2));
+  if (options['regenerate-synthesis']) {
+    const result = regenerateSynthesis({
+      runDirectory: resolve(options['regenerate-synthesis']),
+      projectContextPath: resolve(options['project-context']),
+      taskModelPath: options['task-model'] ? resolve(options['task-model']) : null,
+      ledgerPath: options.ledger ? resolve(options.ledger) : null,
+    });
+    process.stdout.write(`${JSON.stringify({ synthesis_id: result.synthesis.synthesis_id, remediation_plan_id: result.remediationPlan.plan_id, source_run_directory: resolve(options['regenerate-synthesis']), run_directory: result.outputDirectory })}\n`);
+    process.exit(0);
+  }
   const requestPath = resolve(options.request);
   const request = JSON.parse(readFileSync(requestPath, 'utf8'));
   const result = runAud({

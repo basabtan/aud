@@ -5,6 +5,7 @@ import { assertValidRecord, validateRecord } from '../validators/schema-registry
 import { canonicalJson, stableId } from '../validators/stable-ids.mjs';
 import { parseJsonLines } from '../ledger/merge.mjs';
 import { runSpecialist } from '../specialists/artifacts.mjs';
+import { writeSynthesisArtifacts } from '../synthesis/runner.mjs';
 import { buildCaptureManifest, captureEvidenceRecords } from './evidence.mjs';
 import { buildAuditPlan } from './planner.mjs';
 import { assertAuditArtifactPath, canonicalRunDirectory } from './paths.mjs';
@@ -150,7 +151,7 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
   if (projectContext.project.revision !== request.current_revision) {
     throw new Error(`REVISION_MISMATCH: project context ${projectContext.project.revision} does not match ${request.current_revision}`);
   }
-  if (request.mode === 'diagnose' && (request.application_changes?.length ?? 0)) throw new Error('MUTATION_PROHIBITED: diagnose mode is strictly report-only');
+  if (request.application_changes?.length ?? 0) throw new Error(`MUTATION_PROHIBITED: ${request.mode} orchestration is analysis/planning-only through Phase 4`);
   const applicationRoot = resolve(dirname(projectPath), projectContext.project.application_root);
   const auditRoot = resolve(applicationRoot, 'audits');
   mkdirSync(auditRoot, { recursive: true });
@@ -237,7 +238,58 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
   }
 
   const incoming = executionResults.flatMap(result => result.directory ? readFindings(join(result.directory, 'findings.jsonl')) : []);
-  const mergedLedger = mergeLedgerAtomic(applicationRoot, resolvedLedger, priorLedger, incoming, request.generated_at);
+  let mergedLedger = mergeLedgerAtomic(applicationRoot, resolvedLedger, priorLedger, incoming, request.generated_at);
+  let synthesisExecution = { disposition: plan.synthesis_stage.disposition, status: 'skipped', reason: plan.synthesis_stage.reason };
+  if (plan.synthesis_stage.disposition === 'selected') {
+    const completed = executionResults.filter(result => result.directory && ['complete', 'degraded'].includes(result.status));
+    if (new Set(completed.map(item => item.audit)).size < 2) {
+      synthesisExecution = { disposition: 'selected', status: 'skipped', reason: 'Insufficient compatible specialist outputs: synthesis requires findings from at least two completed specialists.' };
+    } else {
+      const findingPaths = completed.map(result => join(result.directory, 'findings.jsonl'));
+      const evidencePaths = completed.map(result => join(result.directory, 'evidence.jsonl'));
+      const synthesisResult = writeSynthesisArtifacts({
+        applicationRoot,
+        runDirectory,
+        ledgerPath: resolvedLedger,
+        inputs: {
+          runId,
+          generatedAt: request.generated_at,
+          projectRevision: request.current_revision,
+          auditPlan: plan,
+          runManifest: manifest,
+          projectContext,
+          taskModel,
+          contentContract: activeContentPath && existsSync(activeContentPath) ? readJson(activeContentPath) : null,
+          flowContract: activeFlowPath && existsSync(activeFlowPath) ? readJson(activeFlowPath) : null,
+          captureManifest,
+          findings: incoming,
+          evidence: [...readFindings(join(runDirectory, 'evidence.jsonl')), ...evidencePaths.flatMap(readFindings)],
+          ledger: mergedLedger,
+          relationshipHints: request.synthesis_relationships ?? [],
+          contradictionResolutions: request.contradiction_resolutions ?? {},
+          inputRefs: {
+            audit_plan: join(runDirectory, 'audit-plan.json'),
+            run_manifest: manifestPath,
+            project_context: projectPath,
+            task_model: taskPath,
+            content_contract: activeContentPath,
+            flow_contract: activeFlowPath,
+            capture_manifest: capturePath,
+            ledger: resolvedLedger,
+            specialist_findings: findingPaths,
+            specialist_evidence: evidencePaths,
+          },
+        },
+      });
+      mergedLedger = synthesisResult.ledger;
+      synthesisExecution = {
+        disposition: 'selected', status: 'complete', reason: 'Compatible multi-specialist findings were synthesized.',
+        synthesis_ref: join(runDirectory, 'synthesis.json'), remediation_plan_ref: join(runDirectory, 'remediation-plan.json'),
+      };
+      manifest.contracts.push(contractEntry('synthesis-result', synthesisResult.synthesis, synthesisExecution.synthesis_ref));
+      manifest.contracts.push(contractEntry('remediation-plan', synthesisResult.remediationPlan, synthesisExecution.remediation_plan_ref));
+    }
+  }
   const latestPath = updateLatestAtomic({
     applicationRoot,
     latestPath: join(auditRoot, 'latest.md'),
@@ -261,9 +313,10 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
     report_only: true,
     application_mutations: [],
     results: executionResults,
+    synthesis: synthesisExecution,
     ledger_ref: resolvedLedger,
     latest_ref: latestPath,
-    phase_boundaries: { synthesis: 'deferred-phase-4', verification: 'planned-only-phase-5' },
+    phase_boundaries: { synthesis: 'phase-4-analysis-only', verification: 'planned-only-phase-5' },
   };
   writeJsonAtomic(join(runDirectory, 'execution.json'), execution);
   return { runDirectory, plan, captureManifest, manifest, execution, ledger: mergedLedger };

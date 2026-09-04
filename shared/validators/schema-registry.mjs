@@ -17,6 +17,10 @@ export const schemaFiles = Object.freeze({
   finding: 'finding.schema.json',
   'content-contract': 'content-contract.schema.json',
   'flow-contract': 'flow-contract.schema.json',
+  'issue-cluster': 'issue-cluster.schema.json',
+  contradiction: 'contradiction.schema.json',
+  'remediation-item': 'remediation-item.schema.json',
+  'synthesis-result': 'synthesis-result.schema.json',
   'remediation-plan': 'remediation-plan.schema.json',
   'verification-result': 'verification-result.schema.json',
 });
@@ -31,7 +35,11 @@ export const schemaVersions = Object.freeze({
   finding: 'aud-finding-v1',
   'content-contract': 'aud-content-contract-v1',
   'flow-contract': 'aud-flow-contract-v1',
-  'remediation-plan': 'aud-remediation-plan-v1',
+  'issue-cluster': 'aud-issue-cluster-v1',
+  contradiction: 'aud-contradiction-v1',
+  'remediation-item': 'aud-remediation-item-v1',
+  'synthesis-result': 'aud-synthesis-result-v1',
+  'remediation-plan': 'aud-remediation-plan-v2',
   'verification-result': 'aud-verification-result-v1',
 });
 
@@ -43,12 +51,17 @@ function readSchema(filename) {
 
 const common = readSchema('common.schema.json');
 const schemas = Object.fromEntries(Object.entries(schemaFiles).map(([name, filename]) => [name, readSchema(filename)]));
+const legacySchemas = [readSchema('remediation-plan-v1.schema.json')];
+const schemaByVersion = new Map(Object.entries(schemaVersions).map(([name, version]) => [version, schemas[name]]));
+schemaByVersion.set('aud-remediation-plan-v1', legacySchemas[0]);
+nameByVersion.set('aud-remediation-plan-v1', 'remediation-plan');
 
 export function createRegistry() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
   ajv.addSchema(common);
   for (const schema of Object.values(schemas)) ajv.addSchema(schema);
+  for (const schema of legacySchemas) ajv.addSchema(schema);
   return ajv;
 }
 
@@ -133,10 +146,31 @@ function semanticIssues(name, record) {
     for (const [index, item] of record.items.entries()) {
       issues.push(...missingReferenceIssues(item.dependencies, remediationIds, `/items/${index}/dependencies`, 'remediation'));
       if (item.dependencies.includes(item.remediation_id)) issues.push(issue('SELF_REFERENCE', `/items/${index}/dependencies`, 'Remediation item cannot depend on itself'));
+      if (record.schema_version === 'aud-remediation-plan-v2' && item.blockers.includes(item.remediation_id)) issues.push(issue('SELF_REFERENCE', `/items/${index}/blockers`, 'Remediation item cannot block itself'));
     }
     for (const [index, wave] of record.waves.entries()) {
       issues.push(...missingReferenceIssues(wave.remediation_refs, remediationIds, `/waves/${index}/remediation_refs`, 'remediation'));
     }
+    if (record.schema_version === 'aud-remediation-plan-v2') {
+      const scheduled = record.waves.flatMap(wave => wave.remediation_refs);
+      if (new Set(scheduled).size !== scheduled.length) issues.push(issue('DUPLICATE_SCHEDULE', '/waves', 'A remediation item may appear in at most one wave'));
+      if (!record.cycle_detection.detected && scheduled.length !== record.items.length) issues.push(issue('INCOMPLETE_SCHEDULE', '/waves', 'Every acyclic remediation item must be scheduled'));
+    }
+  }
+  if (name === 'issue-cluster') {
+    if (!record.finding_refs.includes(record.representative_finding_id)) issues.push(issue('UNKNOWN_REFERENCE', '/representative_finding_id', 'Representative finding must belong to the cluster'));
+    for (const id of record.duplicate_finding_refs) if (!record.finding_refs.includes(id)) issues.push(issue('UNKNOWN_REFERENCE', '/duplicate_finding_refs', `${id} is not a cluster finding`));
+  }
+  if (name === 'contradiction') {
+    for (const claim of record.claims) if (!record.finding_refs.includes(claim.finding_id)) issues.push(issue('UNKNOWN_REFERENCE', '/claims', `${claim.finding_id} is not involved in the contradiction`));
+    if (record.resolution.selected_finding_id && !record.finding_refs.includes(record.resolution.selected_finding_id)) issues.push(issue('UNKNOWN_REFERENCE', '/resolution/selected_finding_id', 'Selected finding must be involved in the contradiction'));
+    if (record.resolution.status === 'resolved' && (!record.resolution.rationale || !record.resolution.selected_finding_id)) issues.push(issue('UNEXPLAINED_RESOLUTION', '/resolution', 'Resolved contradictions require a rationale and selected finding'));
+  }
+  if (name === 'synthesis-result') {
+    issues.push(...duplicateIdIssues(record.canonical_findings, '/canonical_findings', 'canonical_id'));
+    issues.push(...duplicateIdIssues(record.relationships, '/relationships', 'relationship_id'));
+    issues.push(...duplicateIdIssues(record.clusters, '/clusters', 'cluster_id'));
+    issues.push(...duplicateIdIssues(record.contradictions, '/contradictions', 'contradiction_id'));
   }
   return issues;
 }
@@ -165,7 +199,7 @@ export function validateRecord(record, expectedName = null) {
   if (expectedName && name !== expectedName) {
     return { valid: false, schema: expectedName, version, errors: [issue('SCHEMA_TYPE_MISMATCH', '/schema_version', `Expected ${schemaVersions[expectedName]} but received ${version}`)] };
   }
-  const validate = registry.getSchema(schemas[name].$id);
+  const validate = registry.getSchema(schemaByVersion.get(version).$id);
   const structurallyValid = validate(record);
   const errors = structurallyValid ? [] : formatAjvErrors(validate.errors);
   if (structurallyValid) errors.push(...semanticIssues(name, record));

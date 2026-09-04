@@ -195,6 +195,21 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
         : 'Explicit degraded mode records the missing content-contract consequences.',
   });
   const degradedConsequences = unique(decisions.flatMap(item => item.consequences));
+  const selectedAuditNames = selectedDecisions.map(item => item.audit);
+  const synthesisRequested = request.synthesis !== false && request.mode !== 'specialist' && selectedAuditNames.length > 1;
+  const synthesisStage = request.mode === 'specialist'
+    ? { disposition: 'skipped', reason: 'Specialist-only runs remain independent and do not invoke cross-audit synthesis.', dependencies: [] }
+    : synthesisRequested
+      ? {
+          disposition: 'selected',
+          reason: 'Cross-audit synthesis is enabled for this multi-specialist run and will execute when compatible specialist outputs exist.',
+          dependencies: [...selectedAuditNames, 'shared-evidence', 'persistent-ledger'],
+        }
+      : {
+          disposition: 'skipped',
+          reason: request.synthesis === false ? 'Synthesis was explicitly disabled.' : 'Fewer than two specialists were selected; cross-audit evidence is insufficient.',
+          dependencies: [],
+        };
   const plan = {
     schema_version: 'aud-audit-plan-v1',
     plan_id: stableId('AP', runId, { mode: request.mode, scope: request.scope ?? {}, decisions: decisions.map(item => [item.audit, item.disposition]) }),
@@ -213,6 +228,7 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
     prior_open_finding_refs: priorOpen.map(finding => finding.id),
     decisions,
     execution_waves: executionWaves,
+    synthesis_stage: synthesisStage,
     evidence_baseline: {
       capture_manifest_ref: captureManifestRef,
       project_revision: request.current_revision,
@@ -223,7 +239,7 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
     degraded_consequences: degradedConsequences,
     report_only: true,
     application_mutation_allowed: false,
-    deferred_capabilities: ['synthesis', 'root-cause clustering', 'remediation prioritization', 'full verification execution'],
+    deferred_capabilities: ['remediation execution', 'full verification execution'],
   };
   assertValidRecord(plan, 'audit-plan');
   return plan;

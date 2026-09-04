@@ -54,7 +54,30 @@
       }
     },
     "status": { "$ref": "urn:aud:schema:common:v1#/$defs/status" },
-    "status_history": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/statusHistoryEntry" } }
+    "status_history": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/statusHistoryEntry" } },
+    "synthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cluster_refs", "relationship_refs", "remediation_refs", "history"],
+      "properties": {
+        "cluster_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/clusterId" }, "uniqueItems": true },
+        "relationship_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/relationshipId" }, "uniqueItems": true },
+        "remediation_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "uniqueItems": true },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["synthesis_id", "run_id", "at"],
+            "properties": {
+              "synthesis_id": { "type": "string", "pattern": "^SYN-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+              "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+              "at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }
+            }
+          }
+        }
+      }
+    }
   },
   "allOf": [
     {

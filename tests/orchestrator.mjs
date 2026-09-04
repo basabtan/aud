@@ -69,7 +69,12 @@ try {
   assert.match(first.plan.execution_waves[1].readiness_condition, /content contract/i);
   assert.equal(first.plan.report_only, true);
   assert.equal(first.plan.application_mutation_allowed, false);
+  assert.equal(first.plan.synthesis_stage.disposition, 'selected');
   assert.deepEqual(first.execution.application_mutations, []);
+  assert.equal(first.execution.synthesis.status, 'complete');
+  for (const artifact of ['synthesis.json', 'remediation-plan.json', 'synthesis-report.md', 'remediation-plan.md']) {
+    assert.ok(existsSync(join(first.runDirectory, artifact)), `orchestrator did not produce ${artifact}`);
+  }
 
   const results = new Map(first.execution.results.map(item => [item.audit, item]));
   assert.equal(results.get('content-audit').status, 'complete');
@@ -161,6 +166,7 @@ try {
     request: { ...specialistRequest, requested_specialist: 'visual-audit', scope: { ...request.scope, aspects: ['visual'] } },
   });
   assert.deepEqual(directVisual.decisions.filter(item => item.disposition === 'selected').map(item => item.audit), ['visual-audit']);
+  assert.equal(directVisual.synthesis_stage.disposition, 'skipped');
   for (const specialist of ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit']) {
     assert.ok(existsSync(join(root, 'plugins', specialist, 'skills', specialist, 'SKILL.md')), `${specialist} direct command was removed`);
   }
@@ -171,6 +177,10 @@ try {
   }), /REVISION_MISMATCH/);
   assert.throws(() => runAud({
     request: { ...request, application_changes: ['src/app.ts'] },
+    projectContextPath: projectPath, taskModelPath: taskPath, requestBase: orchestration,
+  }), /MUTATION_PROHIBITED/);
+  assert.throws(() => runAud({
+    request: { ...request, mode: 'redesign', application_changes: ['src/app.ts'] },
     projectContextPath: projectPath, taskModelPath: taskPath, requestBase: orchestration,
   }), /MUTATION_PROHIBITED/);
 
@@ -190,6 +200,8 @@ try {
   assert.deepEqual(second.captureManifest.reused_evidence_refs, first.captureManifest.artifacts.map(item => item.evidence_id));
   assert.equal(second.captureManifest.artifacts.length, first.captureManifest.artifacts.length, 'reused capture was duplicated');
   assert.ok(second.ledger.some(item => item.id === priorFinding.id), 'carry-forward failed on later run');
+  assert.equal(second.execution.synthesis.status, 'skipped');
+  assert.match(second.execution.synthesis.reason, /insufficient compatible specialist outputs/i);
 
   const reused = buildCaptureManifest({
     runId: 'RUN-CAPTURE-REUSE', projectRevision: request.current_revision, createdAt: '2026-09-04T12:00:00Z',
@@ -232,6 +244,23 @@ try {
   const cliResult = JSON.parse(cli.stdout);
   assert.ok(existsSync(join(cliResult.run_directory, 'audit-plan.json')), 'one-command CLI did not create a plan');
   assert.ok(existsSync(join(cliApplication, 'audits', '2026-09-04-visual', 'findings.jsonl')), 'one-command CLI did not produce the specialist run');
+  assert.equal(json(join(cliResult.run_directory, 'execution.json')).synthesis.status, 'skipped');
+
+  const beforeRegeneration = json(join(first.runDirectory, 'synthesis.json')).synthesis_id;
+  const sourceHashBeforeRegeneration = hashDirectory(first.runDirectory);
+  const regenerate = spawnSync(process.execPath, [
+    join(root, 'plugins', 'aud', 'skills', 'aud', 'scripts', 'aud.mjs'),
+    '--regenerate-synthesis', first.runDirectory,
+    '--project-context', projectPath,
+    '--task-model', taskPath,
+    '--ledger', ledgerPath,
+  ], { cwd: root, encoding: 'utf8' });
+  assert.equal(regenerate.status, 0, regenerate.stderr || regenerate.stdout);
+  const regeneratedResult = JSON.parse(regenerate.stdout);
+  assert.equal(regeneratedResult.synthesis_id, beforeRegeneration, 'compatible regeneration changed the stable synthesis ID');
+  assert.notEqual(regeneratedResult.run_directory, first.runDirectory, 'regeneration overwrote the immutable source run');
+  assert.ok(existsSync(join(regeneratedResult.run_directory, 'synthesis.json')));
+  assert.equal(hashDirectory(first.runDirectory), sourceHashBeforeRegeneration, 'regeneration changed the immutable source run');
 
   console.log('PASS — deterministic planning, dependencies, degraded mode, evidence reuse, persistence, safety, compatibility, and portable paths validated.');
 } finally {

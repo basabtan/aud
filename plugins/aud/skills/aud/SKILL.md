@@ -6,15 +6,16 @@ description: Primary entry point for broad or ambiguous product/interface audits
 # AUD orchestrator
 
 Use this command for broad or ambiguous requests. Its job is intake, planning,
-dependency coordination, shared evidence, and persistent run bookkeeping. It
-does not perform Phase 4 synthesis, cluster root causes, assign remediation priority,
+dependency coordination, shared evidence, cross-audit synthesis, remediation
+planning, and persistent run bookkeeping. It does not execute remediation,
 apply application changes, or perform full Phase 5 verification.
 
 ## Modes
 
-- `diagnose` — assess the current product. Strictly report-only.
+- `diagnose` — assess the current product and synthesize a multi-specialist
+  diagnosis by default. Strictly report-only.
 - `redesign` — build the content-first specialist plan and design constraints.
-  Phase 3 stops before synthesis, remediation prioritization, or implementation.
+  Phase 4 produces an ordered remediation plan but stops before implementation.
 - `verify` — load eligible ledger records and plan producing-specialist plus
   functional rechecks. Full replay, status closure, and regression logic remain
   Phase 5.
@@ -38,6 +39,8 @@ adding `-02`, `-03`, and so on when needed. Write:
 - shared `evidence.jsonl`
 - `prior-open-findings.jsonl`
 - `execution.json`
+- `synthesis.json` and `synthesis-report.md` when synthesis inputs are sufficient
+- `remediation-plan.json` and `remediation-plan.md` when synthesis completes
 
 ## Deterministic selection and dependencies
 
@@ -50,6 +53,24 @@ share the same next execution wave and are parallel-ready once that
 contract exists. A narrow specialist request never silently expands into a full
 pipeline. Missing dependencies either defer execution or require explicit
 `allow_degraded`, with consequences recorded in the plan and specialist status.
+
+## Synthesis and remediation planning
+
+Enable synthesis by default for multi-specialist diagnose/redesign runs. Keep
+specialist-only runs independent. Require at least two compatible specialist
+outputs; otherwise mark synthesis skipped with an explicit reason.
+
+Preserve every specialist finding. Group only deterministic duplicate matches,
+record ambiguous candidates as possible relationships, and keep provenance and
+evidence attribution. Contradictions remain visible until an explicit resolution
+records its evidence and rationale. Treat root causes as inferences and mark
+low-confidence causes provisional. Follow `references/synthesis.md`.
+
+Only synthesis assigns priority. Severity remains the specialist's consequence
+judgment and confidence remains separate. High-severity/low-confidence risks
+become investigation work without reducing severity. Order remediation through
+dependencies and leverage; report cycles and human-decision gates rather than
+inventing an order.
 
 ## Shared evidence
 
@@ -71,7 +92,7 @@ atomically. Never rewrite prior completed run directories.
 
 Never store product-specific audit results in the repository that distributes this skill.
 
-AUD orchestration is report-only in Phase 3. All output writes must remain under
+AUD orchestration is report-only through Phase 4. All output writes must remain under
 the audited application's `audits/` directory. Any requested application
 mutation in `diagnose` is an error; other modes also require separate future
 authorization and execution outside this orchestrator.
@@ -88,6 +109,16 @@ node scripts/aud.mjs \
   [--ledger audits/findings-ledger.jsonl]
 ```
 
+Regenerate Phase 4 artifacts from one compatible completed run:
+
+```text
+node scripts/aud.mjs \
+  --regenerate-synthesis audits/YYYY-MM-DD-aud \
+  --project-context project-context.json \
+  [--task-model task-model.json] \
+  [--ledger audits/findings-ledger.jsonl]
+```
+
 The request supplies `mode`, `current_revision`, scope, risk profile, capture
 packet, and optional specialist observation-packet paths. Use the emitted plan
 as the source of truth for execution order.
@@ -96,4 +127,6 @@ as the source of truth for execution order.
 
 - `references/selection.md` — deterministic selection and dependency rules.
 - `references/evidence.md` — baseline, capture, reuse, and degradation rules.
+- `references/synthesis.md` — deduplication, relationships, contradictions,
+  priority, lifecycle, and Phase 5 handoff.
 - `scripts/aud.mjs` — executable orchestrator.

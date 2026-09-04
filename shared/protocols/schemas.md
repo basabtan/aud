@@ -4,7 +4,7 @@ AUD structured artifacts use JSON Schema draft 2020-12. Each document carries a
 required `schema_version` discriminator. Version names are immutable; a breaking
 change creates a new major version and a new registry entry.
 
-Supported versions through Phase 2:
+Supported versions through Phase 4:
 
 | Artifact | Version |
 |---|---|
@@ -17,12 +17,19 @@ Supported versions through Phase 2:
 | Finding | `aud-finding-v1` |
 | Content contract | `aud-content-contract-v1` |
 | Flow contract | `aud-flow-contract-v1` |
-| Remediation plan | `aud-remediation-plan-v1` |
+| Issue cluster | `aud-issue-cluster-v1` |
+| Contradiction | `aud-contradiction-v1` |
+| Synthesis result | `aud-synthesis-result-v1` |
+| Remediation item | `aud-remediation-item-v1` |
+| Remediation plan | `aud-remediation-plan-v2` |
 | Verification result | `aud-verification-result-v1` |
 
 Unknown versions fail with `INCOMPATIBLE_SCHEMA_VERSION`; the validator never
 guesses or coerces a major version. JSON Lines files validate one document per
 non-empty line and report the failing line.
+
+`aud-remediation-plan-v1` remains accepted as a legacy functional-audit input;
+Phase 4 synthesis generates only `aud-remediation-plan-v2`.
 
 Run validation with:
 

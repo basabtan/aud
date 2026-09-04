@@ -22,10 +22,11 @@
     { "wave": 1, "audits": ["content-audit"], "readiness_condition": "Shared context and evidence baseline are current." },
     { "wave": 2, "audits": ["place-audit", "flow-audit"], "readiness_condition": "A schema-valid current content contract exists." }
   ],
+  "synthesis_stage": { "disposition": "selected", "reason": "Multi-specialist diagnose run.", "dependencies": ["content-audit", "place-audit", "flow-audit", "shared-evidence", "persistent-ledger"] },
   "evidence_baseline": { "capture_manifest_ref": "capture-manifest.json", "project_revision": "da063c38731f3f797bfd5000374daa5c14952782", "baseline_signature": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "state": "current" },
   "degraded": false,
   "degraded_consequences": [],
   "report_only": true,
   "application_mutation_allowed": false,
-  "deferred_capabilities": ["synthesis", "root-cause clustering", "remediation prioritization", "full verification execution"]
+  "deferred_capabilities": ["remediation execution", "full verification execution"]
 }

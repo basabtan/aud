@@ -37,6 +37,9 @@ assert.deepEqual(finding.native_metrics, { specialist_score: 91, nested: { verdi
 const prematurePriority = { ...finding, priority: 'P0' };
 assert.equal(validateRecord(prematurePriority, 'finding').valid, false, 'specialist finding assigned synthesis priority');
 
+const legacyRemediation = JSON.parse(readFileSync(join(fixtureRoot, 'remediation-plan', 'legacy-v1.json'), 'utf8'));
+assert.equal(validateRecord(legacyRemediation, 'remediation-plan').valid, true, 'Phase 1 remediation-plan v1 compatibility was lost');
+
 const duplicateTasks = JSON.parse(readFileSync(join(fixtureRoot, 'task-model', 'valid.json'), 'utf8'));
 duplicateTasks.tasks.push(structuredClone(duplicateTasks.tasks[0]));
 assert.equal(validateRecord(duplicateTasks, 'task-model').errors.some(error => error.code === 'DUPLICATE_ID'), true);

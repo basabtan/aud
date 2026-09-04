@@ -35,7 +35,8 @@ into the orchestration run and retained by the atomic ledger merge.
 `audits/latest.md` is also replaced atomically while preserving prior specialist
 links.
 
-All four Phase 3 modes are report/planning-only. Diagnose rejects requested
-application mutations. Phase 4 synthesis, root-cause clustering, contradiction
-resolution, and priority are not implemented. Verify mode only builds the
-eligible verification plan; Phase 5 owns full replay and status closure.
+All four modes remain report/planning-only. Diagnose rejects requested
+application mutations. Phase 4 now consumes these outputs for synthesis,
+root-cause clustering, visible contradiction handling, and remediation
+priority. Verify mode still only builds the eligible verification plan; Phase 5
+owns full replay and status closure.

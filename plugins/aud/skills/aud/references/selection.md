@@ -1,5 +1,10 @@
 # Deterministic audit selection
 
+After specialist selection, multi-specialist diagnose/redesign plans select a
+Phase 4 synthesis stage depending on completed specialist findings, shared
+evidence, and the persistent ledger. Specialist mode and single-specialist plans
+skip synthesis explicitly.
+
 The canonical specialists are content, place, flow, visual, and functional.
 Every plan records one disposition for each.
 

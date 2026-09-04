@@ -1,0 +1,9 @@
+{
+  "schema_version": "aud-issue-cluster-v1", "cluster_id": "CLUSTER-TEST-001", "run_id": "RUN-TEST-001",
+  "representative_finding_id": "F-TEST-001", "finding_refs": ["F-TEST-001"], "duplicate_finding_refs": [],
+  "grouping": { "rationale": "Independent canonical issue.", "signals": ["independent canonical issue"] },
+  "observed_symptoms": [{ "finding_id": "F-TEST-001", "claim": "The task is blocked.", "evidence_refs": ["EV-TEST-001"] }],
+  "inferred_root_cause": null, "supporting_evidence_refs": ["EV-TEST-001"], "conflicting_evidence_refs": [],
+  "affected": { "tasks": ["TASK-TEST-001"], "routes": ["/test"], "components": ["test-panel"], "content": [] },
+  "specialist_coverage": ["functional-audit"], "root_cause_confidence": { "score": 0.3, "basis": "No cause inferred." }, "unresolved_assumptions": []
+}
