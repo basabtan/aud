@@ -20,7 +20,7 @@ for (const path of [
 assert.equal(JSON.parse(readFileSync(join(plugin, '.claude-plugin', 'plugin.json'), 'utf8')).name, 'content-audit');
 const instructions = readFileSync(join(skill, 'SKILL.md'), 'utf8');
 for (const phrase of [
-  'Audit WHAT information should exist and WHEN it should appear',
+  'narrow question of WHAT information should exist and WHEN it should appear',
   'Where should the approved information live',
   'Has the visual treatment been deliberately designed',
   'Does the implementation work correctly',

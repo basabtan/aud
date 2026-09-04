@@ -21,6 +21,11 @@ Each run directory is immutable after completion. A repeated audit of the same
 type on one date receives the next two-digit suffix. Reports may link prior runs,
 but must not overwrite their evidence.
 
+The Phase 3 orchestrator uses `YYYY-MM-DD-aud/` for its plan, shared run
+manifest, capture manifest, shared evidence index, prior-open snapshot, and
+execution summary. Specialist artifacts remain in their own type directories
+and reference that one run manifest.
+
 A structured run contains `run-manifest.json`, `evidence.jsonl`,
 `findings.jsonl`, and the human report, plus the applicable project context, task
 model, specialist contracts, captures, and test output. Standalone specialists

@@ -8,6 +8,7 @@
     "merge:ledger": "node shared/ledger/merge.mjs",
     "test:artifact-location": "node tests/artifact-location.mjs",
     "test:manifests": "node tests/manifests.mjs",
+    "test:aud": "node plugins/aud/tests/acceptance.mjs",
     "test:audit": "node plugins/audit/tests/acceptance.mjs",
     "test:functional-audit": "node plugins/functional-audit/tests/acceptance.mjs",
     "test:content-audit": "node plugins/content-audit/tests/acceptance.mjs",

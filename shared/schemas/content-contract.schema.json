@@ -20,6 +20,7 @@
         "required": ["id", "statement", "responsibility", "provenance_refs", "role_refs", "journey_stage_refs", "decision", "merged_into"],
         "properties": {
           "id": { "$ref": "urn:aud:schema:common:v1#/$defs/contentId" },
+          "key": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
           "statement": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
           "responsibility": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
           "provenance_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },

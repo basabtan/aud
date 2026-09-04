@@ -14,6 +14,13 @@ for (const entry of marketplace.plugins) {
   assert.doesNotMatch(skill, placeholder, `${entry.name}: placeholder remains`);
 }
 
+const audTrigger = readFileSync('plugins/aud/skills/aud/SKILL.md', 'utf8').split('---')[1];
+assert.match(audTrigger, /broad or ambiguous/i, 'aud does not own ambiguous requests');
+for (const specialist of ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit']) {
+  const trigger = readFileSync(`plugins/${specialist}/skills/${specialist}/SKILL.md`, 'utf8').split('---')[1];
+  assert.match(trigger, /explicit/i, `${specialist} still has a competing broad trigger`);
+}
+
 const allPortable = [
   'plugins/functional-audit/skills/functional-audit/SKILL.md',
   'plugins/functional-audit/skills/functional-audit/references/drivers.md',

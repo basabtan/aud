@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const policies = [
+  ['aud', 'aud'],
   ['content-audit', 'content'],
   ['place-audit', 'place'],
   ['flow-audit', 'flow'],

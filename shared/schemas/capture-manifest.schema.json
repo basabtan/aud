@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:capture-manifest:v1",
+  "title": "AUD shared capture manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "capture_id", "run_id", "project_revision", "created_at", "baseline_signature", "routes", "states", "fixtures", "viewports", "environment", "artifacts", "reused_evidence_refs", "capture_needed", "status"],
+  "properties": {
+    "schema_version": { "const": "aud-capture-manifest-v1" },
+    "capture_id": { "type": "string", "pattern": "^CAP-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "created_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "baseline_signature": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "routes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "states": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "fixtures": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "viewports": { "type": "array", "items": { "type": "string", "pattern": "^[0-9]+x[0-9]+$" }, "uniqueItems": true },
+    "environment": { "type": "object", "additionalProperties": true, "minProperties": 1 },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "evidence_id", "type", "artifact_ref", "exact_observation", "strength", "producer", "route", "state", "fixture", "viewport", "captured_at", "hash", "reused"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          "evidence_id": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" },
+          "type": { "enum": ["observation", "screenshot", "trace", "test", "measurement", "repository", "browser_error", "network_error", "page_error", "environment"] },
+          "artifact_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "exact_observation": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "strength": { "enum": ["direct", "derived", "inferred", "conflicting"] },
+          "producer": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "route": { "type": ["string", "null"] },
+          "state": { "type": ["string", "null"] },
+          "fixture": { "type": ["string", "null"] },
+          "viewport": { "type": ["string", "null"], "pattern": "^[0-9]+x[0-9]+$" },
+          "captured_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+          "hash": { "type": ["string", "null"], "pattern": "^[0-9a-fA-F]{64}$" },
+          "reused": { "type": "boolean" }
+        }
+      }
+    },
+    "reused_evidence_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+    "capture_needed": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "status": { "enum": ["planned", "complete", "degraded"] }
+  }
+}

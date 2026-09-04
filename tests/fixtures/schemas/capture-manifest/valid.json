@@ -1,0 +1,32 @@
+{
+  "schema_version": "aud-capture-manifest-v1",
+  "capture_id": "CAP-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-003",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "created_at": "2026-09-04T11:00:00Z",
+  "baseline_signature": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "routes": ["/compare"],
+  "states": ["source-selected"],
+  "fixtures": ["mature"],
+  "viewports": ["1280x800"],
+  "environment": { "browser": "chromium", "os": "fixture" },
+  "artifacts": [{
+    "key": "compare-state",
+    "evidence_id": "EV-CAPTURE-001",
+    "type": "screenshot",
+    "artifact_ref": "screenshots/compare.png",
+    "exact_observation": "Comparison state captured with a fixed mature fixture.",
+    "strength": "direct",
+    "producer": "aud",
+    "route": "/compare",
+    "state": "source-selected",
+    "fixture": "mature",
+    "viewport": "1280x800",
+    "captured_at": "2026-09-04T11:00:00Z",
+    "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "reused": false
+  }],
+  "reused_evidence_refs": [],
+  "capture_needed": [],
+  "status": "complete"
+}

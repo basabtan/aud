@@ -4,11 +4,11 @@ import { assertValidRecord } from '../validators/schema-registry.mjs';
 import { evidenceId, findingId, stableId } from '../validators/stable-ids.mjs';
 
 const inputRules = Object.freeze({
-  'content-audit': { project: 'required', task: 'required' },
-  'place-audit': { project: 'optional', task: 'required', content: 'optional' },
-  'flow-audit': { project: 'required', task: 'required', content: 'optional' },
-  'visual-audit': { project: 'optional', task: 'optional' },
-  'functional-audit': { project: 'optional', task: 'optional', flow: 'optional', remediation: 'optional' },
+  'content-audit': { project: 'required', task: 'required', capture: 'optional' },
+  'place-audit': { project: 'optional', task: 'required', content: 'optional', capture: 'optional' },
+  'flow-audit': { project: 'required', task: 'required', content: 'optional', capture: 'optional' },
+  'visual-audit': { project: 'optional', task: 'optional', capture: 'optional' },
+  'functional-audit': { project: 'optional', task: 'optional', flow: 'optional', remediation: 'optional', capture: 'optional' },
 });
 
 function readJson(path) {
@@ -64,7 +64,6 @@ function loadContract(options, key, schema, required, status) {
 
 function assertCompatible(record, manifest, label) {
   if (!record) return;
-  if (record.run_id && record.run_id !== manifest.run_id) throw new Error(`INCOMPATIBLE_RUN: ${label} uses ${record.run_id}; expected ${manifest.run_id}`);
   const revision = record.project_revision ?? record.project?.revision;
   if (revision && revision !== manifest.application.revision) {
     throw new Error(`STALE_CONTRACT: ${label} uses revision ${revision}; expected ${manifest.application.revision}`);
@@ -173,6 +172,7 @@ function buildContentContract(input, manifest, evidence, contexts) {
     contentByKey.set(item.block_key, id);
     return {
       id,
+      key: item.block_key,
       statement: item.statement,
       responsibility: item.responsibility,
       provenance_refs: item.provenance_finding_indexes?.flatMap(index => evidence[index]?.map(record => record.id) ?? []) ?? [],
@@ -213,6 +213,22 @@ function buildContentContract(input, manifest, evidence, contexts) {
 function survivingContentIds(contract) {
   if (!contract) return null;
   return new Set(contract.content_items.filter(item => ['keep', 'disclose', 'human_decision'].includes(item.decision)).map(item => item.id));
+}
+
+function resolveContentKeys(rawFindings, contract) {
+  if (!contract) return;
+  const byKey = new Map(contract.content_items.filter(item => item.key).map(item => [item.key, item.id]));
+  const resolveKeys = keys => (keys ?? []).map(key => {
+    const id = byKey.get(key);
+    if (!id) throw new Error(`UNKNOWN_CONTENT_KEY: ${key}`);
+    return id;
+  });
+  for (const finding of rawFindings) {
+    if (finding.content_keys?.length) finding.content_refs = resolveKeys(finding.content_keys);
+    if (finding.flow_recommendation?.content_keys?.length) {
+      finding.flow_recommendation.content_refs = resolveKeys(finding.flow_recommendation.content_keys);
+    }
+  }
 }
 
 function preparePlaceFindings(input, content, status) {
@@ -320,6 +336,7 @@ export function runSpecialist(sourceAudit, argv = process.argv.slice(2)) {
     content: ['content-contract', 'content-contract'],
     flow: ['flow-contract', 'flow-contract'],
     remediation: ['remediation-plan', 'remediation-plan'],
+    capture: ['capture-manifest', 'capture-manifest'],
   };
   const contexts = {};
   for (const [name, [option, schema]] of Object.entries(definitions)) {
@@ -331,6 +348,7 @@ export function runSpecialist(sourceAudit, argv = process.argv.slice(2)) {
   if (sourceAudit === 'functional-audit') enforceFunctionalBoundary(input, contexts);
 
   let rawFindings = input.findings;
+  resolveContentKeys(rawFindings, contexts.content);
   if (sourceAudit === 'place-audit') rawFindings = preparePlaceFindings(input, contexts.content, status);
   if (sourceAudit === 'flow-audit' && contexts.content) {
     const surviving = survivingContentIds(contexts.content);
@@ -363,6 +381,11 @@ export function runSpecialist(sourceAudit, argv = process.argv.slice(2)) {
   status.degraded ||= status.inputs.some(item => item.state === 'missing');
   status.accepted_flow_contract_items = contexts.acceptedFlow?.length ?? 0;
   status.remediation_items = contexts.acceptedRemediation?.length ?? 0;
+  status.evidence_baseline = contexts.capture ? {
+    capture_id: contexts.capture.capture_id,
+    baseline_signature: contexts.capture.baseline_signature,
+    project_revision: contexts.capture.project_revision,
+  } : null;
   writeJson(join(outputDirectory, 'input-status.json'), status);
 
   if (contentContract) writeJson(join(outputDirectory, 'content-contract.json'), contentContract);

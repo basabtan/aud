@@ -11,6 +11,8 @@ export const schemaFiles = Object.freeze({
   'project-context': 'project-context.schema.json',
   'task-model': 'task-model.schema.json',
   'run-manifest': 'run-manifest.schema.json',
+  'audit-plan': 'audit-plan.schema.json',
+  'capture-manifest': 'capture-manifest.schema.json',
   evidence: 'evidence.schema.json',
   finding: 'finding.schema.json',
   'content-contract': 'content-contract.schema.json',
@@ -23,6 +25,8 @@ export const schemaVersions = Object.freeze({
   'project-context': 'aud-project-context-v1',
   'task-model': 'aud-task-model-v1',
   'run-manifest': 'aud-run-manifest-v1',
+  'audit-plan': 'aud-audit-plan-v1',
+  'capture-manifest': 'aud-capture-manifest-v1',
   evidence: 'aud-evidence-v1',
   finding: 'aud-finding-v1',
   'content-contract': 'aud-content-contract-v1',
@@ -82,6 +86,16 @@ function semanticIssues(name, record) {
   if (name === 'run-manifest' && record.finished_at && Date.parse(record.finished_at) < Date.parse(record.started_at)) {
     issues.push(issue('INVALID_TIME_RANGE', '/finished_at', 'finished_at must not precede started_at'));
   }
+  if (name === 'audit-plan') {
+    issues.push(...duplicateIdIssues(record.decisions, '/decisions', 'audit'));
+    const selected = new Set(record.decisions.filter(item => item.disposition === 'selected').map(item => item.audit));
+    for (const [waveIndex, wave] of record.execution_waves.entries()) {
+      for (const [auditIndex, audit] of wave.audits.entries()) {
+        if (!selected.has(audit)) issues.push(issue('UNSELECTED_EXECUTION', `/execution_waves/${waveIndex}/audits/${auditIndex}`, `${audit} is scheduled but not selected`));
+      }
+    }
+  }
+  if (name === 'capture-manifest') issues.push(...duplicateIdIssues(record.artifacts, '/artifacts', 'evidence_id'));
   if (name === 'finding') {
     for (const [relation, refs] of Object.entries(record.relationships)) {
       if (refs.includes(record.id)) issues.push(issue('SELF_REFERENCE', `/relationships/${relation}`, `Finding cannot reference itself as ${relation}`));

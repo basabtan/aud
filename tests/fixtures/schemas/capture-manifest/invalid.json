@@ -1,0 +1,17 @@
+{
+  "schema_version": "aud-capture-manifest-v1",
+  "capture_id": "CAP-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-003",
+  "project_revision": "wrong",
+  "created_at": "not-a-date",
+  "baseline_signature": "bad",
+  "routes": [],
+  "states": [],
+  "fixtures": [],
+  "viewports": ["desktop"],
+  "environment": {},
+  "artifacts": [],
+  "reused_evidence_refs": [],
+  "capture_needed": [],
+  "status": "complete"
+}

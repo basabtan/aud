@@ -5,6 +5,11 @@
   },
   "plugins": [
     {
+      "name": "aud",
+      "source": "./plugins/aud",
+      "description": "Primary AUD v2 entry point for broad and coordinated audits across shared context, evidence, and specialist dependencies."
+    },
+    {
       "name": "visual-audit",
       "source": "./plugins/visual-audit",
       "description": "Run an isolated visual-quality audit and rank findings by visual impact."

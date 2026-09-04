@@ -11,6 +11,8 @@ Supported versions through Phase 2:
 | Project context | `aud-project-context-v1` |
 | Task model | `aud-task-model-v1` |
 | Run manifest | `aud-run-manifest-v1` |
+| Audit plan | `aud-audit-plan-v1` |
+| Capture manifest | `aud-capture-manifest-v1` |
 | Evidence | `aud-evidence-v1` |
 | Finding | `aud-finding-v1` |
 | Content contract | `aud-content-contract-v1` |

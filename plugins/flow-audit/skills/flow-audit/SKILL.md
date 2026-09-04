@@ -1,6 +1,6 @@
 ---
 name: flow-audit
-description: Audit HOW a user moves from intent to understanding, decision, or completion after content responsibilities and placement priorities are known. Use when a journey feels long, forced, fragmented, hard to discover, hard to reverse, or loses filters, selection, scroll position, comparison context, or conceptual orientation across overview, compare, source, evidence, synthesis, and related representations. Model workflows as intent-led graphs, test novice/expert and sparse/mature paths, inspect browser history and return behavior, and produce a logical flow contract without prescribing screens, tabs, cards, layout, styling, or final UI architecture. Do not use to decide what information exists (content-audit), where it is prominent (place-audit), how it looks (visual-audit), or whether implementation is generally correct (audit).
+description: Run the isolated flow specialist only when the user explicitly requests flow-audit or names a specific journey/context-preservation problem after content responsibilities are known. Model intent-led graphs, variants, history, and return behavior without prescribing final UI. Broad or ambiguous audits belong to the aud orchestrator. Do not decide content, placement, visual language, or general functional correctness.
 ---
 
 # Flow audit

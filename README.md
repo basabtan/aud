@@ -5,12 +5,16 @@ marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant. The repository is currently
-at the AUD v2 Phase 2 baseline: the five specialist skills work independently,
-consume compatible shared context when supplied, and emit normalized evidence
-and findings. Orchestration and synthesis remain planned work and are not yet
-advertised as implemented.
+at the AUD v2 Phase 3 baseline: `aud` is the primary entry for broad requests,
+builds deterministic dependency-aware plans, coordinates a reusable evidence
+baseline, runs supplied specialist observation packets, and preserves the
+persistent ledger. Synthesis and remediation prioritization remain planned work.
 
-Until the v2 orchestrator exists, broad audits use this manual sequence:
+Broad or ambiguous audits route through:
+
+`/aud:aud`
+
+The orchestrator applies this dependency sequence when relevant:
 
 `content-audit → place-audit → flow-audit → first-principles redesign`
 
@@ -61,11 +65,14 @@ emits `flow-contract.json`. See
 and the temporary `audit` compatibility alias. Native-to-shared verdict mapping
 is defined in
 [`shared/protocols/specialist-mappings.md`](shared/protocols/specialist-mappings.md).
+Phase 3 orchestration and evidence behavior is documented in
+[`docs/phase-3-orchestration.md`](docs/phase-3-orchestration.md).
 
 ## Skills
 
 | Plugin | Command | What it asks |
 |---|---|---|
+| `aud` | `/aud:aud` | Which audits should run, in what order, against which shared evidence? |
 | `visual-audit` | `/visual-audit:visual-audit` | Did anyone decide how this should look? |
 | `functional-audit` | `/functional-audit:functional-audit` | Does the implementation satisfy functional and accepted contract behavior? |
 | `audit` | `/audit:audit` | Temporary compatibility alias for `functional-audit`. |
@@ -154,7 +161,7 @@ Add to the repo's `.claude/settings.json`:
     }
   },
   "enabledPlugins": {
-    "visual-audit@auditing-skills": true
+    "aud@auditing-skills": true
   }
 }
 ```
@@ -165,7 +172,7 @@ Commit that file. The plugin installs when the workspace is trusted.
 
 ```
 /plugin marketplace add basabtan/aud
-/plugin install visual-audit@auditing-skills
+/plugin install aud@auditing-skills
 ```
 
 ### As a plain project skill

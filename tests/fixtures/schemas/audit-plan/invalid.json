@@ -1,0 +1,19 @@
+{
+  "schema_version": "aud-audit-plan-v1",
+  "plan_id": "AP-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-003",
+  "mode": "diagnose",
+  "generated_at": "2026-09-04T11:00:00Z",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "requested_scope": { "aspects": [], "routes": [], "states": [], "persona_refs": [], "requested_specialist": null },
+  "context_status": [],
+  "prior_open_finding_refs": [],
+  "decisions": [],
+  "execution_waves": [],
+  "evidence_baseline": { "capture_manifest_ref": "capture-manifest.json", "project_revision": "da063c38731f3f797bfd5000374daa5c14952782", "baseline_signature": "bad", "state": "current" },
+  "degraded": false,
+  "degraded_consequences": [],
+  "report_only": false,
+  "application_mutation_allowed": true,
+  "deferred_capabilities": []
+}

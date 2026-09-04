@@ -1,0 +1,43 @@
+{
+  "mode": "diagnose",
+  "current_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "generated_at": "2026-09-04T11:00:00Z",
+  "depth": "standard",
+  "allow_degraded": false,
+  "scope": {
+    "aspects": ["content", "placement", "flow"],
+    "routes": ["/compare"],
+    "surfaces": ["comparison"],
+    "states": ["source-selected"],
+    "persona_refs": ["researcher"],
+    "stage_refs": ["compare"]
+  },
+  "risk_profile": { "information_density": "high" },
+  "capture": {
+    "routes": ["/compare"],
+    "states": ["source-selected"],
+    "fixtures": ["mature"],
+    "viewports": ["1280x800"],
+    "environment": { "os": "fixture", "browser": "chromium" },
+    "required_artifact_keys": ["compare-source-selected-mature-1280x800"],
+    "artifacts": [{
+      "key": "compare-source-selected-mature-1280x800",
+      "type": "screenshot",
+      "artifact_ref": "screenshots/compare-source-selected.png",
+      "exact_observation": "Fixed mature comparison state captured at 1280x800.",
+      "strength": "direct",
+      "producer": "aud",
+      "route": "/compare",
+      "state": "source-selected",
+      "fixture": "mature",
+      "viewport": "1280x800",
+      "captured_at": "2026-09-04T10:59:00Z",
+      "hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }]
+  },
+  "specialist_inputs": {
+    "content-audit": "../integration/content-input.json",
+    "place-audit": "place-input.json",
+    "flow-audit": "flow-input.json"
+  }
+}

@@ -1,6 +1,6 @@
 ---
 name: content-audit
-description: Audit WHAT information should exist and WHEN it should appear before deciding where to place it. Use when a page feels overloaded, repetitive, like the same idea is shown in several forms, when source views/summary/comparison sections overlap, when deciding what to show vs hide, merge, disclose, or remove, or before redesigning an information-dense reader/analytical interface. Detect semantic, paraphrase, derived-summary, and cross-representation duplication; define a unique job for every view; rank content by task value and distinct information gain; and produce a minimum first-read plus progressive-disclosure architecture. Do not use for visual polish, functional correctness, factual truth, or final placement/prominence — hand the surviving content to place-audit afterward.
+description: Run the isolated content specialist only when the user explicitly requests content-audit or asks the narrow question of WHAT information should exist and WHEN it should appear. Detect semantic, paraphrase, derived-summary, and cross-representation duplication; define view responsibilities and surviving content. Broad or ambiguous audits belong to the aud orchestrator. Do not use for visual polish, functional correctness, factual truth, or final placement/prominence.
 ---
 
 # Content audit
