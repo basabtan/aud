@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const prefixes = new Set(['RUN', 'TASK', 'EV', 'F', 'CONTENT', 'FLOW', 'R', 'V', 'CC', 'FC', 'AC', 'AP', 'CAP', 'TM', 'RP', 'CLUSTER', 'REL', 'CONTRA', 'SYN', 'CANON', 'DECISION', 'VP', 'VC', 'VRSET', 'REGSET', 'REG', 'VSUM']);
+const prefixes = new Set(['RUN', 'TASK', 'EV', 'F', 'CONTENT', 'FLOW', 'R', 'V', 'CC', 'FC', 'AC', 'AP', 'CAP', 'TM', 'RP', 'CLUSTER', 'REL', 'CONTRA', 'SYN', 'CANON', 'DECISION', 'VP', 'VC', 'VRSET', 'REGSET', 'REG', 'VSUM', 'CALSUITE', 'CALCASE', 'EXPECTED', 'CALRES', 'CALSET', 'RELSUM', 'QG']);
 
 export function canonicalJson(value) {
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;

@@ -7,7 +7,7 @@
     {
       "name": "aud",
       "source": "./plugins/aud",
-      "description": "Primary AUD v2 entry point for coordinated audits, synthesis, remediation planning, and evidence-backed regression verification."
+      "description": "Primary AUD v2 entry point for coordinated audits, synthesis, verification, and calibration-gated reliability measurement."
     },
     {
       "name": "visual-audit",

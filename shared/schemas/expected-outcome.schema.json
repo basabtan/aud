@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:expected-outcome:v1",
+  "title": "AUD calibration expected outcome v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "expected_id", "specialist_selection", "issues", "duplicate_groups", "relationships", "contradictions", "root_causes", "priorities", "remediation_order", "verification", "regressions", "exact", "bounded"],
+  "properties": {
+    "schema_version": { "const": "aud-expected-outcome-v1" },
+    "expected_id": { "type": "string", "pattern": "^EXPECTED-" },
+    "specialist_selection": {
+      "type": "object", "additionalProperties": false, "required": ["must_include", "must_exclude"],
+      "properties": {
+        "must_include": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "must_exclude": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["issue_id", "should_find", "critical", "affected_area", "severity", "confidence", "evidence_sufficient"],
+        "properties": {
+          "issue_id": { "type": "string" }, "specialist": { "type": "string" }, "should_find": { "type": "boolean" }, "critical": { "type": "boolean" },
+          "affected_area": { "type": ["string", "null"] }, "severity": { "$ref": "#/$defs/nullableSeverityRange" },
+          "confidence": { "$ref": "#/$defs/nullableConfidenceRange" }, "evidence_sufficient": { "type": ["boolean", "null"] }
+        }
+      }
+    },
+    "duplicate_groups": { "type": "array", "items": { "type": "array", "minItems": 2, "items": { "type": "string" }, "uniqueItems": true } },
+    "relationships": { "type": "array", "items": { "$ref": "#/$defs/typedPair" } },
+    "contradictions": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["left", "right", "present"],
+        "properties": { "left": { "type": "string" }, "right": { "type": "string" }, "present": { "type": "boolean" } } }
+    },
+    "root_causes": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["issue_id", "correct"],
+        "properties": { "issue_id": { "type": "string" }, "correct": { "type": "boolean" } } }
+    },
+    "priorities": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["issue_id", "allowed"],
+        "properties": { "issue_id": { "type": "string" }, "allowed": { "type": "array", "minItems": 1, "items": { "enum": ["P0", "P1", "P2", "P3", "P4"] }, "uniqueItems": true } } }
+    },
+    "remediation_order": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["before", "after"],
+        "properties": { "before": { "type": "string" }, "after": { "type": "string" } } }
+    },
+    "verification": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["issue_id", "allowed_outcomes", "transition"],
+        "properties": { "issue_id": { "type": "string" }, "allowed_outcomes": { "type": "array", "minItems": 1, "items": { "enum": ["passed", "partially_passed", "failed", "blocked", "inconclusive", "not_run"] }, "uniqueItems": true }, "transition": { "type": ["string", "null"] } } }
+    },
+    "regressions": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["issue_id", "detected"],
+        "properties": { "issue_id": { "type": "string" }, "detected": { "type": "boolean" } } }
+    },
+    "exact": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["path", "value"],
+        "properties": { "path": { "type": "string", "pattern": "^/" }, "value": true } }
+    },
+    "bounded": {
+      "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["path", "min", "max"],
+        "properties": { "path": { "type": "string", "pattern": "^/" }, "min": { "type": "number" }, "max": { "type": "number" } } }
+    }
+  },
+  "$defs": {
+    "nullableSeverityRange": { "oneOf": [
+      { "type": "null" },
+      { "type": "object", "additionalProperties": false, "required": ["min", "max"], "properties": { "min": { "type": "number", "minimum": 0, "maximum": 4 }, "max": { "type": "number", "minimum": 0, "maximum": 4 } } }
+    ] },
+    "nullableConfidenceRange": { "oneOf": [
+      { "type": "null" },
+      { "type": "object", "additionalProperties": false, "required": ["min", "max"], "properties": { "min": { "type": "number", "minimum": 0, "maximum": 1 }, "max": { "type": "number", "minimum": 0, "maximum": 1 } } }
+    ] },
+    "typedPair": { "type": "object", "additionalProperties": false, "required": ["source", "target", "type"],
+      "properties": { "source": { "type": "string" }, "target": { "type": "string" }, "type": { "type": "string" } } }
+  }
+}

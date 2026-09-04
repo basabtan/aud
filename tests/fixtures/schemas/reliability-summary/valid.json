@@ -1,0 +1,3 @@
+{
+  "schema_version": "aud-reliability-summary-v1", "summary_id": "RELSUM-FIXTURE", "suite_id": "CALSUITE-FIXTURE", "suite_version": "1.0.0", "tier": "fast", "generated_at": "2026-01-01T00:00:00.000Z", "evaluator": { "name": "fixture", "version": "1.0.0", "source_revision": "abcdef1" }, "cases": [{ "case_id": "CALCASE-FIXTURE", "case_version": "1.0.0", "input_revision": "abcdef1" }], "case_ids": ["CALCASE-FIXTURE"], "case_result_refs": ["CALRES-FIXTURE"], "metrics": [], "specialist_results": [], "system_results": {}, "limitations": []
+}

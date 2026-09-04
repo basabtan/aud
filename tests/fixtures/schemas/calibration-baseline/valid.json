@@ -1,0 +1,3 @@
+{
+  "schema_version": "aud-calibration-baseline-v1", "baseline_id": "BASELINE-FIXTURE", "suite_id": "CALSUITE-FIXTURE", "suite_version": "1.0.0", "accepted_at": "2026-01-01T00:00:00.000Z", "rationale": "Initial reviewed fixture baseline.", "evaluator": { "name": "fixture", "version": "1.0.0", "source_revision": "abcdef1" }, "threshold_hash": "0000000000000000000000000000000000000000000000000000000000000000", "expectations_hash": "0000000000000000000000000000000000000000000000000000000000000000", "cases": [{ "case_id": "CALCASE-FIXTURE", "case_version": "1.0.0", "input_revision": "abcdef1" }], "case_ids": ["CALCASE-FIXTURE"], "metrics": []
+}

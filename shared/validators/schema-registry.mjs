@@ -27,6 +27,14 @@ export const schemaFiles = Object.freeze({
   'verification-result': 'verification-result.schema.json',
   'regression-result': 'regression-result.schema.json',
   'verification-summary': 'verification-summary.schema.json',
+  'expected-outcome': 'expected-outcome.schema.json',
+  'calibration-case': 'calibration-case.schema.json',
+  'calibration-suite': 'calibration-suite.schema.json',
+  'calibration-result': 'calibration-result.schema.json',
+  'calibration-result-set': 'calibration-result-set.schema.json',
+  'calibration-baseline': 'calibration-baseline.schema.json',
+  'reliability-summary': 'reliability-summary.schema.json',
+  'quality-gate-result': 'quality-gate-result.schema.json',
 });
 
 export const schemaVersions = Object.freeze({
@@ -49,6 +57,14 @@ export const schemaVersions = Object.freeze({
   'verification-result': 'aud-verification-result-v2',
   'regression-result': 'aud-regression-result-v1',
   'verification-summary': 'aud-verification-summary-v1',
+  'expected-outcome': 'aud-expected-outcome-v1',
+  'calibration-case': 'aud-calibration-case-v1',
+  'calibration-suite': 'aud-calibration-suite-v1',
+  'calibration-result': 'aud-calibration-result-v1',
+  'calibration-result-set': 'aud-calibration-result-set-v1',
+  'calibration-baseline': 'aud-calibration-baseline-v1',
+  'reliability-summary': 'aud-reliability-summary-v1',
+  'quality-gate-result': 'aud-quality-gate-result-v1',
 });
 
 const nameByVersion = new Map(Object.entries(schemaVersions).map(([name, version]) => [version, name]));
@@ -200,6 +216,23 @@ function semanticIssues(name, record) {
   if (name === 'regression-result') {
     issues.push(...duplicateIdIssues(record.results, '/results', 'regression_id'));
     for (const [index, result] of record.results.entries()) if (result.classification === 'newly_introduced_regression' && !result.new_finding_id) issues.push(issue('MISSING_REGRESSION_FINDING', `/results/${index}/new_finding_id`, 'New regressions require a normalized finding'));
+  }
+  if (name === 'expected-outcome') {
+    for (const [index, item] of record.issues.entries()) {
+      if (item.severity && item.severity.min > item.severity.max) issues.push(issue('INVALID_RANGE', `/issues/${index}/severity`, 'Severity minimum exceeds maximum'));
+      if (item.confidence && item.confidence.min > item.confidence.max) issues.push(issue('INVALID_RANGE', `/issues/${index}/confidence`, 'Confidence minimum exceeds maximum'));
+    }
+    for (const [index, item] of record.bounded.entries()) if (item.min > item.max) issues.push(issue('INVALID_RANGE', `/bounded/${index}`, 'Bounded expectation minimum exceeds maximum'));
+  }
+  if (name === 'calibration-suite') issues.push(...duplicateIdIssues(record.cases, '/cases', 'case_id'));
+  if (name === 'calibration-result-set') issues.push(...duplicateIdIssues(record.results, '/results', 'result_id'));
+  if (name === 'calibration-baseline') {
+    issues.push(...duplicateIdIssues(record.metrics, '/metrics', 'name'));
+    issues.push(...duplicateIdIssues(record.cases, '/cases', 'case_id'));
+  }
+  if (name === 'reliability-summary') {
+    issues.push(...duplicateIdIssues(record.metrics, '/metrics', 'name'));
+    issues.push(...duplicateIdIssues(record.cases, '/cases', 'case_id'));
   }
   return issues;
 }

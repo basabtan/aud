@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:calibration-baseline:v1",
+  "title": "AUD accepted calibration baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "baseline_id", "suite_id", "suite_version", "accepted_at", "rationale", "evaluator", "threshold_hash", "expectations_hash", "cases", "case_ids", "metrics"],
+  "properties": {
+    "schema_version": { "const": "aud-calibration-baseline-v1" },
+    "baseline_id": { "type": "string", "pattern": "^BASELINE-" },
+    "suite_id": { "type": "string", "pattern": "^CALSUITE-" },
+    "suite_version": { "type": "string" },
+    "accepted_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+    "evaluator": { "type": "object", "additionalProperties": true, "required": ["name", "version", "source_revision"], "properties": { "name": { "type": "string" }, "version": { "type": "string" }, "source_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } },
+    "threshold_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "expectations_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "cases": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["case_id", "case_version", "input_revision"], "properties": { "case_id": { "type": "string", "pattern": "^CALCASE-" }, "case_version": { "type": "string" }, "input_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } } },
+    "case_ids": { "type": "array", "items": { "type": "string", "pattern": "^CALCASE-" }, "uniqueItems": true },
+    "metrics": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["name", "status", "value"], "properties": { "name": { "type": "string" }, "status": { "enum": ["measured", "not_applicable", "insufficient_sample"] }, "value": { "type": ["number", "null"] } } } }
+  }
+}

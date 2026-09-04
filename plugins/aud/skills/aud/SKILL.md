@@ -96,7 +96,22 @@ atomically. Never rewrite prior completed run directories.
 
 Never store product-specific audit results in the repository that distributes this skill.
 
-AUD orchestration is report-only through Phase 5. It may inspect and exercise an
+## Calibration and reliability
+
+Phase 6 adds a separate framework-maintenance command. It runs only the
+redistributable synthetic calibration corpus, compares results with a reviewed
+versioned baseline, and writes `calibration-results.json`,
+`reliability-summary.json`, `quality-gate-result.json`,
+`calibration-report.md`, and `drift-report.md`. It does not alter product audit
+selection, synthesize product findings, or mutate an application.
+
+Use the fast tier for routine checks and the full tier for complete reliability
+measurement. Selected cases are supported for diagnosis. Preserve explicit
+not-applicable and insufficient-sample states. Follow
+`references/calibration.md`; never accept a baseline without review rationale
+or silently weaken an expected outcome or quality gate.
+
+AUD product orchestration remains report-only in Phase 6. It may inspect and exercise an
 isolated or non-destructive test target, but cannot edit application files. All output writes must remain under
 the audited application's `audits/` directory. Any requested application
 mutation in `diagnose` is an error; other modes also require separate future
@@ -142,4 +157,7 @@ compatible evidence, fixtures, or adapters stay blocked, degraded, or not run.
   priority, lifecycle, and Phase 5 handoff.
 - `references/verification.md` — readiness, adapters, comparisons, regressions,
   manual review, mutation boundaries, and Phase 6 handoff.
+- `references/calibration.md` — corpus, metrics, gates, drift, baseline review,
+  and authority boundaries.
 - `scripts/aud.mjs` — executable orchestrator.
+- `scripts/calibrate.mjs` — executable Phase 6 calibration entry point.

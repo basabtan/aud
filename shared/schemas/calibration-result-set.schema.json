@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:calibration-result-set:v1",
+  "title": "AUD calibration result set v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "result_set_id", "suite_id", "suite_version", "tier", "generated_at", "results"],
+  "properties": {
+    "schema_version": { "const": "aud-calibration-result-set-v1" },
+    "result_set_id": { "type": "string", "pattern": "^CALSET-" },
+    "suite_id": { "type": "string", "pattern": "^CALSUITE-" },
+    "suite_version": { "type": "string" },
+    "tier": { "enum": ["fast", "full", "selected"] },
+    "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "results": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:calibration-result:v1" } }
+  }
+}

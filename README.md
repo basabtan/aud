@@ -5,7 +5,7 @@ marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant. The repository is currently
-at the AUD v2 Phase 5 baseline: `aud` is the primary entry for broad requests,
+at the AUD v2 Phase 6 baseline: `aud` is the primary entry for broad requests,
 builds deterministic dependency-aware plans, coordinates a reusable evidence
 baseline, runs supplied specialist observation packets, and preserves the
 persistent ledger. Multi-specialist runs now synthesize duplicates,
@@ -14,6 +14,9 @@ remediation waves without modifying the audited application. Verify mode now
 builds finding-specific cases, executes only supplied adapter results, compares
 baseline and candidate evidence, detects targeted regressions, and applies legal
 evidence-backed lifecycle transitions.
+The framework itself now has a versioned synthetic calibration corpus,
+reliability metrics, drift reporting, and explicit hard/warning quality gates;
+calibration stays separate from product audit runs.
 
 Broad or ambiguous audits route through:
 
@@ -75,7 +78,15 @@ Phase 3 orchestration and evidence behavior is documented in
 synthesis and remediation policy is documented in
 [`docs/phase-4-synthesis.md`](docs/phase-4-synthesis.md).
 Phase 5 readiness, verification, regression, and lifecycle behavior is in
-[`docs/phase-5-verification.md`](docs/phase-5-verification.md).
+[`docs/phase-5-verification.md`](docs/phase-5-verification.md). Phase 6 corpus,
+metric, gate, and baseline policy is in
+[`docs/phase-6-calibration.md`](docs/phase-6-calibration.md).
+
+Run the normal calibration gate with `npm run calibrate:fast`; run the complete
+corpus with `npm run calibrate:full`. `npm run calibrate -- --out <directory>`
+writes the structured results and derived Markdown reports. The accepted
+baseline can only be replaced with an explicit rationale, and expectation or
+threshold changes additionally require explicit policy-change approval.
 
 ## Skills
 
