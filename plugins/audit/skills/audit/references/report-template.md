@@ -21,7 +21,7 @@
 | Measurement | | |
 | Visual regression | | |
 | Performance probe | | |
-| Data layer (pg-scratch, anon negative) | | |
+| Data layer (target-owned adapter and negative authorization checks) | | |
 | Deployed config | | |
 
 **Findings**
@@ -49,11 +49,11 @@ keep a compact carry-forward block so regressions and repeat offenders remain
 visible without replacing the immutable run report.
 
 ```
-## Functional carry-forward — 2026-08-22 — Atlas contested markers — full
+## Functional carry-forward — 2026-08-22 — Account filters — full
 Found: 9 (4 fixed, 3 deferred, 2 out of scope)
-Repeat offenders: no-op rail buttons (3rd audit), overflow at 360 on /topics
-Deferred carried forward: #5 routing of /zeal/data/* in netlify.toml
-Baselines updated: atlas-360, atlas-1280
+Repeat offenders: no-op filter buttons (3rd audit), overflow at 360 on /account
+Deferred carried forward: #5 production routing for the data endpoint
+Baselines updated: account-360, account-1280
 ```
 
 Before each new audit, read the current Functional run and its carry-forward

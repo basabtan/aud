@@ -1,8 +1,9 @@
 # Drivers
 
-Playwright snippets for the instruments in SKILL.md. Launch and harness gotchas are
-in `playwright.md`. All snippets assume `page` is an open Playwright page on the
-`app-demo.html` harness.
+Portable Playwright snippets for the instruments in SKILL.md. Launch and harness
+rules are in `playwright.md`. All snippets assume `page` is an open Playwright
+page and the target project's profile has supplied `BASE`, routes, and any
+documented benign-error allowlist.
 
 Contents
 - Error capture
@@ -22,7 +23,7 @@ Attach before the first `goto`. Assert the collectors are empty at the end of ev
 test. Keep the allowlist tiny and documented.
 
 ```ts
-const BENIGN = [/favicon\.ico/, /\/atlas-demo\.html$/];
+const BENIGN = []; // Populate only from the target project's documented profile.
 
 function attachCapture(page) {
   const errors = [];
@@ -60,10 +61,10 @@ Export the route table from the router file so tests read it rather than
 hand-maintain a copy:
 
 ```ts
-// zeal/src/routes.ts
+// src/routes.ts (example; adapt to the target router)
 export const ROUTES = [
   { path: '/', heading: 'Home', auth: false },
-  { path: '/atlas', heading: 'Atlas', auth: true },
+  { path: '/account', heading: 'Account', auth: true },
   // ...
 ];
 ```
@@ -105,21 +106,21 @@ External links: `await expect(link).toHaveAttribute('rel', /noopener/)` when
 await page.goto(`${BASE}#/definitely-not-a-route`);
 await expect(page.getByTestId('not-found')).toBeVisible();
 
-// harness exposes a `signedOut` fixture mode
-await page.goto(`${BASE}?auth=off#/atlas`);
+// `signedOutUrl` and `TARGET_ROUTE` come from the project profile
+await page.goto(signedOutUrl(TARGET_ROUTE));
 await expect(page).toHaveURL(/login/);
 await page.getByTestId('demo-login').click();
-await expect(page).toHaveURL(/atlas/);   // returned to intended route
+await expect(page).toHaveURL(TARGET_ROUTE); // returned to intended route
 ```
 
 ### Back / forward restores state
 
 ```ts
-await page.goto(`${BASE}#/atlas`);
-await page.getByRole('button', { name: 'Family' }).click();
-await page.getByRole('link', { name: 'Topics' }).click();
+await page.goto(routeUrl(TARGET_ROUTE));
+await page.getByRole('button', { name: 'Active' }).click();
+await page.getByRole('link', { name: 'Details' }).click();
 await page.goBack();
-await expect(page.getByRole('button', { name: 'Family' })).toHaveAttribute('aria-pressed', 'true');
+await expect(page.getByRole('button', { name: 'Active' })).toHaveAttribute('aria-pressed', 'true');
 ```
 
 ---
@@ -218,19 +219,20 @@ effect as click.
 
 ## Required states
 
-The harness reads `?fixture=` to pick a variant.
+The project profile supplies `fixtureUrl(variant, route)`; do not assume a query
+parameter or route format.
 
 ```ts
 for (const v of ['loading', 'empty', 'error', 'partial', 'large']) {
-  await page.goto(`${BASE}?fixture=${v}#/atlas`);
-  await page.screenshot({ path: `shots/atlas-${v}.png`, fullPage: true });
+  await page.goto(fixtureUrl(v, TARGET_ROUTE));
+  await page.screenshot({ path: `shots/${ROUTE_ID}-${v}.png`, fullPage: true });
 }
-await page.goto(`${BASE}?fixture=empty#/atlas`);
+await page.goto(fixtureUrl('empty', TARGET_ROUTE));
 await expect(page.getByTestId('empty-state')).toContainText(/add|create|import/i);
-await page.goto(`${BASE}?fixture=error#/atlas`);
+await page.goto(fixtureUrl('error', TARGET_ROUTE));
 await expect(page.getByRole('alert')).not.toContainText(/at |Error:|\{/); // no stack, no JSON
 await expect(page.getByRole('button', { name: /retry/i })).toBeVisible();
-await page.goto(`${BASE}?fixture=partial#/atlas`);
+await page.goto(fixtureUrl('partial', TARGET_ROUTE));
 expect(await page.locator('#root').innerText()).not.toMatch(/\b(undefined|null|NaN)\b/);
 ```
 
@@ -335,7 +337,7 @@ function diff(currentPath, baselinePath, outPath) {
 
 Baselines live in the current timestamped Functional run directory at
 `baselines/<route>-<width>.png`. A ratio > 0.005 that
-the change did not intend is a finding. Mask timestamps and the globe canvas
+the change did not intend is a finding. Mask timestamps and dynamic canvases
 (`mask: [page.locator('canvas')]` in `screenshot`) to avoid noise.
 
 ---
@@ -345,13 +347,13 @@ the change did not intend is a finding. Mask timestamps and the globe canvas
 Long tasks during first interaction with the `large` fixture:
 
 ```ts
-await page.goto(`${BASE}?fixture=large#/atlas`);
+await page.goto(fixtureUrl('large', TARGET_ROUTE));
 await page.evaluate(() => {
   window.__long = [];
   new PerformanceObserver(l => l.getEntries().forEach(e => window.__long.push(e.duration)))
     .observe({ type: 'longtask', buffered: true });
 });
-await page.getByRole('button', { name: 'Family' }).click();
+await page.getByRole('button', { name: 'Apply filter' }).click();
 await page.waitForTimeout(1000);
 const long = await page.evaluate(() => window.__long);
 const worst = Math.max(0, ...long);
@@ -366,7 +368,7 @@ await page.evaluate(() => {
   const orig = window.requestAnimationFrame;
   window.requestAnimationFrame = cb => { window.__rafCount++; return orig(cb); };
 });
-await page.getByRole('link', { name: 'Topics' }).click();   // leave the globe page
+await page.getByRole('link', { name: 'Dashboard' }).click(); // leave the animated view
 const before = await page.evaluate(() => window.__rafCount);
 await page.waitForTimeout(1000);
 const after = await page.evaluate(() => window.__rafCount);
@@ -374,5 +376,5 @@ if (after > before) findings.push({ issue: 'rAF loop still running after unmount
 ```
 
 Lighthouse: `npx lighthouse <harness-url> --preset=desktop --output=json` and read
-`lcp`, `cls`, `total-blocking-time`. Bundle: `ls -la zeal/dist/assets` gzipped via
-`gzip -c file | wc -c`.
+`lcp`, `cls`, and `total-blocking-time`. Measure the bundle directory declared by
+the target project; do not assume a framework or output path.

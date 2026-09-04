@@ -1,13 +1,13 @@
 ---
 name: audit
-description: Verify a feature actually works and is good to use by driving it in a real browser, crawling every route and control, capturing console and network errors, running accessibility and responsive checks, reading screenshots against a UX heuristic scorecard, and checking real data and the deployed config — then fix what you find. Use this whenever the user asks to audit, test, verify, QA, review UX, check intuitiveness, or "make sure it works", asks for bugs in something just built, says a feature should feel "clean", "intuitive", or "polished", or finishes a UI change of any real size. Also use it proactively at the end of building any page, panel, route, or interactive component in this repo, even if the user did not use the word "test" — a change that typechecks and builds has not been verified, and this repo has shipped bugs that only a running browser, real rows, or the deploy config could catch.
+description: Run an isolated functional audit of a feature or application by driving it in a real browser, checking routes and controls, capturing runtime failures, exercising required states, and evaluating accessibility, responsiveness, performance, data behavior, and deployment paths. Use when the user explicitly asks for functional QA, behavioral verification, regression testing, or confirmation that an implementation works. Do not use for broad design review, content architecture, placement, flow redesign, or visual polish; those belong to their specialist audits or the AUD pipeline.
 ---
 
-# Audit
+# Functional audit (`audit` compatibility command)
 
-Verifying a change means running it, not reading it. This skill is the loop that
-found seven real bugs in the Atlas page — none of which TypeScript, a build, or a
-code review would have caught.
+Verifying a change means running it, not reading it. This skill keeps the portable
+functional method; application-specific paths, schemas, fixtures, and deployment
+rules belong in a project profile owned by the application being audited.
 
 ## The governing idea
 
@@ -48,6 +48,13 @@ navigation change earns Full.
 Always say which instruments you used and which you skipped. An audit that quietly
 skipped screenshots is worse than no audit — it buys false confidence.
 
+## Operating modes and authorization
+
+Pipeline mode is report-only. Capture evidence and findings without modifying the
+target application. Standalone specialist runs are also report-only unless the
+user explicitly authorizes a narrow fix mode. In fix mode, preserve the original
+evidence, make only the authorized change, and verify it separately.
+
 ## Run artifact location
 
 This skill is the functional audit. Keep the reusable skill in the audit-tools
@@ -67,32 +74,22 @@ repository that distributes this skill.
 
 ### 0. Gate
 
-Typecheck, lint, build. Green is the start of the audit. Verify dev-only entries are
-absent from the build: `grep -rl demo zeal/dist/` must be empty.
+Typecheck, lint, and build using the target application's own commands. Green is
+the start of the audit. Verify that development-only harness entries are absent
+from the production output using the paths declared by the project profile.
 
 ### 1. Make it drivable
 
-Most UI sits behind `AuthGate` and live Supabase. Build the seam — it outlives the
-audit. Split every feature into a presentational half (props in) and a container
-(fetches). Add fixtures and dev-only Vite entries:
+When authentication, live services, or destructive writes make the UI difficult
+to exercise, use the harness declared by the project profile. If none exists,
+prefer a development-only seam that preserves production behavior: separate the
+rendering surface from data access, use realistic fixtures, and inject write APIs
+so the harness can supply a non-destructive implementation.
 
-```
-zeal/src/pages/Atlas.tsx      export function AtlasView({ placements })  ← pure
-                              export function Atlas()                    ← fetches
-zeal/src/dev/fixtures.ts      realistic rows, shaped by the app's own derive fns
-zeal/src/dev/AtlasDemo.tsx    mounts one view with fixtures, no AuthGate
-zeal/src/dev/AppDemo.tsx      mounts the FULL ROUTER with fixtures — required for
-                              navigation tests
-zeal/atlas-demo.html          second Vite entry — dev only
-zeal/app-demo.html            third Vite entry — dev only
-```
-
-Fixtures must pass through the same functions the app uses (`markContested`, etc.)
-or harness and app will disagree about derived state. Give write flows an injected
-API object (`ComposeApi`) so the harness can supply an in-memory implementation.
-
-Add stress variants to `fixtures.ts`: `empty`, `single`, `large` (5–10k rows),
-`longStrings`, `rtl` (Arabic titles and bodies), `unicode`.
+Fixtures must pass through the same derivation and formatting functions as the
+application or the harness and production UI will disagree. Include `empty`,
+`single`, `large`, `longStrings`, `rtl`, and `unicode` variants where relevant.
+Record every harness addition as audit infrastructure, not product behavior.
 
 ### 2. Turn on error capture before anything else
 
@@ -109,9 +106,9 @@ bugs. Never skip it, even on a quick pass.
 
 ### 3. Drive it in a browser
 
-Chromium is pre-installed. `references/playwright.md` has the launch path and the
-two gotchas that eat time (benign 404s in the harness; CSS `text-transform`
-uppercasing `innerText`).
+Use the repository-pinned Playwright version and browser revision.
+`references/playwright.md` defines portable launch, harness, and error-allowlist
+rules, including the CSS `text-transform`/`innerText` mismatch.
 
 Assert on what a person sees — "the record shows the citation", "the globe
 rotated" — never on internal state. Cover, at minimum:
@@ -248,28 +245,25 @@ the new look.
 
 ### 14. Verify the data layer against real rows
 
-For migrations, run them; do not read them. `scripts/pg-scratch.sh` starts a
-throwaway Postgres, stubs the Supabase-only bits, and applies
-`zeal/supabase/migrations/*.sql` in order. Then query the seeded data the way the
-app queries it and read the result. `009_backup_bucket.sql` fails on plain
-Postgres — expected, don't chase it.
-
-Also run the negative test: as `anon`, every `ZEAL_TABLES` table must return zero
-rows. A table that leaks is a finding of severity 4.
+Use only the target-owned data-check adapter declared by its project profile.
+Apply migrations to an isolated disposable database, seed representative rows,
+query them through the same access path as the application, and run the profile's
+negative authorization tests. If no safe adapter exists, mark this instrument
+skipped; never guess database commands or production credentials.
 
 ### 15. Check the deployed environment
 
-Vite serves `public/` at the base path; Netlify serves the repo root with
-`zeal/dist/` inside it. For every runtime fetch and every client-side route the
-change adds, trace the path through `netlify.toml` to a real file or the SPA
-fallback. Compare against the `/zeal/assets/*` rule.
+Use the target-owned deploy-check adapter declared by its project profile. For
+every runtime fetch and client-side route in scope, trace the deployed path to a
+real asset, function, or intentional SPA fallback. Record unavailable deployment
+access as a limitation rather than inferring success from local behavior.
 
-### 16. Fix within scope, then report
+### 16. Report, then fix only when authorized
 
-**Fix-scope rule**: fix anything local and obviously correct (a missing state, a
-no-op handler, a contrast value, a broken link). Report, don't fix, anything that
-changes data model, routing structure, visual design language, or more than one
-component — the audit is not a licence to refactor.
+Write the report before any remediation. In explicitly authorized standalone fix
+mode, fix only local, unambiguous issues within the approved scope. Anything that
+changes the data model, routing structure, content responsibility, flow contract,
+visual language, or multiple components remains a remediation recommendation.
 
 Report with `references/report-template.md`:
 
@@ -280,10 +274,13 @@ Report with `references/report-template.md`:
 - Update `<application-root>/audits/latest.md` with the newest Functional run
   and carry forward unresolved regressions or repeat offenders.
 
-## Repo-specific traps
+## Project profiles
 
-Read `references/repo-traps.md` before driving anything — each entry has already
-bitten once.
+Before driving the application, look for `audits/project-profile/` at its root.
+The profile may declare harness commands, fixtures, known traps, data checks, and
+deployment checks. Treat it as target-owned input: validate paths and never copy
+its rules into this portable core. Without a profile, run only instruments that
+can be established safely from the repository and report the rest as skipped.
 
 ## Bundled files
 
@@ -292,5 +289,3 @@ bitten once.
 - `references/playwright.md` — launch path and harness gotchas.
 - `references/ux-heuristics.md` — scorecard, cognitive walkthrough, severity scale.
 - `references/report-template.md` — findings table and latest-index format.
-- `references/repo-traps.md` — known traps in this repo.
-- `scripts/pg-scratch.sh` — throwaway Postgres with migrations applied.

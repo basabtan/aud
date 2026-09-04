@@ -1,6 +1,6 @@
 ---
 name: visual-audit
-description: Audit a running interface for visual quality — render every route in a real browser, inventory the computed styles against a default-tier rubric, read the screenshots at three distances, then rank findings by visual impact and offer to apply the top 20%, 50%, or all of them. Use whenever the user asks whether something looks basic, plain, generic, bland, unpolished, cheap, or "like a template"; asks for a facelift, polish pass, visual upgrade, theme improvement, design review, or UI refinement; asks to improve the design, visuals, graphics, styling, or look of a page; says a screen "needs work" or should feel "more premium", "more professional", or "less default"; or wants to know if something is presentable before showing it to anyone. Also use it proactively after building any page, dashboard, or interactive component — a screen that passes every test and every correctness audit can still be entirely browser-default, and no typecheck, test suite, or functional audit can see that.
+description: Run an isolated visual-quality audit of a running interface. Use when the user explicitly asks about visual hierarchy, typography, spacing, surfaces, consistency, craft, polish, or whether an interface looks generic or unfinished. Inventory computed styles, inspect screenshots at three distances, and rank visual findings. Do not decide content, placement priority, flow architecture, or functional correctness; broad audit requests belong to the AUD pipeline.
 ---
 
 # Visual audit
@@ -14,6 +14,10 @@ Run this *before* the functional audit, then run the functional one after
 applying changes: restyling breaks click targets, focus order, overflow and
 pointer behaviour, and a beautiful page that broke during the facelift is not an
 improvement.
+
+Pipeline mode is report-only. Do not apply a visual dose before synthesis
+approval. In a standalone run, apply changes only when the user explicitly
+authorizes a dose after reviewing the findings.
 
 ## Run artifact location
 

@@ -1,6 +1,6 @@
 {
   "name": "audit",
-  "description": "Verify a feature works and is good to use by driving it in a real browser: error capture, route and control crawl, required states, accessibility, responsive, performance, data layer, deploy config, and a UX heuristic scorecard.",
+  "description": "Run an isolated functional QA audit in a real browser across runtime errors, routes, controls, states, accessibility, responsiveness, performance, data behavior, and deployment paths.",
   "version": "1.0.1",
   "author": {
     "name": "basabtan"

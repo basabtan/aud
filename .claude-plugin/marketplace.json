@@ -7,17 +7,17 @@
     {
       "name": "visual-audit",
       "source": "./plugins/visual-audit",
-      "description": "Audit a running interface for visual quality against a default-tier rubric, then rank findings by visual impact."
+      "description": "Run an isolated visual-quality audit and rank findings by visual impact."
     },
     {
       "name": "audit",
       "source": "./plugins/audit",
-      "description": "Verify a feature works and is good to use by driving it in a real browser across fifteen instruments."
+      "description": "Run an isolated functional QA audit in a real browser across fifteen instruments."
     },
     {
       "name": "place-audit",
       "source": "./plugins/place-audit",
-      "description": "Audit where information sits on a page versus where the user's declared tasks need it — per-atom demand vs prominence, redundancy detection, and ranked relocation flags."
+      "description": "Audit approved information placement against declared tasks using demand, prominence, access cost, and ranked relocation flags."
     },
     {
       "name": "content-audit",

@@ -1,6 +1,8 @@
 # place-audit — Information Placement Auditor · Build Spec v1.0
 
-Status: canonical build spec, ready for implementation (Claude Code / Codex).
+Status: implemented v1 decision record. AUD v2 owns current cross-specialist
+workflow and authority boundaries; this document remains authoritative only for
+the place-audit v1 internals that have not been superseded.
 Sources: merged from three deep-research reports (ChatGPT = architectural spine,
 Grok = starting coefficients + dark-theme features, Perplexity = pairwise-scoring
 reliability + RTL emphasis). Disagreements resolved in §18 Decision Log.
@@ -15,7 +17,7 @@ Governing principle (verbatim, do not dilute):
 
 ## 0. Product form & repo integration
 
-Ships as the third plugin in `github.com/basabtan/aud`:
+Originally shipped as the third plugin in `github.com/basabtan/aud`:
 
 | Plugin | Command | What it asks |
 |---|---|---|
@@ -23,11 +25,10 @@ Ships as the third plugin in `github.com/basabtan/aud`:
 | `audit` | `/audit:audit` | Does this work, and is it good to use? |
 | **`place-audit`** | `/place-audit:place-audit` | **Is the right information in the right place, at the right prominence — and should it exist at all?** |
 
-Complementarity note for README: run `place-audit` on a page whose behavior and
-styling already pass — it audits *information architecture*, not correctness or
-polish. Recommended order: `visual-audit` → `audit` → `place-audit` for new
-pages; `place-audit` alone when the complaint is "info feels far / redundant /
-in the wrong place."
+Current workflow correction: in the AUD v2 pipeline, content responsibility is
+established before placement, then flow is evaluated; visual and functional
+verification follow implementation. `place-audit` remains independently usable
+for a narrow placement question when missing upstream contracts are disclosed.
 
 Folder layout (mirrors existing plugins):
 
@@ -460,7 +461,8 @@ of scroll away."
 ## 13. S10 — Report outputs
 
 Two complementary views, both written to the audited repo (e.g.
-`place-audit/REPORT.md` + `place-audit/overlay-<state>.png` + `atoms.json`):
+`REPORT.md` + `overlay-<state>.png` + `atoms.json` in the current timestamped
+Place run directory):
 
 1. Annotated screenshot per state: BURIED_CORE, OVEREMPHASIZED, DUPLICATE,
    low-confidence segmentation, hidden-access items.
@@ -477,11 +479,10 @@ and the §17 checklist with each line marked checked/deferred.
 
 ## 14. SKILL.md outline
 
-Frontmatter description must cover triggers: "info feels far / buried /
-scattered", "is this redundant", "too much on screen", "what can I remove",
-"where should X go", "prioritize the information", "declutter", "audit the
-layout/placement/hierarchy", plus proactive use after building any
-information-dense page or dashboard.
+The current frontmatter deliberately limits automatic selection to explicit,
+narrow placement questions. Broad audit and redesign requests belong to the AUD
+orchestrator; duplicate observations are candidates for content or synthesis,
+not independent deletion decisions.
 
 Body sections:
 1. The governing idea (demand vs prominence; the separation principle).
@@ -490,7 +491,8 @@ Body sections:
    scope (page/route filter), `persona:<id>`, `stage:<id>`.
 3. The 10-step loop (S1–S10 above), each step naming its script or protocol.
 4. Task-model elicitation script (if none exists in repo, ask; store as
-   `place-audit/task-model.json` for reuse; label evidenceStrength).
+   `task-model.json` in the current timestamped Place run for reuse; label
+   evidenceStrength).
 5. Blind-scoring order enforcement (demand before reading prominence output).
 6. Verdict rules + gating thresholds (from §11).
 7. What stays human (from §17 tail): journey correctness, safety necessity,

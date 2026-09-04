@@ -4,19 +4,26 @@ Claude Code skills for auditing running interfaces, distributed as a plugin
 marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
-designed to be complementary rather than redundant.
+designed to be complementary rather than redundant. The repository is currently
+at the AUD v2 Phase 0 baseline: the five specialist skills work independently;
+shared schemas, orchestration, synthesis, and verification-ledger automation are
+planned work and are not yet advertised as implemented.
 
-Before first-principles design, use:
+Until the v2 orchestrator exists, broad audits use this manual sequence:
 
 `content-audit → place-audit → flow-audit → first-principles redesign`
 
-After implementation, use:
+After explicitly authorized implementation, use:
 
 `visual-audit → audit`
 
 Run an individual skill alone when its question is already isolated—for
 example, `place-audit` when approved information feels buried, or `flow-audit`
 when a known journey loses context or forces unnecessary transitions.
+
+All pipeline audit stages are report-only. A standalone visual or functional
+specialist may apply a narrow change only after the user explicitly authorizes
+fix mode or a visual dose.
 
 ## Where audit runs belong
 
@@ -40,13 +47,18 @@ runs; if the same audit type runs twice on one date, append `-02`, `-03`, and so
 on. Update `audits/latest.md` to link the newest run of every completed type.
 Do not commit application audit results to `basabtan/aud`.
 
+Use [`shared/templates/latest.md`](shared/templates/latest.md) as the canonical
+index and follow [`shared/protocols/run-artifacts.md`](shared/protocols/run-artifacts.md)
+for immutable runs and carry-forward behavior. The structured ledger is reserved
+until the Phase 1 schema is available; do not invent an incompatible format.
+
 ## Skills
 
 | Plugin | Command | What it asks |
 |---|---|---|
 | `visual-audit` | `/visual-audit:visual-audit` | Did anyone decide how this should look? |
 | `audit` | `/audit:audit` | Does this work, and is it good to use? |
-| `place-audit` | `/place-audit:place-audit` | Is the right information in the right place, at the right prominence — and should it exist at all? |
+| `place-audit` | `/place-audit:place-audit` | Is approved information in the right place and at the right prominence? |
 | `content-audit` | `/content-audit:content-audit` | What information deserves to exist, once, and at what stage? |
 | `flow-audit` | `/flow-audit:flow-audit` | Can users move from intent to understanding or completion without unnecessary steps or context loss? |
 
@@ -67,7 +79,7 @@ so it works in any repository unmodified.
 
 Needs `playwright` as a dev dependency in the project being audited.
 
-### `audit`
+### `audit` (functional audit compatibility name)
 
 Fifteen instruments across a sixteen-step loop: gate, error capture, browser
 drive, route crawl and control matrix, required states, accessibility (axe plus
@@ -79,17 +91,11 @@ Depth is user-controlled: quick pass, standard, or full. It always reports which
 instruments it used **and which it skipped**, on the principle that an audit which
 quietly skipped screenshots is worse than no audit.
 
-> **Not portable as-is.** This skill is coupled to the `zeal` repository. It names
-> real paths, a real Supabase schema and table list, host deploy rules, and ten
-> repo-specific traps that have each bitten once. Roughly half of each reference
-> file is transferable method and half is repo fact.
->
-> To reuse it elsewhere, keep the instrument table, depth levels, the sixteen-step
-> loop, the severity scale, the walkthrough and scorecard, and the report template
-> — and replace `references/repo-traps.md`, `scripts/pg-scratch.sh`, and the
-> "make it drivable" section wholesale. Until that split is done, installing it in
-> a non-`zeal` project will produce guidance that references files which do not
-> exist.
+The portable core no longer contains application-specific paths, database rules,
+or deployment assumptions. Target repositories may provide
+`audits/project-profile/` with verified harness, fixture, trap, data-check, and
+deploy-check adapters. Historical Zeal material is retained under
+`profiles/examples/zeal/` as non-runnable migration evidence, not as core policy.
 
 ### `content-audit`
 

@@ -10,7 +10,7 @@ Use this topology and headings. Add rows; do not remove sections.
 | Field | Value |
 |---|---|
 | Spec version | 1.0 |
-| Plugin/script version | 0.1.0 |
+| Plugin/script version | 0.1.1 |
 | Prompt version | place-demand-v1 |
 | Model id/version | <model> |
 | Depth / scope | <arguments> |

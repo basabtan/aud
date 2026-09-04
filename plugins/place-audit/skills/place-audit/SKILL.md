@@ -1,6 +1,6 @@
 ---
 name: place-audit
-description: Audit whether the right information is in the right place, at the right prominence, and should exist at all. Use when information feels far, buried, scattered, redundant, or like too much on screen; when asked "is this redundant", "what can I remove", "where should X go", "prioritize the information", "declutter", or "audit the layout/placement/hierarchy"; and proactively after building any information-dense page or dashboard. This audits information architecture, not functional correctness or visual polish.
+description: Run an isolated placement audit against approved content and a declared task model. Use when the user explicitly asks whether information is buried, overemphasized, costly to reach, or placed in the wrong region. Measure prominence and access cost, propose candidate regions, and emit duplicate candidates for content review. Do not decide content removal, semantic merging, flow architecture, visual treatment, or functional correctness; broad audit requests belong to the AUD pipeline.
 ---
 
 # Place audit

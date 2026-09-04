@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -10,7 +11,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const plugin = resolve(here, '..');
 const skill = join(plugin, 'skills', 'flow-audit');
 const fixture = join(plugin, 'fixtures', 'journey-model.json');
-const analysisPath = join(plugin, 'fixtures', 'graph-analysis.json');
+const tempDir = mkdtempSync(join(tmpdir(), 'aud-flow-'));
+const analysisPath = join(tempDir, 'graph-analysis.json');
 
 const results = [];
 function test(number, name, fn) {
@@ -48,7 +50,6 @@ test(2, 'skill preserves audit boundaries and design stop condition', () => {
   ]) assert.ok(text.includes(phrase), `missing guardrail: ${phrase}`);
 });
 
-if (existsSync(analysisPath)) rmSync(analysisPath);
 const validation = spawnSync(process.execPath, [join(skill, 'scripts', 'validate-flow.mjs'), fixture, '--out', analysisPath], {
   cwd: plugin,
   encoding: 'utf8',
@@ -93,5 +94,6 @@ test(6, 'report contract contains every required audit section', () => {
 });
 
 const failed = results.filter(result => result.status === 'FAIL');
+rmSync(tempDir, { recursive: true, force: true });
 console.log(`\n${results.length - failed.length}/${results.length} acceptance tests passed.`);
 if (failed.length) process.exit(1);
