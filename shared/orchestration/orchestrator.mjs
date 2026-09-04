@@ -188,7 +188,7 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
   if (projectContext.project.revision !== request.current_revision) {
     throw new Error(`REVISION_MISMATCH: project context ${projectContext.project.revision} does not match ${request.current_revision}`);
   }
-  if (request.application_changes?.length ?? 0) throw new Error(`MUTATION_PROHIBITED: ${request.mode} orchestration is analysis/planning-only through Phase 4`);
+  if (request.application_changes?.length ?? 0) throw new Error(`MUTATION_PROHIBITED: ${request.mode} orchestration is analysis/planning-only through Phase 7`);
   const applicationRoot = resolve(dirname(projectPath), projectContext.project.application_root);
   const auditRoot = resolve(applicationRoot, 'audits');
   const date = request.generated_at.slice(0, 10);
@@ -396,7 +396,7 @@ export function runAud({ request, projectContextPath, taskModelPath = null, cont
     verification: verificationExecution,
     ledger_ref: resolvedLedger,
     latest_ref: latestPath,
-    phase_boundaries: { synthesis: 'phase-4-analysis-only', verification: 'phase-5-inspection-only', calibration: 'deferred-phase-6' },
+    phase_boundaries: { synthesis: 'phase-4-analysis-only', verification: 'phase-5-inspection-only', calibration: 'separate-phase-6-command', specialist_expansion: 'phase-7-selective' },
   };
   writeJsonAtomic(join(runDirectory, 'execution.json'), execution);
   return { runDirectory, plan, captureManifest, manifest, execution, ledger: mergedLedger };

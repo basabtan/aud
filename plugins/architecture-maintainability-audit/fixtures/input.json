@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-04T14:00:00Z",
+  "assumptions": [],
+  "findings": [{
+    "category": "architecture.dependency-cycle",
+    "type": "cause_hypothesis",
+    "title": "Core state and feature adapters form a dependency cycle",
+    "statement": "The core state package imports a feature adapter that imports the core state package, preventing either boundary from being changed or tested independently.",
+    "locations": [{ "component": "packages/core-state ↔ packages/feature-adapter" }],
+    "task_refs": [],
+    "affected_personas": [],
+    "affected_areas": ["state ownership", "feature adapter boundary"],
+    "severity": { "level": 3, "rationale": "The cycle makes changes to shared state propagate across both packages and prevents isolated rollback." },
+    "confidence": { "score": 0.96, "basis": "The repository dependency graph contains both directed edges at the reviewed revision." },
+    "reach": "system",
+    "frequency": "continuous",
+    "urgency": "high",
+    "native_metrics": { "cycle_length": 2, "dependency_edges": 2, "affected_packages": 2, "boundary_test_gaps": 1 },
+    "root_cause_hypothesis": "The feature-specific adapter is treated as a dependency of the core state owner instead of an outer integration.",
+    "recommendation": { "action": "Restore one-way dependency direction by placing the adapter behind a core-owned interface and keep feature code outside the core package.", "alternatives": ["Extract the shared protocol into a dependency-neutral package when the interface is independently stable."], "estimated_effort": "M", "change_risk": "medium" },
+    "acceptance_criteria": [
+      { "id": "AC-ARCH-001", "statement": "The package dependency graph contains no path from core-state to feature-adapter." },
+      { "id": "AC-ARCH-002", "statement": "Core-state boundary tests run without loading feature-adapter." }
+    ],
+    "verification_method": [
+      { "instrument": "dependency graph assertion", "procedure": "Generate the package graph at the candidate revision and assert the forbidden core-state to feature-adapter edge and cycle are absent." },
+      { "instrument": "boundary test", "procedure": "Run core-state contract tests in an environment where feature-adapter cannot be resolved." }
+    ],
+    "status": "open",
+    "evidence": [
+      { "type": "repository", "artifact_ref": "fixtures/dependency-graph.json#core-cycle", "exact_observation": "core-state -> feature-adapter and feature-adapter -> core-state are both present.", "strength": "direct", "timestamp": "2026-09-04T13:58:00Z" },
+      { "type": "test", "artifact_ref": "fixtures/boundary-test.txt", "exact_observation": "The isolated core-state test requires feature-adapter during module loading.", "strength": "direct", "timestamp": "2026-09-04T13:59:00Z" }
+    ]
+  }]
+}

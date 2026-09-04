@@ -14,9 +14,9 @@ const at = suite.created_at;
 const clone = value => structuredClone(value);
 const metric = (summary, name) => summary.metrics.find(item => item.name === name);
 
-assert.equal(suite.cases.length, 20, 'canonical corpus must retain all required cases');
-assert.equal(selectCases(suite, { tier: 'fast' }).length, 12, 'fast tier changed unexpectedly');
-assert.equal(selectCases(suite, { tier: 'full' }).length, 20, 'full tier must cover the complete corpus');
+assert.equal(suite.cases.length, 22, 'canonical corpus must retain the Phase 6 cases and Phase 7 architecture coverage');
+assert.equal(selectCases(suite, { tier: 'fast' }).length, 13, 'fast tier changed unexpectedly');
+assert.equal(selectCases(suite, { tier: 'full' }).length, 22, 'full tier must cover the complete corpus');
 assert.equal(suite.corpus_policy.redistributable, true);
 assert.equal(suite.corpus_policy.contains_sensitive_evidence, false);
 assert.deepEqual(suite.corpus_policy.application_mutations, []);
@@ -26,7 +26,7 @@ for (const phrase of ['major', 'minor', 'cosmetic', 'non-issue', 'ambiguous', 'i
 
 const full = runCalibration({ suite, tier: 'full', baseline, generatedAt: at, evaluator });
 assert.equal(full.gates.verdict, 'pass');
-assert.equal(full.results.length, 20);
+assert.equal(full.results.length, 22);
 assert.equal(full.gates.baseline_comparison.status, 'compatible');
 assert.deepEqual(full.gates.baseline_comparison.new_cases, []);
 for (const artifact of [[full.resultSet, 'calibration-result-set'], [full.summary, 'reliability-summary'], [full.gates, 'quality-gate-result']]) {
@@ -36,6 +36,8 @@ for (const result of full.results) assert.equal(validateRecord(result, 'calibrat
 assert.ok(full.results.every(result => result.verdict === 'pass'));
 assert.deepEqual(full.results.find(item => item.case_id === 'CALCASE-01-MAJOR').actual_outcome.findings[0].native_metrics, { failed_steps: 1 }, 'specialist native metrics were not preserved');
 assert.equal(full.results.find(item => item.case_id === 'CALCASE-20-DEGRADED').actual_outcome.authority_checks.verify_no_fix_implementation, true);
+assert.deepEqual(full.results.find(item => item.case_id === 'CALCASE-21-ARCH-CYCLE').actual_outcome.findings[0].native_metrics, { cycle_length: 2, dependency_edges: 2, affected_packages: 2 });
+assert.equal(full.results.find(item => item.case_id === 'CALCASE-22-ARCH-PREFERENCE').actual_outcome.findings.length, 0);
 for (const name of ['finding_precision', 'finding_recall', 'false_positive_rate', 'false_negative_rate', 'severity_agreement', 'confidence_calibration', 'duplicate_clustering_precision', 'duplicate_clustering_recall', 'contradiction_detection_accuracy', 'relationship_accuracy', 'root_cause_accuracy', 'priority_agreement', 'remediation_order_validity', 'verification_outcome_accuracy', 'regression_detection_accuracy', 'lifecycle_transition_legality', 'deterministic_rerun_agreement', 'schema_validity', 'provenance_completeness']) {
   assert.ok(metric(full.summary, name), `missing reliability metric ${name}`);
 }
@@ -143,6 +145,6 @@ try {
 
 const cli = spawnSync(process.execPath, ['shared/calibration/cli.mjs', '--suite', 'calibration/corpus/suite.json', '--tier', 'fast', '--baseline', 'calibration/baselines/accepted.json', '--check'], { encoding: 'utf8' });
 assert.equal(cli.status, 0, cli.stderr || cli.stdout);
-assert.equal(JSON.parse(cli.stdout).cases, 12);
+assert.equal(JSON.parse(cli.stdout).cases, 13);
 
 console.log('PASS — Phase 6 corpus, metrics, consistency, drift, gates, mutation boundaries, CLI, paths, and reports validated.');

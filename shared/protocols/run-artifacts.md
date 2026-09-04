@@ -56,6 +56,14 @@ Phase 2 specialist-specific artifacts are:
   `findings.jsonl`, `input-status.json`.
 - Visual and functional: `evidence.jsonl`, `findings.jsonl`,
   `input-status.json` plus their native evidence.
+- Architecture/maintainability: `REPORT.md`, `evidence.jsonl`,
+  `findings.jsonl`, and `input-status.json`; task and capture context are
+  optional because repository/test evidence is the primary input.
+
+Phase 6 framework calibration writes `calibration-results.json`,
+`reliability-summary.json`, `quality-gate-result.json`, `calibration-report.md`,
+and `drift-report.md` outside product audit runs. Phase 7 capability cases remain
+part of that versioned shared corpus and accepted baseline.
 
 Every artifact and record identifies one compatible `run_id`. Evidence IDs in a
 finding must resolve to that specialist's evidence records for the same run.

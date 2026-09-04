@@ -19,10 +19,10 @@
     "selected_remediation_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/remediationId" }, "uniqueItems": true },
     "cases": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:verification-case:v1" } },
     "specialist_decisions": {
-      "type": "array", "minItems": 5, "maxItems": 5,
+      "type": "array", "minItems": 5, "maxItems": 6,
       "items": {
         "type": "object", "additionalProperties": false, "required": ["specialist", "disposition", "reason", "affected_refs"],
-        "properties": { "specialist": { "enum": ["content-audit", "place-audit", "flow-audit", "visual-audit", "functional-audit"] }, "disposition": { "enum": ["selected", "skipped", "deferred"] }, "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "affected_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true } }
+        "properties": { "specialist": { "enum": ["content-audit", "place-audit", "flow-audit", "visual-audit", "functional-audit", "architecture-maintainability-audit"] }, "disposition": { "enum": ["selected", "skipped", "deferred"] }, "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "affected_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true } }
       }
     },
     "evidence_baseline": { "type": "object", "additionalProperties": false, "required": ["capture_id", "baseline_signature", "project_revision"], "properties": { "capture_id": { "type": "string" }, "baseline_signature": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }, "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } },

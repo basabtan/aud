@@ -5,7 +5,7 @@ marketplace.
 
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant. The repository is currently
-at the AUD v2 Phase 6 baseline: `aud` is the primary entry for broad requests,
+at the AUD v2 Phase 7 baseline: `aud` is the primary entry for broad requests,
 builds deterministic dependency-aware plans, coordinates a reusable evidence
 baseline, runs supplied specialist observation packets, and preserves the
 persistent ledger. Multi-specialist runs now synthesize duplicates,
@@ -17,6 +17,10 @@ evidence-backed lifecycle transitions.
 The framework itself now has a versioned synthetic calibration corpus,
 reliability metrics, drift reporting, and explicit hard/warning quality gates;
 calibration stays separate from product audit runs.
+Phase 7 selectively adds architecture/maintainability coverage for dependency
+direction, ownership, coupling, and change safety; the formal review rejects or
+defers broader module growth where existing owners or missing foundations make
+another specialist unjustified.
 
 Broad or ambiguous audits route through:
 
@@ -51,6 +55,7 @@ application being audited:
   YYYY-MM-DD-flow/
   YYYY-MM-DD-visual/
   YYYY-MM-DD-functional/
+  YYYY-MM-DD-architecture-maintainability/
   latest.md
 ```
 
@@ -81,6 +86,10 @@ Phase 5 readiness, verification, regression, and lifecycle behavior is in
 [`docs/phase-5-verification.md`](docs/phase-5-verification.md). Phase 6 corpus,
 metric, gate, and baseline policy is in
 [`docs/phase-6-calibration.md`](docs/phase-6-calibration.md).
+The Phase 7 coverage decision is in
+[`docs/phase-7-coverage-review.md`](docs/phase-7-coverage-review.md), with the
+selected capability documented in
+[`docs/phase-7-architecture-maintainability.md`](docs/phase-7-architecture-maintainability.md).
 
 Run the normal calibration gate with `npm run calibrate:fast`; run the complete
 corpus with `npm run calibrate:full`. `npm run calibrate -- --out <directory>`
@@ -99,6 +108,7 @@ threshold changes additionally require explicit policy-change approval.
 | `place-audit` | `/place-audit:place-audit` | Is approved information in the right place and at the right prominence? |
 | `content-audit` | `/content-audit:content-audit` | What information deserves to exist, once, and at what stage? |
 | `flow-audit` | `/flow-audit:flow-audit` | Can users move from intent to understanding or completion without unnecessary steps or context loss? |
+| `architecture-maintainability-audit` | `/architecture-maintainability-audit:architecture-maintainability-audit` | Can the system be changed safely without violating ownership or dependency boundaries? |
 
 ### `visual-audit`
 

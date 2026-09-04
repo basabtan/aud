@@ -7,6 +7,7 @@ export const specialistOrder = Object.freeze([
   'flow-audit',
   'visual-audit',
   'functional-audit',
+  'architecture-maintainability-audit',
 ]);
 
 const aspectMap = Object.freeze({
@@ -16,10 +17,14 @@ const aspectMap = Object.freeze({
   visual: ['visual-audit'], styling: ['visual-audit'], hierarchy: ['visual-audit'],
   functional: ['functional-audit'], behavior: ['functional-audit'], runtime: ['functional-audit'],
   accessibility: ['functional-audit', 'visual-audit'], performance: ['functional-audit'],
+  architecture: ['architecture-maintainability-audit'], maintainability: ['architecture-maintainability-audit'],
+  coupling: ['architecture-maintainability-audit'], dependencies: ['architecture-maintainability-audit'],
 });
 
 const broadAspects = new Set(['all', 'audit', 'broad', 'product', 'ux', 'experience']);
+const interfaceSpecialists = specialistOrder.filter(audit => audit !== 'architecture-maintainability-audit');
 const taskDependent = new Set(['content-audit', 'place-audit', 'flow-audit', 'functional-audit']);
+const captureDependent = new Set(interfaceSpecialists);
 
 function unique(values) {
   return [...new Set(values)];
@@ -90,14 +95,16 @@ function requestedAudits(request, priorOpen) {
     const implemented = priorOpen.filter(finding => ['implemented', 'partial', 'failed', 'reopened'].includes(finding.status));
     return new Set(['functional-audit', ...implemented.map(finding => finding.source_audit).filter(audit => specialistOrder.includes(audit))]);
   }
+  const all = aspects.includes('all');
   const broad = !aspects.length || aspects.some(value => broadAspects.has(value));
-  const selected = new Set(broad ? specialistOrder : aspects.flatMap(aspect => aspectMap[aspect] ?? []));
+  const selected = new Set(all ? specialistOrder : broad ? interfaceSpecialists : aspects.flatMap(aspect => aspectMap[aspect] ?? []));
   const risk = JSON.stringify(request.risk_profile ?? {}).toLowerCase();
   if (/(data[_ -]?loss|security|privacy|correctness)[^}]{0,40}(high|critical)/.test(risk)) selected.add('functional-audit');
   if (/(information[_ -]?density|content[_ -]?complexity)[^}]{0,40}(high|critical)/.test(risk)) {
     selected.add('content-audit'); selected.add('place-audit'); selected.add('flow-audit');
   }
   if (/(visual|design)[^}]{0,40}(high|critical)/.test(risk)) selected.add('visual-audit');
+  if (/(architecture|maintainability|coupling|technical[_ -]?debt)[^}]{0,40}(high|critical)/.test(risk)) selected.add('architecture-maintainability-audit');
   return selected;
 }
 
@@ -168,7 +175,7 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
         reason = 'Requested scope is stale against project context and degraded execution was not allowed.';
       }
     }
-    if (disposition === 'selected' && captureAssessment.state !== 'current' && captureAssessment.state !== 'reused') {
+    if (disposition === 'selected' && captureDependent.has(audit) && captureAssessment.state !== 'current' && captureAssessment.state !== 'reused') {
       degraded = true;
       consequences.push('Shared capture coverage is incomplete; specialists must record uncaptured states.');
     }
@@ -244,7 +251,7 @@ export function buildAuditPlan({ runId, request, projectContext, taskModel = nul
     degraded_consequences: degradedConsequences,
     report_only: true,
     application_mutation_allowed: false,
-    deferred_capabilities: request.mode === 'verify' ? ['remediation execution', 'cross-run calibration'] : ['remediation execution', 'verification execution'],
+    deferred_capabilities: ['remediation execution', 'security/privacy specialist pending an approved threat model'],
   };
   assertValidRecord(plan, 'audit-plan');
   return plan;

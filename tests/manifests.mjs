@@ -16,7 +16,7 @@ for (const entry of marketplace.plugins) {
 
 const audTrigger = readFileSync('plugins/aud/skills/aud/SKILL.md', 'utf8').split('---')[1];
 assert.match(audTrigger, /broad or ambiguous/i, 'aud does not own ambiguous requests');
-for (const specialist of ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit']) {
+for (const specialist of ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit', 'architecture-maintainability-audit']) {
   const trigger = readFileSync(`plugins/${specialist}/skills/${specialist}/SKILL.md`, 'utf8').split('---')[1];
   assert.match(trigger, /explicit/i, `${specialist} still has a competing broad trigger`);
 }
@@ -33,7 +33,7 @@ assert.doesNotMatch(
 );
 
 const latest = readFileSync('shared/templates/latest.md', 'utf8');
-for (const label of ['Content', 'Place', 'Flow', 'Visual', 'Functional', 'Open findings']) {
+for (const label of ['Content', 'Place', 'Flow', 'Visual', 'Functional', 'Architecture', 'Open findings']) {
   assert.match(latest, new RegExp(label), `latest.md template missing ${label}`);
 }
 

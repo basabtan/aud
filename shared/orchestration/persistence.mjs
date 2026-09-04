@@ -40,12 +40,13 @@ const rowLabels = Object.freeze({
   'flow-audit': 'Flow',
   'visual-audit': 'Visual',
   'functional-audit': 'Functional',
+  'architecture-maintainability-audit': 'Architecture',
 });
 
 function priorRows(text = '') {
   const rows = new Map();
   for (const line of text.split(/\r?\n/)) {
-    const match = line.match(/^\| (Content|Place|Flow|Visual|Functional) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/);
+    const match = line.match(/^\| (Content|Place|Flow|Visual|Functional|Architecture) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$/);
     if (match) rows.set(match[1], { link: match[2].trim(), revision: match[3].trim(), status: match[4].trim() });
   }
   return rows;
@@ -72,6 +73,10 @@ export function updateLatestAtomic({ applicationRoot, latestPath, timestamp, rev
     ? open.map(finding => `| \`${finding.id}\` | ${finding.status} | ${finding.title.replaceAll('|', '\\|')} | ${finding.evidence_refs.at(-1) ?? '—'} | ${finding.recommendation.action.replaceAll('|', '\\|')} |`)
     : ['| — | — | No unresolved findings | — | — |'];
   const text = `# AUD latest\n\nUpdated: ${timestamp}  \nApplication revision: ${revision}\n\n| Specialist | Latest run | Revision | Status |\n|---|---|---|---|\n${rows.join('\n')}\n\n## Open findings\n\nSource of truth: [\`findings-ledger.jsonl\`](findings-ledger.jsonl), validated as\n\`aud-finding-v1\` records.\n\n| ID | Status | Title | Latest evidence | Next action |\n|---|---|---|---|---|\n${findingRows.join('\n')}\n\n## Carry-forward\n\n- Unresolved finding IDs: ${open.length ? open.map(finding => finding.id).join(', ') : 'none'}\n- Phase 4 synthesis and remediation planning: stored in the corresponding AUD run when compatible inputs exist\n- Remediation execution: always requires separate authorization outside this report-only pipeline\n- Phase 5 verification attempts: preserved on each finding; cross-run calibration is deferred to Phase 6\n`;
-  writeAtomic(target, text);
+  const currentText = text.replace(
+    '- Phase 5 verification attempts: preserved on each finding; cross-run calibration is deferred to Phase 6',
+    '- Phase 5 verification attempts: preserved on each finding and measured by the accepted Phase 6 calibration suite\n- Phase 7 specialist expansion: architecture/maintainability is selected only by explicit scope, all-scope, or qualifying declared risk',
+  );
+  writeAtomic(target, currentText);
   return target;
 }

@@ -16,7 +16,8 @@
     { "audit": "place-audit", "disposition": "selected", "reason": "Placement scope requested.", "dependencies": ["content-audit"], "degraded": false, "consequences": [] },
     { "audit": "flow-audit", "disposition": "selected", "reason": "Flow scope requested.", "dependencies": ["content-audit"], "degraded": false, "consequences": [] },
     { "audit": "visual-audit", "disposition": "skipped", "reason": "Visual scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] },
-    { "audit": "functional-audit", "disposition": "skipped", "reason": "Functional scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] }
+    { "audit": "functional-audit", "disposition": "skipped", "reason": "Functional scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] },
+    { "audit": "architecture-maintainability-audit", "disposition": "skipped", "reason": "Architecture scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] }
   ],
   "execution_waves": [
     { "wave": 1, "audits": ["content-audit"], "readiness_condition": "Shared context and evidence baseline are current." },

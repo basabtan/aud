@@ -2,7 +2,7 @@ import { allowedTransitions } from '../ledger/merge.mjs';
 import { assertValidRecord } from '../validators/schema-registry.mjs';
 import { canonicalJson, evidenceId, stableId } from '../validators/stable-ids.mjs';
 
-const specialists = ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit'];
+const specialists = ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit', 'architecture-maintainability-audit'];
 const outcomes = new Set(['passed', 'partially_passed', 'failed', 'blocked', 'inconclusive', 'not_run']);
 const comparisons = new Set(['fixed', 'improved_but_incomplete', 'unchanged', 'worsened', 'no_longer_reproducible', 'unable_to_compare']);
 
@@ -35,6 +35,7 @@ function affectedSpecialists(item, finding, full) {
   if (/visual|hierarchy|style/.test(value)) selected.add('visual-audit');
   if (/accessib/.test(value)) ['visual-audit', 'functional-audit'].forEach(audit => selected.add(audit));
   if (/functional|behavior|runtime|performance/.test(value)) ['functional-audit', 'flow-audit'].forEach(audit => selected.add(audit));
+  if (/architecture|maintainability|coupling|dependency|technical debt/.test(value)) selected.add('architecture-maintainability-audit');
   return selected;
 }
 

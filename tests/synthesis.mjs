@@ -66,15 +66,30 @@ const e = finding('F-SYN-E', 'place-audit', {
   reach: 'surface', frequency: 'common', urgency: 'medium', root_cause_hypothesis: null,
   relationships: relationSet({ depends_on: ['F-SYN-D'] }),
 });
-const findings = [a, b, c, d, e];
+const f = finding('F-SYN-F', 'architecture-maintainability-audit', {
+  category: 'architecture.dependency-cycle', title: 'State packages form a dependency cycle',
+  statement: 'Core state and the feature adapter depend on each other and cannot be tested independently.', evidence_refs: ['EV-SYN-F'],
+  severity: { level: 3, rationale: 'Changes propagate across both packages and prevent isolated rollback.' },
+  confidence: { score: 0.96, basis: 'The revision-pinned repository graph contains both directed edges.' },
+  reach: 'system', frequency: 'continuous', urgency: 'high',
+  native_metrics: { cycle_length: 2, dependency_edges: 2, affected_packages: 2 },
+  root_cause_hypothesis: 'A feature adapter is owned by the core package instead of an outer integration boundary.',
+  affected_areas: ['dependency graph', 'state ownership'],
+  recommendation: { action: 'Restore one-way dependency direction behind a core-owned interface.', alternatives: [], estimated_effort: 'M', change_risk: 'medium' },
+});
+const findings = [a, b, c, d, e, f];
 const evidenceRecords = [
   evidence('EV-SYN-A', 'flow-audit', 'State reset observed.'), evidence('EV-SYN-B', 'functional-audit', 'State reset reproduced.'),
   evidence('EV-SYN-C', 'visual-audit', 'Local context supports continuity.'), evidence('EV-SYN-E', 'place-audit', 'Secondary card has highest prominence.'),
+  evidence('EV-SYN-F', 'architecture-maintainability-audit', 'The repository graph contains a two-node dependency cycle.'),
 ];
 
 function inputs(overrides = {}) {
   const auditPlan = json(join(schemaFixtures, 'audit-plan', 'valid.json')); auditPlan.run_id = runId;
+  const architectureDecision = auditPlan.decisions.find(item => item.audit === 'architecture-maintainability-audit');
+  architectureDecision.disposition = 'selected'; architectureDecision.reason = 'Explicit architecture scope requested.';
   const runManifest = json(join(integration, 'run-manifest.json')); runManifest.run_id = runId;
+  runManifest.selected_audits.push('architecture-maintainability-audit');
   const captureManifest = json(join(schemaFixtures, 'capture-manifest', 'valid.json')); captureManifest.run_id = runId;
   return {
     runId, generatedAt: at, projectRevision: revision,
@@ -98,6 +113,9 @@ try {
   assert.equal(validateRecord(first.remediationPlan, 'remediation-plan').valid, true);
   assert.ok(first.synthesis.clusters.every(item => validateRecord(item, 'issue-cluster').valid));
   assert.ok(first.remediationPlan.items.every(item => validateRecord(item, 'remediation-item').valid));
+  const architectureItem = first.remediationPlan.items.find(item => item.finding_refs.includes('F-SYN-F'));
+  assert.ok(architectureItem, 'architecture finding was not integrated into remediation planning');
+  assert.ok(first.synthesis.clusters.some(item => item.finding_refs.includes('F-SYN-F')), 'architecture finding was not integrated into synthesis');
 
   const duplicate = first.synthesis.canonical_findings.find(item => item.source_finding_refs.includes('F-SYN-A'));
   assert.deepEqual(duplicate.source_finding_refs, ['F-SYN-A', 'F-SYN-B'], 'exact duplicates were not grouped');

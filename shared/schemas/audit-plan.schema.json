@@ -43,13 +43,13 @@
     "decisions": {
       "type": "array",
       "minItems": 5,
-      "maxItems": 5,
+      "maxItems": 6,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["audit", "disposition", "reason", "dependencies", "degraded", "consequences"],
         "properties": {
-          "audit": { "enum": ["content-audit", "place-audit", "flow-audit", "visual-audit", "functional-audit"] },
+          "audit": { "enum": ["content-audit", "place-audit", "flow-audit", "visual-audit", "functional-audit", "architecture-maintainability-audit"] },
           "disposition": { "enum": ["selected", "skipped", "deferred"] },
           "reason": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
           "dependencies": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },

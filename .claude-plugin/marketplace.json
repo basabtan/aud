@@ -38,6 +38,11 @@
       "name": "flow-audit",
       "source": "./plugins/flow-audit",
       "description": "Audit intent-to-goal journeys for unnecessary steps, weak branches, context loss, reversibility, representation-switching cost, and completion confidence before first-principles design."
+    },
+    {
+      "name": "architecture-maintainability-audit",
+      "source": "./plugins/architecture-maintainability-audit",
+      "description": "Audit dependency direction, module ownership, coupling, change amplification, and structural verification seams from repository evidence."
     }
   ]
 }

@@ -61,6 +61,18 @@ assert.equal(first.cases.length, 1);
 assert.deepEqual(first.specialist_decisions.filter(item => item.disposition === 'selected').map(item => item.specialist), ['flow-audit', 'functional-audit']);
 assert.equal(buildVerificationPlan({ ...baseInput(), fullRegression: true }).specialist_decisions.every(item => item.disposition === 'selected'), true);
 
+const architectureInput = baseInput();
+architectureInput.findings[0].source_audit = 'architecture-maintainability-audit';
+architectureInput.findings[0].category = 'architecture.dependency-cycle';
+architectureInput.findings[0].affected_areas = ['dependency graph', 'module ownership'];
+architectureInput.findings[0].native_metrics = { cycle_length: 2, dependency_edges: 2 };
+architectureInput.remediationPlan.items[0].affected_areas = ['dependency graph', 'module ownership'];
+const architecturePlan = buildVerificationPlan(architectureInput);
+assert.ok(
+  architecturePlan.specialist_decisions.some(item => item.specialist === 'architecture-maintainability-audit' && item.disposition === 'selected'),
+  'architecture remediation did not select the architecture specialist for targeted verification',
+);
+
 const missingCriteria = baseInput();
 missingCriteria.findings[0].acceptance_criteria = []; missingCriteria.findings[0].verification_absence_reason = 'No approved criterion exists.';
 assert.match(buildVerificationPlan(missingCriteria).cases[0].readiness.reasons.join(' '), /no acceptance criteria/i);

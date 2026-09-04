@@ -10,6 +10,7 @@ Application revision: `<commit SHA>`
 | Flow | `<relative link or —>` | `<SHA or —>` | `<complete/degraded/not-run>` |
 | Visual | `<relative link or —>` | `<SHA or —>` | `<complete/degraded/not-run>` |
 | Functional | `<relative link or —>` | `<SHA or —>` | `<complete/degraded/not-run>` |
+| Architecture | `<relative link or —>` | `<SHA or —>` | `<complete/degraded/not-run>` |
 
 ## Open findings
 

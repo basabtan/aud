@@ -20,7 +20,8 @@
     "test:content-audit": "node plugins/content-audit/tests/acceptance.mjs",
     "test:place-audit": "node plugins/place-audit/tests/acceptance.mjs",
     "test:flow-audit": "node plugins/flow-audit/tests/acceptance.mjs",
-    "test:visual-audit": "node plugins/visual-audit/tests/acceptance.mjs"
+    "test:visual-audit": "node plugins/visual-audit/tests/acceptance.mjs",
+    "test:architecture-maintainability-audit": "node plugins/architecture-maintainability-audit/tests/acceptance.mjs"
   },
   "devDependencies": {
     "ajv": "8.20.0",

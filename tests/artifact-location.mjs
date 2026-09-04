@@ -9,6 +9,7 @@ const policies = [
   ['visual-audit', 'visual'],
   ['audit', 'functional'],
   ['functional-audit', 'functional'],
+  ['architecture-maintainability-audit', 'architecture-maintainability'],
 ];
 
 for (const [plugin, runType] of policies) {

@@ -1,6 +1,6 @@
 ---
 name: aud
-description: Primary entry point for broad or ambiguous product/interface audits and coordinated multi-specialist AUD work. Use when the user asks for an audit, product review, UX review, redesign assessment, remediation verification, regression audit, or multi-area evaluation without naming exactly one specialist. Build deterministic report-only plans and evidence-backed verification across content, place, flow, visual, and functional audits. Preserve direct specialist commands for explicit narrow requests.
+description: Primary entry point for broad or ambiguous product/interface audits and coordinated multi-specialist AUD work. Use when the user asks for an audit, product review, UX review, redesign assessment, remediation verification, regression audit, or multi-area evaluation without naming exactly one specialist. Build deterministic report-only plans and evidence-backed verification across content, place, flow, visual, functional, and selectively routed architecture/maintainability audits. Preserve direct specialist commands for explicit narrow requests.
 ---
 
 # AUD orchestrator
@@ -8,7 +8,7 @@ description: Primary entry point for broad or ambiguous product/interface audits
 Use this command for broad or ambiguous requests. Its job is intake, planning,
 dependency coordination, shared evidence, cross-audit synthesis, remediation
 planning, evidence-backed remediation verification, targeted regression checks,
-and persistent run bookkeeping. It does not execute remediation or apply
+selective architecture/maintainability review, and persistent run bookkeeping. It does not execute remediation or apply
 application changes.
 
 ## Modes
@@ -111,7 +111,7 @@ not-applicable and insufficient-sample states. Follow
 `references/calibration.md`; never accept a baseline without review rationale
 or silently weaken an expected outcome or quality gate.
 
-AUD product orchestration remains report-only in Phase 6. It may inspect and exercise an
+AUD product orchestration remains report-only through Phase 7. It may inspect and exercise an
 isolated or non-destructive test target, but cannot edit application files. All output writes must remain under
 the audited application's `audits/` directory. Any requested application
 mutation in `diagnose` is an error; other modes also require separate future
@@ -161,3 +161,6 @@ compatible evidence, fixtures, or adapters stay blocked, degraded, or not run.
   and authority boundaries.
 - `scripts/aud.mjs` — executable orchestrator.
 - `scripts/calibrate.mjs` — executable Phase 6 calibration entry point.
+- `references/selection.md` also defines Phase 7's selective
+  architecture/maintainability routing and why other candidate modules remain
+  deferred or rejected.

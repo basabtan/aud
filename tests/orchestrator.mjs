@@ -167,7 +167,7 @@ try {
   });
   assert.deepEqual(directVisual.decisions.filter(item => item.disposition === 'selected').map(item => item.audit), ['visual-audit']);
   assert.equal(directVisual.synthesis_stage.disposition, 'skipped');
-  for (const specialist of ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit']) {
+  for (const specialist of ['content-audit', 'place-audit', 'flow-audit', 'visual-audit', 'functional-audit', 'architecture-maintainability-audit']) {
     assert.ok(existsSync(join(root, 'plugins', specialist, 'skills', specialist, 'SKILL.md')), `${specialist} direct command was removed`);
   }
 

@@ -9,6 +9,7 @@ const inputRules = Object.freeze({
   'flow-audit': { project: 'required', task: 'required', content: 'optional', capture: 'optional' },
   'visual-audit': { project: 'optional', task: 'optional', capture: 'optional' },
   'functional-audit': { project: 'optional', task: 'optional', flow: 'optional', remediation: 'optional', capture: 'optional' },
+  'architecture-maintainability-audit': { project: 'required', task: 'optional', capture: 'optional' },
 });
 
 function readJson(path) {
@@ -308,6 +309,16 @@ function enforceFunctionalBoundary(input, contexts) {
   contexts.acceptedRemediation = remediation;
 }
 
+function enforceArchitectureBoundary(input) {
+  for (const finding of input.findings) {
+    if (!finding.category.startsWith('architecture.')) throw new Error(`BOUNDARY_VIOLATION: architecture category ${finding.category} is outside architecture and maintainability`);
+    if ('priority' in finding) throw new Error('BOUNDARY_VIOLATION: specialists cannot assign synthesis priority');
+    if (!Object.keys(finding.native_metrics ?? {}).length) throw new Error('ARCHITECTURE_METRICS_REQUIRED: preserve dependency, coupling, ownership, or change-surface measures in native_metrics');
+    const evidenceTypes = new Set((finding.evidence ?? []).map(item => item.type ?? 'observation'));
+    if (![...evidenceTypes].some(type => ['repository', 'test', 'measurement'].includes(type))) throw new Error('ARCHITECTURE_REPOSITORY_EVIDENCE_REQUIRED: architecture findings need repository, test, or measurement evidence');
+  }
+}
+
 export function runSpecialist(sourceAudit, argv = process.argv.slice(2)) {
   if (!inputRules[sourceAudit]) throw new Error(`Unknown specialist ${sourceAudit}`);
   const options = parseArgs(argv);
@@ -346,6 +357,7 @@ export function runSpecialist(sourceAudit, argv = process.argv.slice(2)) {
   }
   for (const [key, record] of Object.entries(contexts)) assertCompatible(record, manifest, key);
   if (sourceAudit === 'functional-audit') enforceFunctionalBoundary(input, contexts);
+  if (sourceAudit === 'architecture-maintainability-audit') enforceArchitectureBoundary(input);
 
   let rawFindings = input.findings;
   resolveContentKeys(rawFindings, contexts.content);

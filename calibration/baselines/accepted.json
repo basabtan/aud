@@ -1,13 +1,13 @@
 {
   "schema_version": "aud-calibration-baseline-v1",
-  "baseline_id": "BASELINE-RELSUM-69F9F6B62C66413706C4",
+  "baseline_id": "BASELINE-RELSUM-C95344623C018CBF6181",
   "suite_id": "CALSUITE-AUD-V2-CANONICAL",
-  "suite_version": "1.0.0",
-  "accepted_at": "2026-09-04T00:00:00Z",
-  "rationale": "Initial Phase 6 baseline finalized after explicit review of all report-only and authority-boundary expectations.",
-  "evaluator": { "name": "aud-calibration", "version": "1.0.0", "source_revision": "e0d7f5f17e322c3b4519a8c5d9505e9526775743" },
+  "suite_version": "1.1.0",
+  "accepted_at": "2026-09-04T16:30:00Z",
+  "rationale": "Phase 7 architecture capability reviewed with one proven-cycle positive and one style-preference negative case.",
+  "evaluator": { "name": "aud-calibration", "version": "1.0.0", "source_revision": "d648d74890fc38a9021c11144f616bbb22fa78b0" },
   "threshold_hash": "a039cfd66242f3ee3c15170a5f660bf1910978d1631187e3736e762a7f696ad0",
-  "expectations_hash": "ba07379e17eb09c16b02f9bca1a6fa7714c39f945d35a22b5e04269a172f78de",
+  "expectations_hash": "4404fa9c72b57a54badf7723663200479f5d4d5b40628c3bd19a999c0c515c94",
   "cases": [
     { "case_id": "CALCASE-01-MAJOR", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
     { "case_id": "CALCASE-02-MINOR", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
@@ -28,13 +28,16 @@
     { "case_id": "CALCASE-17-RESOLVED", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
     { "case_id": "CALCASE-18-STALE", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
     { "case_id": "CALCASE-19-INCOMPATIBLE", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
-    { "case_id": "CALCASE-20-DEGRADED", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
+    { "case_id": "CALCASE-20-DEGRADED", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    { "case_id": "CALCASE-21-ARCH-CYCLE", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    { "case_id": "CALCASE-22-ARCH-PREFERENCE", "case_version": "1.0.0", "input_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
   ],
   "case_ids": [
     "CALCASE-01-MAJOR", "CALCASE-02-MINOR", "CALCASE-03-COSMETIC", "CALCASE-04-NONISSUE", "CALCASE-05-AMBIGUOUS",
     "CALCASE-06-INSUFFICIENT", "CALCASE-07-DUPLICATE", "CALCASE-08-REINFORCING", "CALCASE-09-CONTRADICTION", "CALCASE-10-ROOT-CAUSE",
     "CALCASE-11-UNRELATED", "CALCASE-12-BLOCKING", "CALCASE-13-ORDER", "CALCASE-14-PARTIAL", "CALCASE-15-FAILED",
-    "CALCASE-16-REGRESSION", "CALCASE-17-RESOLVED", "CALCASE-18-STALE", "CALCASE-19-INCOMPATIBLE", "CALCASE-20-DEGRADED"
+    "CALCASE-16-REGRESSION", "CALCASE-17-RESOLVED", "CALCASE-18-STALE", "CALCASE-19-INCOMPATIBLE", "CALCASE-20-DEGRADED",
+    "CALCASE-21-ARCH-CYCLE", "CALCASE-22-ARCH-PREFERENCE"
   ],
   "metrics": [
     { "name": "finding_precision", "status": "measured", "value": 1 },
@@ -42,7 +45,7 @@
     { "name": "false_positive_rate", "status": "measured", "value": 0 },
     { "name": "false_negative_rate", "status": "measured", "value": 0 },
     { "name": "severity_agreement", "status": "measured", "value": 1 },
-    { "name": "confidence_calibration", "status": "measured", "value": 0.7688 },
+    { "name": "confidence_calibration", "status": "measured", "value": 0.79 },
     { "name": "duplicate_clustering_precision", "status": "measured", "value": 1 },
     { "name": "duplicate_clustering_recall", "status": "measured", "value": 1 },
     { "name": "contradiction_detection_accuracy", "status": "measured", "value": 1 },
