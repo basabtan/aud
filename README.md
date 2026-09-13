@@ -6,6 +6,11 @@ marketplace.
 Each skill is a different instrument pointed at the same running app. They are
 designed to be complementary rather than redundant.
 
+For new apps, use the [Bader UI Design Guide](docs/bader-ui-design-guide.md)
+to turn these methods into construction guidance. The package includes an
+[evidence map](docs/bader-ui-evidence.md) and
+[copy-ready agent integration instructions](docs/bader-ui-agent-integration.md).
+
 Before first-principles design, use:
 
 `content-audit → place-audit → flow-audit → first-principles redesign`
