@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:aud:schema:quality-gate-result:v1", "title": "AUD quality gate result v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "gate_result_id", "suite_id", "suite_version", "policy_version", "threshold_hash", "generated_at", "evaluator", "verdict", "hard_failures", "warnings", "informational", "baseline_comparison", "policy_changes"],
+  "properties": {
+    "schema_version": { "const": "aud-quality-gate-result-v1" }, "gate_result_id": { "type": "string", "pattern": "^QG-" }, "suite_id": { "type": "string", "pattern": "^CALSUITE-" }, "suite_version": { "type": "string" }, "policy_version": { "type": "string" }, "threshold_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }, "evaluator": { "type": "object", "additionalProperties": true, "required": ["name", "version", "source_revision"], "properties": { "name": { "type": "string" }, "version": { "type": "string" }, "source_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } }, "verdict": { "enum": ["pass", "fail"] },
+    "hard_failures": { "$ref": "#/$defs/gateOutcomes" }, "warnings": { "$ref": "#/$defs/gateOutcomes" }, "informational": { "$ref": "#/$defs/gateOutcomes" },
+    "baseline_comparison": { "type": "object", "additionalProperties": false, "required": ["status", "improvements", "regressions", "unchanged", "new_cases", "incompatibilities"], "properties": { "status": { "enum": ["not_supplied", "compatible", "incompatible"] }, "improvements": { "type": "array", "items": { "type": "string" } }, "regressions": { "type": "array", "items": { "type": "string" } }, "unchanged": { "type": "array", "items": { "type": "string" } }, "new_cases": { "type": "array", "items": { "type": "string" } }, "incompatibilities": { "type": "array", "items": { "type": "string" } } } },
+    "policy_changes": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": { "gateOutcomes": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["metric", "operator", "threshold", "actual", "passed", "rationale"], "properties": { "metric": { "type": "string" }, "operator": { "type": "string" }, "threshold": { "type": ["number", "null"] }, "actual": { "type": ["number", "null"] }, "passed": { "type": "boolean" }, "rationale": { "type": "string" } } } } }
+}

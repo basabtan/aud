@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -10,7 +11,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const plugin = resolve(here, '..');
 const skill = join(plugin, 'skills', 'flow-audit');
 const fixture = join(plugin, 'fixtures', 'journey-model.json');
-const analysisPath = join(plugin, 'fixtures', 'graph-analysis.json');
+const tempDir = mkdtempSync(join(tmpdir(), 'aud-flow-'));
+const analysisPath = join(tempDir, 'graph-analysis.json');
 
 const results = [];
 function test(number, name, fn) {
@@ -33,8 +35,16 @@ test(1, 'plugin topology and manifest are complete', () => {
     join(skill, 'references', 'scoring.md'),
     join(skill, 'references', 'report-template.md'),
     join(skill, 'scripts', 'validate-flow.mjs'),
+    join(skill, 'scripts', 'emit-structured.mjs'),
   ]) assert.ok(existsSync(path), `missing ${path}`);
   assert.equal(JSON.parse(readFileSync(join(plugin, '.claude-plugin', 'plugin.json'), 'utf8')).name, 'flow-audit');
+});
+
+test(7, 'shared IDs and executable flow contract are required', () => {
+  const text = readFileSync(join(skill, 'SKILL.md'), 'utf8');
+  for (const phrase of ['flow-contract.json', 'project-context.json', 'content-contract.json', 'acceptance criteria', 'verification methods']) {
+    assert.ok(text.includes(phrase), `missing Phase 2 flow rule: ${phrase}`);
+  }
 });
 
 test(2, 'skill preserves audit boundaries and design stop condition', () => {
@@ -48,7 +58,6 @@ test(2, 'skill preserves audit boundaries and design stop condition', () => {
   ]) assert.ok(text.includes(phrase), `missing guardrail: ${phrase}`);
 });
 
-if (existsSync(analysisPath)) rmSync(analysisPath);
 const validation = spawnSync(process.execPath, [join(skill, 'scripts', 'validate-flow.mjs'), fixture, '--out', analysisPath], {
   cwd: plugin,
   encoding: 'utf8',
@@ -93,5 +102,6 @@ test(6, 'report contract contains every required audit section', () => {
 });
 
 const failed = results.filter(result => result.status === 'FAIL');
+rmSync(tempDir, { recursive: true, force: true });
 console.log(`\n${results.length - failed.length}/${results.length} acceptance tests passed.`);
 if (failed.length) process.exit(1);

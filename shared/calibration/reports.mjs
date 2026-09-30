@@ -1,0 +1,15 @@
+function display(value) { return value === null ? 'N/A' : String(value); }
+export function renderCalibrationReport(summary, gates, results) {
+  const metrics = summary.metrics.map(item => `| ${item.name} | ${item.status} | ${display(item.value)} | ${item.rationale.replaceAll('|', '\\|')} |`).join('\n');
+  const failures = gates.hard_failures.length ? gates.hard_failures.map(item => `- ${item.metric}: ${display(item.actual)} ${item.operator} ${item.threshold} failed`).join('\n') : '- None.';
+  const warnings = gates.warnings.length ? gates.warnings.map(item => `- ${item.metric}: ${display(item.actual)} ${item.operator} ${item.threshold}`).join('\n') : '- None.';
+  const inconsistent = results.flatMap(result => result.checks.filter(item => item.status === 'fail' && /severity|confidence/.test(item.dimension)).map(item => `${result.case_id} ${item.dimension}`));
+  const regressions = gates.baseline_comparison.regressions.length ? gates.baseline_comparison.regressions.map(item => `- ${item}`).join('\n') : '- None.';
+  return `# AUD calibration report\n\nOverall gate verdict: **${gates.verdict.toUpperCase()}**\n\n## Failed hard gates\n\n${failures}\n\n## Warnings\n\n${warnings}\n\n## System reliability metrics\n\n| Metric | Status | Value | Interpretation |\n|---|---|---:|---|\n${metrics}\n\nFalse positives: ${summary.system_results.false_positives}; false negatives: ${summary.system_results.false_negatives}.\n\n## Specialist results\n\n${summary.specialist_results.length ? summary.specialist_results.map(item => `- ${item.specialist}: ${item.cases} emitted findings; precision ${display(item.finding_precision)}; recall ${display(item.finding_recall)}; severity agreement ${display(item.severity_agreement)}`).join('\n') : '- No specialist-attributable findings.'}\n\n## Inconsistent severity or confidence\n\n${inconsistent.length ? inconsistent.map(item => `- ${item}`).join('\n') : '- None.'}\n\n## Unstable output fields\n\n${summary.system_results.unstable_fields.length ? summary.system_results.unstable_fields.map(item => `- \`${item}\``).join('\n') : '- None.'}\n\n## Regressions from baseline\n\n${regressions}\n\n## Recommended framework corrections\n\n${gates.verdict === 'pass' && !gates.warnings.length ? '- No gate-driven correction required.' : '- Correct failed dimensions without weakening expected outcomes or thresholds; rerun calibration before accepting a baseline.'}\n`;
+}
+
+export function renderDriftReport(gates) {
+  const comparison = gates.baseline_comparison;
+  const section = (title, values) => `## ${title}\n\n${values.length ? values.map(item => `- ${item}`).join('\n') : '- None.'}`;
+  return `# AUD calibration drift report\n\nBaseline status: **${comparison.status}**\n\n${section('Improvements', comparison.improvements)}\n\n${section('Regressions', comparison.regressions)}\n\n${section('Unchanged metrics', comparison.unchanged)}\n\n${section('Newly uncovered cases', comparison.new_cases)}\n\n${section('Baseline incompatibilities', comparison.incompatibilities)}\n\n${section('Policy changes requiring review', gates.policy_changes)}\n`;
+}

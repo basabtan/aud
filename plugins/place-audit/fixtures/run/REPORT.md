@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Spec version | 1.0 |
-| Plugin/script version | 0.1.0 |
+| Plugin/script version | 0.1.1 |
 | Prompt version | place-demand-v1 |
 | Model id/version | Codex session model (GPT-5 family; exact build identifier unavailable) |
 | Depth / scope | standard / single fixture page / persona `ops-lead` / stage `orient` |

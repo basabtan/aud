@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:reliability-summary:v1",
+  "title": "AUD reliability summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "summary_id", "suite_id", "suite_version", "tier", "generated_at", "evaluator", "cases", "case_ids", "case_result_refs", "metrics", "specialist_results", "system_results", "limitations"],
+  "properties": {
+    "schema_version": { "const": "aud-reliability-summary-v1" }, "summary_id": { "type": "string", "pattern": "^RELSUM-" },
+    "suite_id": { "type": "string", "pattern": "^CALSUITE-" }, "suite_version": { "type": "string" },
+    "tier": { "enum": ["fast", "full", "selected"] }, "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "evaluator": { "type": "object", "additionalProperties": true, "required": ["name", "version", "source_revision"], "properties": { "name": { "type": "string" }, "version": { "type": "string" }, "source_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } },
+    "cases": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["case_id", "case_version", "input_revision"], "properties": { "case_id": { "type": "string", "pattern": "^CALCASE-" }, "case_version": { "type": "string" }, "input_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } } } },
+    "case_ids": { "type": "array", "items": { "type": "string", "pattern": "^CALCASE-" }, "uniqueItems": true },
+    "case_result_refs": { "type": "array", "items": { "type": "string", "pattern": "^CALRES-" }, "uniqueItems": true },
+    "metrics": { "type": "array", "items": { "type": "object", "additionalProperties": false,
+      "required": ["name", "status", "value", "numerator", "denominator", "rationale", "bins"],
+      "properties": { "name": { "type": "string" }, "status": { "enum": ["measured", "not_applicable", "insufficient_sample"] }, "value": { "type": ["number", "null"] }, "numerator": { "type": ["number", "null"] }, "denominator": { "type": ["number", "null"] }, "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "bins": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+    } } },
+    "specialist_results": { "type": "array", "items": { "type": "object", "additionalProperties": true, "required": ["specialist", "cases", "finding_precision", "finding_recall", "severity_agreement"], "properties": { "specialist": { "type": "string" }, "cases": { "type": "integer", "minimum": 0 }, "finding_precision": { "type": ["number", "null"] }, "finding_recall": { "type": ["number", "null"] }, "severity_agreement": { "type": ["number", "null"] } } } },
+    "system_results": { "type": "object", "additionalProperties": true },
+    "limitations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  }
+}

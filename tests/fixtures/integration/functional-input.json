@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-09-04T09:55:00Z",
+  "assumptions": [],
+  "findings": [{
+    "contract_refs": ["__FLOW_RECOMMENDATION_ID__", "R-CONTEXT-001"],
+    "category": "functional.contract-verification",
+    "type": "symptom",
+    "title": "Accepted flow return criterion is not implemented",
+    "statement": "The implementation fails the accepted requirement to restore comparison facet and scroll anchor after evidence return.",
+    "locations": [{ "route": "/compare", "surface": "comparison", "component": "evidence-return", "state": "source-selected", "viewport": "1280x800" }],
+    "task_refs": ["TASK-03"],
+    "affected_personas": ["researcher"],
+    "affected_areas": ["accepted flow contract verification"],
+    "severity": { "level": 3, "rationale": "A critical accepted journey requires repeated reconstruction and fails its explicit criterion." },
+    "confidence": { "score": 0.98, "basis": "Executable browser assertions fail deterministically." },
+    "reach": "journey",
+    "frequency": "continuous",
+    "urgency": "high",
+    "native_metrics": { "assertions_passed": 1, "assertions_failed": 2, "console_errors": 0, "verified_instruments": ["browser", "route-state assertion"] },
+    "root_cause_hypothesis": "Return navigation does not restore route-addressable selection state.",
+    "recommendation": { "action": "Implement the accepted route-state restoration behavior without changing the approved flow or visual language.", "alternatives": [], "estimated_effort": "M", "change_risk": "medium" },
+    "acceptance_criteria": [{ "id": "AC-FUNCTIONAL-001", "statement": "The accepted flow criterion and remediation assertion both pass." }],
+    "verification_method": [{ "instrument": "browser route-state test", "procedure": "Execute the accepted flow contract procedure and assert facet plus scroll restoration." }],
+    "status": "open",
+    "evidence": [{ "type": "test", "artifact_ref": "tests/flow-return.spec.mjs#restore", "exact_observation": "Facet and scroll restoration assertions failed after browser Back.", "strength": "direct", "timestamp": "2026-09-04T09:52:00Z" }]
+  }]
+}

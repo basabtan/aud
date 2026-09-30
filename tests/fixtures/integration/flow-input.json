@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-04T09:35:00Z",
+  "contract_status": "accepted",
+  "assumptions": [],
+  "findings": [{
+    "category": "flow.context-loss",
+    "type": "symptom",
+    "title": "Evidence return loses comparison position",
+    "statement": "Returning from claim evidence resets the selected comparison facet and scroll anchor.",
+    "locations": [{ "route": "/compare", "surface": "comparison", "component": "evidence-return", "state": "source-selected", "viewport": "1280x800" }],
+    "task_refs": ["TASK-03"],
+    "affected_personas": ["researcher"],
+    "affected_areas": ["comparison-to-evidence journey"],
+    "severity": { "level": 3, "rationale": "Users must reconstruct comparison context during a critical verification journey." },
+    "confidence": { "score": 0.95, "basis": "Direct browser exercise reproduced the loss on every return." },
+    "reach": "journey",
+    "frequency": "continuous",
+    "urgency": "high",
+    "native_metrics": { "context_preservation": 1, "reversibility": 1, "interaction_cost": 2, "cognitive_cost": 3 },
+    "root_cause_hypothesis": "Comparison state is not represented in restorable navigation state.",
+    "recommendation": { "action": "Preserve the selected facet and scroll anchor across evidence drill-down and return.", "alternatives": ["Open evidence without replacing comparison context."], "estimated_effort": "M", "change_risk": "medium" },
+    "acceptance_criteria": [{ "id": "AC-FLOW-001", "statement": "Returning from evidence restores the selected facet and prior scroll anchor." }],
+    "verification_method": [{ "instrument": "browser route-state test", "procedure": "Select a facet, record the anchor, open evidence, return, and assert both values are restored." }],
+    "status": "accepted",
+    "evidence": [{ "type": "trace", "artifact_ref": "journey-model.json#verify-return", "exact_observation": "Browser Back returned to the route with default facet and top scroll position.", "strength": "direct", "timestamp": "2026-09-04T09:30:00Z" }],
+    "flow_recommendation": {
+      "content_refs": ["__SURVIVING_CONTENT_ID__"],
+      "intent": "Verify a comparison claim and return without reconstruction.",
+      "required_behavior": "Evidence drill-down and return preserve selected facet and scroll anchor.",
+      "preserved_context": ["selected facet", "scroll anchor", "claim"],
+      "return_path": "Browser Back or explicit return restores the exact prior comparison state.",
+      "status": "accepted"
+    }
+  }]
+}

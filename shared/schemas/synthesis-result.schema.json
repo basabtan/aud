@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:synthesis-result:v1",
+  "title": "AUD synthesis result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "synthesis_id", "run_id", "generated_at", "project_revision", "input_refs", "source_finding_refs", "canonical_findings", "relationships", "clusters", "contradictions", "coverage_limitations", "evidence_limitations", "deferred_finding_refs", "degraded", "degraded_reasons"],
+  "properties": {
+    "schema_version": { "const": "aud-synthesis-result-v1" },
+    "synthesis_id": { "type": "string", "pattern": "^SYN-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "generated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "input_refs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["audit_plan", "run_manifest", "project_context", "task_model", "content_contract", "flow_contract", "capture_manifest", "ledger", "specialist_findings", "specialist_evidence"],
+      "properties": {
+        "audit_plan": { "type": "string" }, "run_manifest": { "type": "string" }, "project_context": { "type": "string" },
+        "task_model": { "type": ["string", "null"] }, "content_contract": { "type": ["string", "null"] }, "flow_contract": { "type": ["string", "null"] },
+        "capture_manifest": { "type": "string" }, "ledger": { "type": "string" },
+        "specialist_findings": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "specialist_evidence": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "source_finding_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "canonical_findings": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["canonical_id", "representative_finding_id", "source_finding_refs", "source_audits", "evidence_refs", "deduplication_rationale", "combined_confidence"],
+        "properties": {
+          "canonical_id": { "type": "string", "pattern": "^CANON-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+          "representative_finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
+          "source_finding_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+          "source_audits": { "type": "array", "minItems": 1, "items": { "type": "string" }, "uniqueItems": true },
+          "evidence_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+          "deduplication_rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "combined_confidence": { "$ref": "urn:aud:schema:common:v1#/$defs/confidence" }
+        }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["relationship_id", "source_finding_id", "target_id", "type", "rationale", "evidence_refs", "confidence"],
+        "properties": {
+          "relationship_id": { "$ref": "urn:aud:schema:common:v1#/$defs/relationshipId" },
+          "source_finding_id": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" },
+          "target_id": { "type": "string", "pattern": "^(F|CLUSTER)-" },
+          "type": { "enum": ["duplicate_of", "reinforces", "contradicts", "symptom_of", "caused_by", "blocks", "depends_on", "supersedes", "related_to"] },
+          "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "evidence_refs": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:common:v1#/$defs/evidenceId" }, "uniqueItems": true },
+          "confidence": { "$ref": "urn:aud:schema:common:v1#/$defs/confidence" }
+        }
+      }
+    },
+    "clusters": { "type": "array", "minItems": 1, "items": { "$ref": "urn:aud:schema:issue-cluster:v1" } },
+    "contradictions": { "type": "array", "items": { "$ref": "urn:aud:schema:contradiction:v1" } },
+    "coverage_limitations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "evidence_limitations": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "deferred_finding_refs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/findingId" }, "uniqueItems": true },
+    "degraded": { "type": "boolean" },
+    "degraded_reasons": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "aud-remediation-item-v1", "remediation_id": "R-TEST-001", "title": "Restore task state",
+  "problem_statement": "Task state is lost.", "finding_refs": ["F-TEST-001"], "cluster_refs": ["CLUSTER-TEST-001"],
+  "affected_areas": ["task state"], "action_type": "implement", "recommended_action": "Persist task state.", "expected_outcome": "The task resumes safely.",
+  "acceptance_criteria": [{ "id": "AC-TEST-001", "statement": "State is restored." }],
+  "verification_method": [{ "instrument": "browser", "procedure": "Navigate away and back." }],
+  "priority": { "level": "high", "band": "P1", "rationale": "Critical task.", "factors": { "consequence_severity": 3, "affected_scope": "journey", "task_criticality": 0.9, "urgency": "high", "confidence": 0.8, "recurrence": "common", "blocking_relationships": 0, "remediation_dependencies": 0, "implementation_risk": "medium", "estimated_effort": "M" } },
+  "dependencies": [], "blockers": [], "implementation_risk": { "level": "medium", "rationale": "State changes affect navigation." },
+  "estimated_effort": "M", "confidence": { "score": 0.8, "basis": "Direct reproduction." }, "owner_capability": "frontend engineering",
+  "status": "proposed", "parallel_ready": false, "wave": 1
+}

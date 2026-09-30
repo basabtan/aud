@@ -10,7 +10,7 @@ Use this topology and headings. Add rows; do not remove sections.
 | Field | Value |
 |---|---|
 | Spec version | 1.0 |
-| Plugin/script version | 0.1.0 |
+| Plugin/script version | 0.1.1 |
 | Prompt version | place-demand-v1 |
 | Model id/version | <model> |
 | Depth / scope | <arguments> |
@@ -70,7 +70,10 @@ DEFERRED with a reason.
 ## Files
 
 List `atoms.json`, canonical JSON, prominence JSON, screenshots, overlays,
-task model, and this report.
+task model, `input-status.json`, `evidence.jsonl`, schema-valid
+`findings.jsonl`, and this report. Identify the shared run manifest and consumed
+content-contract version. Duplicate candidates must remain proposals for content
+or synthesis, never independent deletion decisions.
 ```
 
 Every low-confidence finding (`Conf < .70` from segmentation or task evidence)

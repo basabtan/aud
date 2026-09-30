@@ -1,6 +1,6 @@
 ---
 name: content-audit
-description: Audit WHAT information should exist and WHEN it should appear before deciding where to place it. Use when a page feels overloaded, repetitive, like the same idea is shown in several forms, when source views/summary/comparison sections overlap, when deciding what to show vs hide, merge, disclose, or remove, or before redesigning an information-dense reader/analytical interface. Detect semantic, paraphrase, derived-summary, and cross-representation duplication; define a unique job for every view; rank content by task value and distinct information gain; and produce a minimum first-read plus progressive-disclosure architecture. Do not use for visual polish, functional correctness, factual truth, or final placement/prominence — hand the surviving content to place-audit afterward.
+description: Run the isolated content specialist only when the user explicitly requests content-audit or asks the narrow question of WHAT information should exist and WHEN it should appear. Detect semantic, paraphrase, derived-summary, and cross-representation duplication; define view responsibilities and surviving content. Broad or ambiguous audits belong to the aud orchestrator. Do not use for visual polish, functional correctness, factual truth, or final placement/prominence.
 ---
 
 # Content audit
@@ -51,7 +51,7 @@ Keep the instruments separate:
 | `content-audit` | **What information deserves to exist, once, and at what stage?** |
 | `place-audit` | Where should the approved information live, and how prominent should it be? |
 | `visual-audit` | Has the visual treatment been deliberately designed? |
-| `audit` | Does the implementation work correctly and remain usable? |
+| `functional-audit` | Does the implementation work correctly and remain usable? |
 
 `place-audit` may detect duplicate atoms and low-demand information, but it is
 placement-centric. This skill owns higher-order content architecture:
@@ -88,6 +88,22 @@ while preserving older runs. If the same type runs twice on one date, append
 In a monorepo, `application-root` is the nearest directory that owns the app's
 runtime/build configuration. Never store product-specific audit results in the
 repository that distributes this skill.
+
+## Shared inputs and structured output
+
+Consume and validate the supplied shared `run-manifest.json`,
+`project-context.json`, and `task-model.json` before scoring. All three must use
+compatible schema versions and the same project revision. If project or task
+context is absent in a standalone run, record the missing input and degraded
+scope in `input-status.json`; do not invent personas, tasks, or evidence.
+
+Assign stable `CONTENT-*` IDs from the project revision plus each semantic block
+identity. After decisions are frozen, run `scripts/emit-structured.mjs` to emit
+`content-contract.json`, `evidence.jsonl`, schema-valid `findings.jsonl`, and
+`input-status.json`. Every finding carries exact evidence references, location,
+consequence-only severity, independent numeric confidence, specialist scores
+under `native_metrics`, a recommendation, and a verification method or a stated
+reason why one cannot yet exist. All artifacts reference the shared run ID.
 
 ## The twelve-step loop
 
@@ -392,7 +408,12 @@ Before first-principles design:
 
 After implementation:
 
-`visual-audit → audit`
+`visual-audit → functional-audit`
 
 Do not run visual polish first when the problem is information overload. That
 risks making redundant content look better instead of removing it.
+
+## Structured-output tool
+
+- `scripts/emit-structured.mjs` validates shared context, assigns stable content
+  IDs, and writes normalized contract, evidence, and finding artifacts.

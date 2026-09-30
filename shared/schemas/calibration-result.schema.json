@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:calibration-result:v1",
+  "title": "AUD calibration result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "result_id", "suite_id", "suite_version", "case_id", "case_version", "input_revision", "expected_outcome_id", "expected_outcome", "actual_outcome", "verdict", "checks", "unstable_fields", "evaluator", "evaluated_at"],
+  "properties": {
+    "schema_version": { "const": "aud-calibration-result-v1" },
+    "result_id": { "type": "string", "pattern": "^CALRES-" },
+    "suite_id": { "type": "string", "pattern": "^CALSUITE-" },
+    "suite_version": { "type": "string" },
+    "case_id": { "type": "string", "pattern": "^CALCASE-" },
+    "case_version": { "type": "string" },
+    "input_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "expected_outcome_id": { "type": "string", "pattern": "^EXPECTED-" },
+    "expected_outcome": { "$ref": "urn:aud:schema:expected-outcome:v1" },
+    "actual_outcome": { "type": "object", "additionalProperties": true },
+    "verdict": { "enum": ["pass", "fail"] },
+    "checks": { "type": "array", "items": { "type": "object", "additionalProperties": false,
+      "required": ["dimension", "status", "expected", "actual", "rationale"],
+      "properties": { "dimension": { "type": "string" }, "status": { "enum": ["pass", "fail", "not_applicable"] }, "expected": true, "actual": true, "rationale": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" } }
+    } },
+    "unstable_fields": { "type": "array", "items": { "type": "string", "pattern": "^/" }, "uniqueItems": true },
+    "evaluator": { "$ref": "#/$defs/evaluator" },
+    "evaluated_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }
+  },
+  "$defs": {
+    "evaluator": { "type": "object", "additionalProperties": false, "required": ["name", "version", "source_revision"],
+      "properties": { "name": { "type": "string" }, "version": { "type": "string" }, "source_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" } }
+    }
+  }
+}

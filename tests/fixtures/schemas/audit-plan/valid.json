@@ -1,0 +1,34 @@
+{
+  "schema_version": "aud-audit-plan-v1",
+  "plan_id": "AP-EXAMPLE-001",
+  "run_id": "RUN-2026-09-04-003",
+  "mode": "diagnose",
+  "generated_at": "2026-09-04T11:00:00Z",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "requested_scope": { "aspects": ["content", "placement", "flow"], "routes": ["/compare"], "states": ["source-selected"], "persona_refs": ["researcher"], "requested_specialist": null },
+  "context_status": [
+    { "kind": "project-context", "state": "current", "reason": "Revision and requested scope match.", "artifact_ref": "project-context.json" },
+    { "kind": "task-model", "state": "current", "reason": "Revision and confirmation age are current.", "artifact_ref": "task-model.json" }
+  ],
+  "prior_open_finding_refs": [],
+  "decisions": [
+    { "audit": "content-audit", "disposition": "selected", "reason": "Content scope requested.", "dependencies": [], "degraded": false, "consequences": [] },
+    { "audit": "place-audit", "disposition": "selected", "reason": "Placement scope requested.", "dependencies": ["content-audit"], "degraded": false, "consequences": [] },
+    { "audit": "flow-audit", "disposition": "selected", "reason": "Flow scope requested.", "dependencies": ["content-audit"], "degraded": false, "consequences": [] },
+    { "audit": "visual-audit", "disposition": "skipped", "reason": "Visual scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] },
+    { "audit": "functional-audit", "disposition": "skipped", "reason": "Functional scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] },
+    { "audit": "architecture-maintainability-audit", "disposition": "skipped", "reason": "Architecture scope was not requested.", "dependencies": [], "degraded": false, "consequences": [] }
+  ],
+  "execution_waves": [
+    { "wave": 1, "audits": ["content-audit"], "readiness_condition": "Shared context and evidence baseline are current." },
+    { "wave": 2, "audits": ["place-audit", "flow-audit"], "readiness_condition": "A schema-valid current content contract exists." }
+  ],
+  "synthesis_stage": { "disposition": "selected", "reason": "Multi-specialist diagnose run.", "dependencies": ["content-audit", "place-audit", "flow-audit", "shared-evidence", "persistent-ledger"] },
+  "verification_stage": { "disposition": "skipped", "reason": "Verification is only selected in verify mode.", "dependencies": [] },
+  "evidence_baseline": { "capture_manifest_ref": "capture-manifest.json", "project_revision": "da063c38731f3f797bfd5000374daa5c14952782", "baseline_signature": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "state": "current" },
+  "degraded": false,
+  "degraded_consequences": [],
+  "report_only": true,
+  "application_mutation_allowed": false,
+  "deferred_capabilities": ["remediation execution", "verification execution"]
+}

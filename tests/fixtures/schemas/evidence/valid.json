@@ -1,0 +1,17 @@
+{
+  "schema_version": "aud-evidence-v1",
+  "id": "EV-014",
+  "run_id": "RUN-2026-09-04-001",
+  "type": "observation",
+  "artifact_ref": "screenshots/compare-source-selected.png",
+  "exact_observation": "Selection and scroll position reset after returning from evidence detail.",
+  "provenance": { "source": "browser run 3", "captured_by": "flow-audit", "source_revision": "da063c38731f3f797bfd5000374daa5c14952782" },
+  "strength": "direct",
+  "environment": { "browser": "chromium" },
+  "route": "/compare",
+  "state": "source-selected",
+  "viewport": "1280x800",
+  "data_fixture": "mature",
+  "timestamp": "2026-09-04T09:15:00Z",
+  "hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+}

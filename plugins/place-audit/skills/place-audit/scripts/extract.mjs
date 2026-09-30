@@ -13,7 +13,7 @@ import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 
 async function loadChromium() {
   const roots = [process.cwd(), ...(process.env.PLAYWRIGHT_ROOT ? [process.env.PLAYWRIGHT_ROOT] : [])];

@@ -1,0 +1,55 @@
+{
+  "generated_at": "2026-09-04T09:15:00Z",
+  "contract_status": "accepted",
+  "content_items": [
+    {
+      "block_key": "claim-summary",
+      "statement": "A concise comparison claim with source confidence.",
+      "responsibility": "Answer the comparison question once.",
+      "provenance_finding_indexes": [0],
+      "role_refs": ["member"],
+      "journey_stage_refs": ["compare"],
+      "decision": "keep"
+    },
+    {
+      "block_key": "repeated-summary",
+      "statement": "A second summary repeats the comparison claim.",
+      "responsibility": "No exclusive responsibility after canonical claim summary.",
+      "provenance_finding_indexes": [0],
+      "role_refs": ["member"],
+      "journey_stage_refs": ["compare"],
+      "decision": "remove"
+    }
+  ],
+  "view_contracts": [{
+    "id": "comparison-view",
+    "purpose": "Compare source claims and expose confidence.",
+    "content_keys": ["claim-summary"],
+    "minimum_first_read_keys": ["claim-summary"],
+    "progressive_disclosure_keys": []
+  }],
+  "human_owned_decisions": [],
+  "assumptions": [],
+  "findings": [{
+    "category": "content.duplication",
+    "type": "symptom",
+    "title": "Repeated summary adds no information",
+    "statement": "The repeated summary restates the canonical comparison claim without distinct information gain.",
+    "locations": [{ "route": "/compare", "surface": "comparison", "component": "repeated-summary", "state": "source-selected", "viewport": "1280x800" }],
+    "task_refs": ["TASK-03"],
+    "affected_personas": ["researcher"],
+    "affected_areas": ["comparison content"],
+    "severity": { "level": 2, "rationale": "Repeated material slows a common comparison task without blocking completion." },
+    "confidence": { "score": 0.92, "basis": "Direct proposition and provenance comparison." },
+    "reach": "surface",
+    "frequency": "continuous",
+    "urgency": "medium",
+    "native_metrics": { "task_value": 1, "distinct_information_gain": 0, "decision": "REMOVE", "block_key": "repeated-summary" },
+    "root_cause_hypothesis": "Two blocks answer the same user question from the same inputs.",
+    "recommendation": { "action": "Retain the canonical claim summary and remove the repeated representation after editorial acceptance.", "alternatives": ["Differentiate the second block with a distinct transformation."], "estimated_effort": "S", "change_risk": "low" },
+    "acceptance_criteria": [{ "id": "AC-CONTENT-001", "statement": "Only one default-visible block restates the comparison claim." }],
+    "verification_method": [{ "instrument": "content inventory", "procedure": "Rebuild the proposition graph and confirm one default-visible owner for the claim." }],
+    "status": "accepted",
+    "evidence": [{ "type": "repository", "artifact_ref": "fixture.html#repeated-summary", "exact_observation": "Both summary blocks contain the same claim and source-confidence proposition.", "strength": "direct", "timestamp": "2026-09-04T09:10:00Z" }]
+  }]
+}

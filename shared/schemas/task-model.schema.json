@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:task-model:v1",
+  "title": "AUD task model v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "model_id", "project_revision", "tasks", "sources", "assumptions"],
+  "properties": {
+    "schema_version": { "const": "aud-task-model-v1" },
+    "model_id": { "type": "string", "pattern": "^TM-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "project_revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "persona_ref", "role_ref", "journey_stage_ref", "verb", "object", "success_criterion", "required_information", "frequency", "criticality", "time_sensitivity", "user_coverage", "source_ref", "evidence_strength", "last_confirmed"],
+        "properties": {
+          "id": { "$ref": "urn:aud:schema:common:v1#/$defs/taskId" },
+          "persona_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "role_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "journey_stage_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "verb": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "object": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "success_criterion": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "required_information": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "minItems": 1, "uniqueItems": true },
+          "frequency": { "type": "number", "minimum": 0, "maximum": 1 },
+          "criticality": { "type": "number", "minimum": 0, "maximum": 1 },
+          "time_sensitivity": { "type": "number", "minimum": 0, "maximum": 1 },
+          "user_coverage": { "type": "number", "minimum": 0, "maximum": 1 },
+          "source_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "evidence_strength": { "type": "number", "minimum": 0, "maximum": 1 },
+          "last_confirmed": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }
+        }
+      }
+    },
+    "sources": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "uniqueItems": true },
+    "assumptions": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "uniqueItems": true }
+  }
+}

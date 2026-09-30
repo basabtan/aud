@@ -2,11 +2,14 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const policies = [
+  ['aud', 'aud'],
   ['content-audit', 'content'],
   ['place-audit', 'place'],
   ['flow-audit', 'flow'],
   ['visual-audit', 'visual'],
   ['audit', 'functional'],
+  ['functional-audit', 'functional'],
+  ['architecture-maintainability-audit', 'architecture-maintainability'],
 ];
 
 for (const [plugin, runType] of policies) {
@@ -26,8 +29,8 @@ for (const [plugin, runType] of policies) {
 }
 
 const allRelevantText = [
-  'plugins/audit/skills/audit/SKILL.md',
-  'plugins/audit/skills/audit/references/drivers.md',
+  'plugins/functional-audit/skills/functional-audit/SKILL.md',
+  'plugins/functional-audit/skills/functional-audit/references/drivers.md',
 ].map(path => readFileSync(path, 'utf8')).join('\n');
 
 assert.doesNotMatch(allRelevantText, /zeal\/audit\//, 'obsolete zeal/audit path remains');

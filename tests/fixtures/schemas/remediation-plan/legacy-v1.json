@@ -1,0 +1,18 @@
+{
+  "schema_version": "aud-remediation-plan-v1",
+  "plan_id": "RP-LEGACY-001",
+  "run_id": "RUN-2026-09-04-002",
+  "generated_at": "2026-09-04T09:40:00Z",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782",
+  "items": [{
+    "remediation_id": "R-CONTEXT-001", "finding_refs": ["F-PRIOR-FLOW-001"], "cause_cluster_refs": [],
+    "intended_result": "Restore comparison state.", "scope": ["comparison"], "non_goals": [], "dependencies": [],
+    "implementation_approach": "Persist route state.", "alternatives_considered": [],
+    "risk": { "level": "medium", "rationale": "Route state affects deep links." }, "estimated_effort": "M",
+    "acceptance_criteria": [{ "id": "AC-LEGACY-001", "statement": "Back restores state." }],
+    "verification": { "owner": "functional-audit", "instruments": ["browser"] }, "rollback_note": null,
+    "priority": { "level": "P1", "rationale": "Critical journey." }
+  }],
+  "waves": [{ "wave": 1, "remediation_refs": ["R-CONTEXT-001"] }],
+  "human_decisions": []
+}

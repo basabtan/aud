@@ -1,0 +1,1 @@
+{"schema_version":"aud-regression-result-v1","regression_set_id":"REGSET-EXAMPLE-001","verification_plan_id":"VP-EXAMPLE-001","run_id":"RUN-2026-09-04-003","baseline_revision":"da063c38731f3f797bfd5000374daa5c14952782","candidate_revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","generated_at":"2026-09-04T11:00:00Z","results":[],"new_finding_refs":[]}

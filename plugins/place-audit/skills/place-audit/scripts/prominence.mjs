@@ -4,7 +4,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
-const VERSION = '0.1.0';
+const VERSION = '0.1.1';
 
 function parseArgs(argv) {
   const opts = { positionals: [] };

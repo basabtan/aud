@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-09-04T09:45:00Z",
+  "assumptions": [],
+  "findings": [{
+    "category": "visual.hierarchy",
+    "type": "symptom",
+    "title": "Primary comparison and metadata have equal visual weight",
+    "statement": "The primary comparison claim and secondary provenance metadata remain indistinguishable at a squint.",
+    "locations": [{ "route": "/compare", "surface": "comparison", "component": "claim-summary", "state": "source-selected", "viewport": "1280x800" }],
+    "task_refs": [],
+    "affected_personas": [],
+    "affected_areas": ["comparison visual hierarchy"],
+    "severity": { "level": 2, "rationale": "Readers must scan secondary metadata before locating the main comparison claim." },
+    "confidence": { "score": 0.84, "basis": "Consistent screenshot observation at 25%, normal, and 200% zoom." },
+    "reach": "surface",
+    "frequency": "continuous",
+    "urgency": "medium",
+    "native_metrics": { "visual_tier": 1, "target_tier": 2, "tier_gap": 1, "prominence": "primary", "token_reach": "surface", "dose_rank": "top-20" },
+    "root_cause_hypothesis": "The type scale exposes one effective emphasis level.",
+    "recommendation": { "action": "Use existing type roles to distinguish the primary claim from provenance metadata.", "alternatives": ["Reduce metadata prominence using an existing secondary role."], "estimated_effort": "S", "change_risk": "low" },
+    "acceptance_criteria": [{ "id": "AC-VISUAL-001", "statement": "The primary claim remains identifiable when text is blurred at 25% zoom." }],
+    "verification_method": [{ "instrument": "multi-distance screenshot review", "procedure": "Capture at 25%, normal, and 200% and confirm the declared primary region dominates without reducing contrast." }],
+    "status": "open",
+    "evidence": [{ "type": "screenshot", "artifact_ref": "screenshots/compare-1280.png", "exact_observation": "Claim and provenance use the same computed size, weight, and contrast role.", "strength": "direct", "timestamp": "2026-09-04T09:42:00Z" }]
+  }]
+}

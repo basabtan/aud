@@ -1,0 +1,10 @@
+{
+  "schema_version": "aud-calibration-suite-v1", "suite_id": "CALSUITE-FIXTURE", "suite_version": "1.0.0", "name": "Fixture suite", "created_at": "2026-01-01T00:00:00.000Z", "description": "Schema fixture",
+  "cases": [{
+    "schema_version": "aud-calibration-case-v1", "case_id": "CALCASE-FIXTURE", "case_version": "1.0.0", "title": "Fixture case", "category": "finding", "tiers": ["fast"], "mandatory": true, "input_revision": "abcdef1", "fixture": { "description": "Synthetic fixture", "synthetic": true },
+    "expected": { "schema_version": "aud-expected-outcome-v1", "expected_id": "EXPECTED-FIXTURE", "specialist_selection": { "must_include": [], "must_exclude": [] }, "issues": [], "duplicate_groups": [], "relationships": [], "contradictions": [], "root_causes": [], "priorities": [], "remediation_order": [], "verification": [], "regressions": [], "exact": [], "bounded": [] },
+    "observed_runs": [{ "run_label": "first", "generated_at": "2026-01-01T00:00:00.000Z", "output": {} }, { "run_label": "second", "generated_at": "2026-01-01T00:01:00.000Z", "same_as": "first" }]
+  }],
+  "quality_gates": { "policy_version": "1.0.0", "hard": [], "warning": [], "informational": [] },
+  "corpus_policy": { "redistributable": true, "contains_sensitive_evidence": false, "application_mutations": [] }
+}

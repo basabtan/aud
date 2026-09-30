@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-09-04T11:15:00Z",
+  "contract_status": "accepted",
+  "findings": [{
+    "category": "flow.context-loss", "type": "symptom",
+    "title": "Evidence return loses comparison position",
+    "statement": "Returning from evidence resets the selected comparison facet and scroll anchor.",
+    "locations": [{ "route": "/compare", "surface": "comparison", "component": "evidence-return", "state": "source-selected", "viewport": "1280x800" }],
+    "task_refs": ["TASK-03"], "affected_personas": ["researcher"], "affected_areas": ["comparison-to-evidence journey"],
+    "severity": { "level": 3, "rationale": "Users reconstruct context during a critical verification journey." },
+    "confidence": { "score": 0.95, "basis": "Direct browser exercise reproduced the loss." },
+    "reach": "journey", "frequency": "continuous", "urgency": "high",
+    "native_metrics": { "context_preservation": 1, "reversibility": 1, "cognitive_cost": 3 },
+    "root_cause_hypothesis": "Comparison state is not represented in navigation state.",
+    "recommendation": { "action": "Preserve selected facet and scroll anchor across evidence return.", "alternatives": [], "estimated_effort": "M", "change_risk": "medium" },
+    "acceptance_criteria": [{ "id": "AC-ORCH-FLOW", "statement": "Return restores the selected facet and scroll anchor." }],
+    "verification_method": [{ "instrument": "browser route-state test", "procedure": "Drill down, return, and assert facet plus anchor." }],
+    "status": "accepted",
+    "evidence": [{ "type": "trace", "artifact_ref": "journey-model.json#verify-return", "exact_observation": "Browser Back restored default state instead of prior context.", "strength": "direct", "timestamp": "2026-09-04T11:12:00Z" }],
+    "flow_recommendation": {
+      "content_keys": ["claim-summary"],
+      "intent": "Verify a claim and return without reconstruction.",
+      "required_behavior": "Return preserves selected facet and scroll anchor.",
+      "preserved_context": ["selected facet", "scroll anchor", "claim"],
+      "return_path": "Browser Back restores the exact prior comparison state.",
+      "status": "accepted"
+    }
+  }]
+}

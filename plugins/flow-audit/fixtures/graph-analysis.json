@@ -1,5 +1,5 @@
 {
-  "model": "C:\\Users\\bader\\Documents\\Codex\\2026-08-27\\z\\work\\aud\\plugins\\flow-audit\\fixtures\\journey-model.json",
+  "model": "plugins/flow-audit/fixtures/journey-model.json",
   "valid": true,
   "summary": {
     "nodes": 6,

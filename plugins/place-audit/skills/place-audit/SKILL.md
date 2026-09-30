@@ -1,6 +1,6 @@
 ---
 name: place-audit
-description: Audit whether the right information is in the right place, at the right prominence, and should exist at all. Use when information feels far, buried, scattered, redundant, or like too much on screen; when asked "is this redundant", "what can I remove", "where should X go", "prioritize the information", "declutter", or "audit the layout/placement/hierarchy"; and proactively after building any information-dense page or dashboard. This audits information architecture, not functional correctness or visual polish.
+description: Run an isolated placement audit against approved content and a declared task model. Use when the user explicitly asks whether information is buried, overemphasized, costly to reach, or placed in the wrong region. Measure prominence and access cost, propose candidate regions, and emit duplicate candidates for content review. Do not decide content removal, semantic merging, flow architecture, visual treatment, or functional correctness; broad audit requests belong to the AUD pipeline.
 ---
 
 # Place audit
@@ -49,6 +49,28 @@ while preserving older runs. If the same type runs twice on one date, append
 In a monorepo, `application-root` is the nearest directory that owns the app's
 runtime/build configuration. Never store product-specific audit results in the
 repository that distributes this skill.
+
+## Shared inputs and structured output
+
+Consume and validate the shared `run-manifest.json` and `task-model.json`.
+Consume `project-context.json` and `content-contract.json` when supplied. A
+content contract limits scoring to items whose decision is `keep`, `disclose`,
+or `human_decision`; items marked `remove` or `merge` are skipped and recorded
+in `input-status.json`. Without a content contract, continue explicitly in
+standalone/degraded mode and state that content survival was not established.
+Never silently invent an upstream decision.
+
+Before the blind demand pass, run `scripts/filter-applicable.mjs` against the
+candidate packet and content contract. Only its `included` records may enter
+demand, prominence reconciliation, or FIT scoring; retain its `skipped` records
+as audit evidence.
+
+Duplication discovered here is a `duplicate_candidate`, never an instruction to
+delete or merge. Preserve `FIT`, demand, prominence, access cost, segmentation
+confidence, and every other specialist measure under `native_metrics`; none is
+the common consequence-only severity. Run `scripts/emit-structured.mjs` after
+scoring to emit schema-valid `evidence.jsonl`, `findings.jsonl`, and
+`input-status.json`, all referencing the shared run manifest.
 
 ## The ten-step loop
 
@@ -201,3 +223,6 @@ already ships a browser — point `CHROME_PATH` at the binary that is there.
 - `references/blind-spots.md` — trust checklist; run before reporting.
 - `scripts/extract.mjs`, `prominence.mjs`, `canonical.mjs`, `annotate.mjs` —
   deterministic Playwright/Node stages; none calls an LLM.
+- `scripts/emit-structured.mjs` — contract-aware survivor filtering and
+  normalized evidence/finding output.
+- `scripts/filter-applicable.mjs` — pre-score content-survival gate.

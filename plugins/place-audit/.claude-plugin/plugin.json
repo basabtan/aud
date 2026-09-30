@@ -1,7 +1,7 @@
 {
   "name": "place-audit",
-  "description": "Audit information placement against declared user tasks using blind demand scoring, deterministic prominence, access cost, and semantic duplicate detection.",
-  "version": "0.1.1",
+  "description": "Audit approved information placement against declared user tasks using blind demand scoring, deterministic prominence, access cost, and duplicate-candidate detection.",
+  "version": "0.2.0",
   "author": {
     "name": "basabtan"
   }

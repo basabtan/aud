@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:run-manifest:v1",
+  "title": "AUD run manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "mode", "selected_audits", "application", "started_at", "finished_at", "depth", "scope", "environment", "contracts", "evidence_manifest", "skipped_inputs", "degraded", "status"],
+  "properties": {
+    "schema_version": { "const": "aud-run-manifest-v1" },
+    "run_id": { "$ref": "urn:aud:schema:common:v1#/$defs/runId" },
+    "mode": { "enum": ["diagnose", "redesign", "verify", "specialist"] },
+    "selected_audits": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" } },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "repository", "revision"],
+      "properties": {
+        "root": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "repository": { "type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$" },
+        "revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }
+      }
+    },
+    "started_at": { "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" },
+    "finished_at": { "oneOf": [{ "$ref": "urn:aud:schema:common:v1#/$defs/timestamp" }, { "type": "null" }] },
+    "depth": { "enum": ["quick", "standard", "full", "custom"] },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["routes", "surfaces", "states"],
+      "properties": {
+        "routes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "surfaces": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "states": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "environment": { "type": "object", "additionalProperties": true, "minProperties": 1 },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "schema_version", "artifact_ref", "hash", "status"],
+        "properties": {
+          "kind": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "schema_version": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "artifact_ref": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "hash": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+          "status": { "enum": ["current", "stale", "missing", "incompatible"] }
+        }
+      }
+    },
+    "evidence_manifest": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+    "skipped_inputs": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "uniqueItems": true },
+    "degraded": { "type": "boolean" },
+    "status": { "enum": ["running", "completed", "failed", "stopped"] }
+  }
+}

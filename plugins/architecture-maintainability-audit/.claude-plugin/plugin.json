@@ -1,0 +1,6 @@
+{
+  "name": "architecture-maintainability-audit",
+  "description": "Audit repository architecture, dependency direction, ownership, coupling, and change safety using traceable code evidence.",
+  "version": "1.0.0",
+  "author": { "name": "basabtan" }
+}

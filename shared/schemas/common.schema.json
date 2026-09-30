@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:common:v1",
+  "title": "AUD common definitions v1",
+  "$defs": {
+    "nonEmptyString": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "sha": { "type": "string", "pattern": "^[0-9a-fA-F]{7,64}$" },
+    "runId": { "type": "string", "pattern": "^RUN-[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$" },
+    "taskId": { "type": "string", "pattern": "^TASK-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "evidenceId": { "type": "string", "pattern": "^EV-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "findingId": { "type": "string", "pattern": "^F-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "contentId": { "type": "string", "pattern": "^CONTENT-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "remediationId": { "type": "string", "pattern": "^R-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "verificationId": { "type": "string", "pattern": "^V-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "causeId": { "type": "string", "pattern": "^CAUSE-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "clusterId": { "type": "string", "pattern": "^CLUSTER-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "relationshipId": { "type": "string", "pattern": "^REL-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "contradictionId": { "type": "string", "pattern": "^CONTRA-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+    "severity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "rationale"],
+      "properties": {
+        "level": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "rationale": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "basis"],
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "basis": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "nativeMetrics": {
+      "type": "object",
+      "description": "Opaque specialist-owned metrics. Common validation must preserve this object without interpreting it as severity, confidence, or priority.",
+      "additionalProperties": true
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "route": { "type": ["string", "null"] },
+        "surface": { "type": ["string", "null"] },
+        "component": { "type": ["string", "null"] },
+        "state": { "type": ["string", "null"] },
+        "viewport": { "type": ["string", "null"], "pattern": "^[0-9]+x[0-9]+$" }
+      },
+      "minProperties": 1
+    },
+    "acceptanceCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^AC-[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$" },
+        "statement": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "verificationMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instrument", "procedure"],
+      "properties": {
+        "instrument": { "$ref": "#/$defs/nonEmptyString" },
+        "procedure": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "status": {
+      "enum": ["open", "needs_evidence", "accepted", "planned", "implemented", "verified", "partial", "failed", "waived", "reopened"]
+    },
+    "statusHistoryEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "at", "reason", "run_id"],
+      "properties": {
+        "status": { "$ref": "#/$defs/status" },
+        "at": { "$ref": "#/$defs/timestamp" },
+        "reason": { "$ref": "#/$defs/nonEmptyString" },
+        "run_id": { "$ref": "#/$defs/runId" }
+      }
+    }
+  }
+}

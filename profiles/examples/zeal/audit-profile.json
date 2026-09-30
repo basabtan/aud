@@ -1,0 +1,14 @@
+{
+  "schema_version": "aud-project-profile-example-v1",
+  "status": "example-only",
+  "target": "zeal",
+  "harness": "harness.md",
+  "fixtures": "fixtures.md",
+  "traps": "traps.md",
+  "data_checks": null,
+  "deploy_checks": "deploy-checks/netlify.md",
+  "notes": [
+    "No runnable database adapter was available in the source repository.",
+    "Copy this profile into the target repository and validate every path before use."
+  ]
+}

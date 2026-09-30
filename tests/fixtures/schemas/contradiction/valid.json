@@ -1,0 +1,8 @@
+{
+  "schema_version": "aud-contradiction-v1", "contradiction_id": "CONTRA-TEST-001", "run_id": "RUN-TEST-001",
+  "project_revision": "da063c38731f3f797bfd5000374daa5c14952782", "finding_refs": ["F-TEST-001", "F-TEST-002"],
+  "claims": [{ "finding_id": "F-TEST-001", "claim": "Keep the control." }, { "finding_id": "F-TEST-002", "claim": "Remove the control." }],
+  "evidence_refs": ["EV-TEST-001"], "conflict_type": "remedial",
+  "resolution": { "status": "unresolved", "rationale": null, "selected_finding_id": null },
+  "additional_evidence_required": ["Test both claims in the same state."], "confidence": { "score": 0.8, "basis": "Both claims are explicit." }
+}

@@ -1,0 +1,6 @@
+{
+  "schema_version": "aud-expected-outcome-v1", "expected_id": "EXPECTED-FIXTURE",
+  "specialist_selection": { "must_include": [], "must_exclude": [] }, "issues": [], "duplicate_groups": [],
+  "relationships": [], "contradictions": [], "root_causes": [], "priorities": [], "remediation_order": [],
+  "verification": [], "regressions": [], "exact": [], "bounded": []
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aud:schema:project-context:v1",
+  "title": "AUD project context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project", "purpose", "personas", "roles", "journey_stages", "routes", "surfaces", "supported_environments", "design_contract", "risk_profile", "harness", "fixture_variants", "sources", "assumptions", "human_owned_decisions"],
+  "properties": {
+    "schema_version": { "const": "aud-project-context-v1" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "application_root", "repository", "revision"],
+      "properties": {
+        "name": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "application_root": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+        "repository": { "type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$" },
+        "revision": { "$ref": "urn:aud:schema:common:v1#/$defs/sha" }
+      }
+    },
+    "purpose": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "uniqueItems": true },
+    "personas": { "$ref": "#/$defs/namedRecords" },
+    "roles": { "$ref": "#/$defs/namedRecords" },
+    "journey_stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "order"],
+        "properties": {
+          "id": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "label": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "order": { "type": "integer", "minimum": 0 },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "surface_refs", "role_refs"],
+        "properties": {
+          "id": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "path": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "surface_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "role_refs": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+        }
+      }
+    },
+    "surfaces": { "$ref": "#/$defs/namedRecords" },
+    "supported_environments": { "type": "array", "items": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }, "uniqueItems": true },
+    "design_contract": { "type": "object", "additionalProperties": true },
+    "risk_profile": { "type": "object", "additionalProperties": true },
+    "harness": { "type": "object", "additionalProperties": true },
+    "fixture_variants": { "$ref": "#/$defs/namedRecords" },
+    "sources": { "$ref": "#/$defs/sourceRecords" },
+    "assumptions": { "$ref": "#/$defs/decisionRecords" },
+    "human_owned_decisions": { "$ref": "#/$defs/decisionRecords" }
+  },
+  "$defs": {
+    "namedRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label"],
+        "properties": {
+          "id": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "label": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "sourceRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "reference"],
+        "properties": {
+          "id": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "type": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "reference": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "decisionRecords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "status"],
+        "properties": {
+          "id": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "statement": { "$ref": "urn:aud:schema:common:v1#/$defs/nonEmptyString" },
+          "status": { "enum": ["open", "confirmed", "rejected", "superseded"] }
+        }
+      }
+    }
+  }
+}

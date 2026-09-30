@@ -19,6 +19,8 @@ const overlayPath = join(runDir, 'overlay-initial.png');
 const overlayHoverPath = join(runDir, 'overlay-hover.png');
 const debuggerPath = join(runDir, 'debugger.html');
 const reportPath = join(runDir, 'REPORT.md');
+const structuredEmitter = join(scripts, 'emit-structured.mjs');
+const applicableFilter = join(scripts, 'filter-applicable.mjs');
 
 mkdirSync(runDir, { recursive: true });
 for (const path of [atomsPath, screenshotPath, prominencePath, canonicalPath, overlayPath, overlayHoverPath, debuggerPath]) {
@@ -49,6 +51,15 @@ test(1, 'fixture contains every required state and content class', () => {
   const html = readFileSync(fixture, 'utf8');
   for (const marker of ['primary-kpi-row', '<table', 'role="tooltip"', 'below-fold', 'duplicate-revenue', 'arabic-block']) {
     assert.ok(html.includes(marker), `fixture missing ${marker}`);
+  }
+});
+
+test('1b', 'shared contract and normalized output rules are present', () => {
+  assert.ok(existsSync(structuredEmitter), 'structured emitter missing');
+  assert.ok(existsSync(applicableFilter), 'pre-score content filter missing');
+  const instructions = readFileSync(join(plugin, 'skills', 'place-audit', 'SKILL.md'), 'utf8');
+  for (const phrase of ['content-contract.json', 'duplicate_candidate', 'native_metrics', 'findings.jsonl', 'Only its `included` records']) {
+    assert.ok(instructions.includes(phrase), `missing Phase 2 rule ${phrase}`);
   }
 });
 
